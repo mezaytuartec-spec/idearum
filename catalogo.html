@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo de pistas — Idearum</title>
+<meta name="description" content="Buscá entre más de 500 pistas instrumentales por título, autor o estilo. Consultá cualquiera por WhatsApp y te mandamos el audio.">
+<meta name="theme-color" content="#ffffff">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Idearum">
+<meta property="og:title" content="Catálogo de pistas — Idearum">
+<meta property="og:description" content="Buscá entre más de 500 pistas instrumentales por título, autor o estilo.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png?v=20260906">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32-dark.png?v=20260906" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260906">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<link rel="stylesheet" href="css/styles.css?v=20260906">
+
+<script>
+  document.documentElement.classList.remove("no-js");
+  setTimeout(function () {
+    if (!window.IDEARUM) document.documentElement.classList.add("no-js");
+  }, 5000);
+</script>
+</head>
+
+<body>
+
+<!-- ==========================================================================
+     ⚠️ QUÉ HAY QUE COMPLETAR EN ESTA PÁGINA
+
+     1. PRECIO DEL CATÁLOGO: US$ 45, más abajo. Aparece una sola vez, no se
+        repite en cada fila a propósito. El otro lugar es index.html.
+     2. PRECIOS DE COVER Y TEMA PROPIO: al final de la página.
+     3. NÚMERO DE WHATSAPP: se edita en js/app.js (constante WSP).
+     4. LAS PISTAS: se cargan desde data/pistas.js. No se tocan acá.
+     5. LAS PÍLDORAS DE FILTRO de más abajo tienen que coincidir con los
+        estilos que uses en data/pistas.js.
+     ========================================================================== -->
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="nav__logo" href="index.html">
+      <img src="assets/img/logo.png?v=20260906" alt="" width="20" height="20">
+      <span>Idearum</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="index.html#a-medida">Cover a pedido</a>
+      <a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+    </nav>
+
+    <button class="nav__burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu">
+  <a href="index.html">Inicio</a>
+  <a href="catalogo.html">Catálogo</a>
+  <a href="index.html#a-medida">Cover a pedido</a>
+  <a href="index.html#a-medida">Tema propio</a>
+  <a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+</div>
+
+<main>
+
+  <!-- ---------- Cabecera + buscador -------------------------------------- -->
+  <section class="cat-cabecera">
+    <div class="wrap">
+      <h1 class="h-seccion">Catálogo</h1>
+      <p class="sub-hero" data-conteo="total">Pistas disponibles</p>
+
+      <!-- ⚠️ PRECIO DEL CATÁLOGO — si cambia, tocalo también en index.html (corredor). -->
+      <p class="cat-precio">Todas las pistas del catálogo: <strong>US$&nbsp;45</strong></p>
+
+      <div class="buscador" id="buscador">
+        <svg class="buscador__lupa" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/>
+        </svg>
+        <label class="nota" for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Buscar pistas</label>
+        <input id="q" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Buscar por título o autor">
+        <button class="buscador__limpiar" id="limpiar" type="button" aria-label="Limpiar búsqueda">&times;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Filtros (sticky bajo la nav) ------------------------------ -->
+  <div class="filtros">
+    <div class="filtros__in" id="filtros" role="group" aria-label="Filtrar por estilo">
+      <button class="pill is-activa" type="button" data-estilo="todos"    aria-pressed="true">Todos</button>
+      <button class="pill" type="button" data-estilo="cumbia"   aria-pressed="false">Cumbia</button>
+      <button class="pill" type="button" data-estilo="rock"     aria-pressed="false">Rock</button>
+      <button class="pill" type="button" data-estilo="folclore" aria-pressed="false">Folclore</button>
+      <button class="pill" type="button" data-estilo="balada"   aria-pressed="false">Balada</button>
+      <button class="pill" type="button" data-estilo="bolero"   aria-pressed="false">Bolero</button>
+      <button class="pill" type="button" data-estilo="pop"      aria-pressed="false">Pop</button>
+      <button class="pill" type="button" data-estilo="blues"    aria-pressed="false">Blues</button>
+      <button class="pill" type="button" data-estilo="tango"    aria-pressed="false">Tango</button>
+      <button class="pill" type="button" data-estilo="jazz"     aria-pressed="false">Jazz</button>
+      <button class="pill" type="button" data-estilo="reggae"   aria-pressed="false">Reggae</button>
+    </div>
+  </div>
+
+  <!-- ---------- Resultados ------------------------------------------------ -->
+  <section>
+    <div class="wrap">
+
+      <p class="cat-conteo meta" aria-live="polite"><span id="conteo">Cargando…</span></p>
+
+      <div class="lista" id="lista"></div>
+
+      <div class="vacio" id="vacio" hidden>
+        <h3>No encontramos esa pista.</h3>
+        <p>Puede que igual la tengamos, o que la podamos producir.</p>
+        <a class="btn btn--primario"
+           href="https://wa.me/5492664XXXXXX"
+           data-wsp="Hola Idearum, busco una pista que no encontré en el catálogo: "
+           target="_blank" rel="noopener">Preguntanos</a>
+        <p class="nota" style="margin-top:10px">Te respondemos por WhatsApp.</p>
+      </div>
+
+      <div class="cargar-mas" id="cargar-mas" hidden>
+        <button class="btn btn--secundario" type="button">
+          Cargar más (<span data-restantes>0</span> restantes)
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ---------- A medida ---------------------------------------------------
+       ⚠️ PRECIOS: Cover a pedido US$ 80 / Tema propio US$ 100.
+       Están en index.html y en catalogo.html: si cambian, tocalos en los dos.
+       Los "incluye" son estimados: revisalos.
+       -------------------------------------------------------------------- -->
+  <section class="precios negra" id="a-medida">
+    <div class="precios__reja" aria-hidden="true"></div>
+
+    <div class="wrap">
+      <div class="precios__cab reveal">
+        <span class="etiqueta-caja">A medida</span>
+        <h2 class="h-seccion">¿No estaba en la lista?</h2>
+        <p>Elegís la canción o traés la tuya. La grabamos con músicos e instrumentos reales, sólo para vos.</p>
+      </div>
+
+      <div class="precios__marco reveal">
+        <span class="cruz cruz--si" aria-hidden="true"></span>
+        <span class="cruz cruz--sd" aria-hidden="true"></span>
+        <span class="cruz cruz--ii" aria-hidden="true"></span>
+        <span class="cruz cruz--id" aria-hidden="true"></span>
+
+        <div class="precios__grid">
+
+          <article class="plan">
+            <div class="plan__cab">
+              <h3>Cover a pedido</h3>
+              <span class="chip">Lo más pedido</span>
+            </div>
+            <p class="plan__sub">Una canción que ya existe, producida entera para vos.</p>
+
+            <p class="plan__precio">
+              <span>US$</span><span class="num">80</span><span>por tema</span>
+            </p>
+
+            <ul class="plan__incluye">
+              <li>Entrega en 7 a 10 días</li>
+              <li>WAV 24 bit y MP3 320 kbps</li>
+              <li>Dos rondas de ajustes</li>
+            </ul>
+
+            <div class="plan__cta">
+              <a class="btn btn--acento"
+                 href="https://wa.me/5492664XXXXXX"
+                 data-wsp="Hola Idearum, quiero pedir un cover a medida."
+                 target="_blank" rel="noopener">Escribinos</a>
+            </div>
+          </article>
+
+          <article class="plan plan--destacado">
+            <div class="traza">
+              <div class="traza__luz" aria-hidden="true"></div>
+              <div class="traza__in">
+                <div class="plan__cab">
+                  <h3>Tema propio</h3>
+                  <span class="chip">Producción completa</span>
+                </div>
+                <p class="plan__sub">Tu composición, arreglada y grabada de cero.</p>
+
+                <p class="plan__precio">
+                  <span>US$</span><span class="num">100</span><span>por tema</span>
+                </p>
+
+                <ul class="plan__incluye">
+                  <li>Entrega en 15 a 20 días</li>
+                  <li>WAV 24 bit, MP3 320 kbps y pistas separadas</li>
+                  <li>Tres rondas de ajustes</li>
+                </ul>
+
+                <div class="plan__cta">
+                  <a class="btn btn--acento"
+                     href="https://wa.me/5492664XXXXXX"
+                     data-wsp="Hola Idearum, quiero producir un tema propio."
+                     target="_blank" rel="noopener">Escribinos</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <p class="precios__pie reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2 4 5v6c0 4.5 3.2 8.7 8 11 4.8-2.3 8-6.5 8-11V5l-8-3zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6z"/></svg>
+        <span>Consultás sin compromiso. Te respondemos por WhatsApp.</span>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__cols">
+      <div>
+        <h4>Catálogo</h4>
+        <ul>
+          <li><a href="catalogo.html">Todas las pistas</a></li>
+          <li><a href="catalogo.html#estilo=cumbia">Cumbia</a></li>
+          <li><a href="catalogo.html#estilo=rock">Rock</a></li>
+          <li><a href="catalogo.html#estilo=folclore">Folclore</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>A medida</h4>
+        <ul>
+          <li><a href="index.html#a-medida">Cover a pedido</a></li>
+          <li><a href="index.html#a-medida">Tema propio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a></li>
+          <li>Consultas y pedidos, todos los días.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__pie">
+      <p class="footer__marca"><img src="assets/img/logo.png?v=20260906" alt="" width="16" height="16"><span>Copyright &copy; <span data-anio>2026</span> Idearum. Todos los derechos reservados.</span></p>
+      <p>Producción musical.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="data/pistas.js?v=20260906" defer></script>
+<script src="js/app.js?v=20260906" defer></script>
+<script src="js/catalogo.js?v=20260906" defer></script>
+
+</body>
+</html>

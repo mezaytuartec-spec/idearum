@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Idearum — Pistas musicales grabadas con instrumentos reales</title>
+<meta name="description" content="Más de 500 pistas instrumentales ya producidas, listas para usar. También hacemos covers a pedido y producción de temas propios. Consultá por WhatsApp.">
+<meta name="theme-color" content="#ffffff">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Idearum">
+<meta property="og:title" content="Idearum — Pistas musicales grabadas con instrumentos reales">
+<meta property="og:description" content="Más de 500 pistas instrumentales ya producidas, listas para usar. Covers a pedido y temas propios.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png?v=20260906">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32-dark.png?v=20260906" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260906">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<link rel="stylesheet" href="css/styles.css?v=20260906">
+
+<script>
+  /* Quita la red de seguridad "sin JS". Si app.js no llega a cargarse en 5
+     segundos, la vuelve a poner para que nada quede invisible. */
+  document.documentElement.classList.remove("no-js");
+  setTimeout(function () {
+    if (!window.IDEARUM) document.documentElement.classList.add("no-js");
+  }, 5000);
+</script>
+</head>
+
+<body>
+
+<!-- ==========================================================================
+     ⚠️ QUÉ HAY QUE COMPLETAR EN ESTA PÁGINA
+
+     1. PRECIOS. Los tres ya están puestos, buscá "PRECIO" en este archivo:
+        catálogo US$ 45 (corredor de portadas) · cover a pedido US$ 80 ·
+        tema propio US$ 100. Los dos primeros también están en catalogo.html.
+     2. NÚMERO DE WHATSAPP. Se edita una sola vez, en js/app.js (constante WSP).
+        Los href de esta página son sólo el respaldo por si el JS no corre:
+        si querés que también queden bien, hacé Buscar y Reemplazar de
+        5492664XXXXXX en este archivo y en catalogo.html.
+     3. LISTA DE ESTILOS. Las diez filas de la sección "Elegí por estilo".
+        Si cambiás un estilo, cambialo también en data/pistas.js, en
+        catalogo.html y en tools/csv_a_js.py.
+     4. PORTADAS DEL CORREDOR. Están en assets/img/portadas/ y la lista está
+        en js/app.js (constante PORTADAS). Para reemplazar una, pisá el
+        archivo con el tuyo, mismo nombre. Van CUADRADAS, ideal 640 x 640 px.
+     5. TEXTOS DE "QUÉ INCLUYE" (plazos, formatos, rondas de ajustes) en las
+        dos tarjetas de A medida: son estimados, revisalos.
+     6. AUDIOS DEL ANTES Y DESPUÉS. Copiá seis MP3 en assets/audio/ con los
+        nombres ejemplo-1-antes.mp3 / ejemplo-1-despues.mp3 y así hasta el 3.
+        Hasta que existan, el reproductor dice "Disponible pronto". Cambiá
+        también el título, el autor y el tipo de cada tarjeta.
+     7. FOTO DEL HERO. assets/img/hero-1800.jpg (escritorio) y hero-900.jpg
+        (móvil). Si la cambiás, respetá que los dos tercios de arriba queden
+        limpios: ahí va el texto.
+     ========================================================================== -->
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="nav__logo" href="index.html">
+      <img src="assets/img/logo.png?v=20260906" alt="" width="20" height="20">
+      <span>Idearum</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="#a-medida">Cover a pedido</a>
+      <a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+    </nav>
+
+    <button class="nav__burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu">
+  <a href="catalogo.html">Catálogo</a>
+  <a href="#a-medida">Cover a pedido</a>
+  <a href="#a-medida">Tema propio</a>
+  <a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+</div>
+
+<main>
+
+  <!-- ---------- Hero -------------------------------------------------------
+       La foto vive en assets/img/. Hay dos tamaños: hero-1800.jpg para
+       escritorio y hero-900.jpg para móvil (se eligen desde el CSS).
+       El logo ya viene impreso en el bombo, por eso acá no se repite.
+       ---------------------------------------------------------------------- -->
+  <section class="hero">
+    <div class="hero__txt">
+      <div class="wrap">
+        <p class="etiqueta reveal">Producción musical</p>
+        <h1 class="h-hero reveal">Pistas que suenan como el <span class="marca">original</span>.</h1>
+        <p class="sub-hero reveal">Grabadas con instrumentos reales. Más de <span data-total>500</span> títulos listos para usar.</p>
+        <div class="acciones acciones--centro reveal">
+          <a class="chev chev--grande" href="catalogo.html">Ver el catálogo</a>
+          <a class="btn btn--primario"
+             href="https://wa.me/5492664XXXXXX"
+             data-wsp="Hola Idearum, quiero hacer una consulta."
+             target="_blank" rel="noopener">Hablar con Idearum</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__foto" role="img"
+         aria-label="Teclado, guitarras, batería, amplificadores y micrófono de Idearum montados en el estudio"></div>
+  </section>
+
+  <!-- ---------- Corredor de portadas -------------------------------------
+       Las imágenes salen de la lista PORTADAS en js/app.js y están en
+       assets/img/portadas/. Para cambiar una, pisá el archivo con el tuyo.
+       -------------------------------------------------------------------- -->
+  <section class="corredor negra" aria-labelledby="corredor-titulo">
+    <div class="corredor__mundo" aria-hidden="true">
+      <div class="corredor__escena"></div>
+    </div>
+    <div class="corredor__velo" aria-hidden="true"></div>
+
+    <div class="corredor__txt">
+      <h2 class="h-seccion" id="corredor-titulo">Covers ya producidos.</h2>
+      <div class="corredor__pie">
+        <p>Todos los estilos, grabados con instrumentos reales y listos para usar.</p>
+        <!-- ⚠️ PRECIO DEL CATÁLOGO — US$ 45. Si cambia, tocalo también en catalogo.html. -->
+        <span class="precio">Cada cover del catálogo, US$&nbsp;45.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Estilos --------------------------------------------------- -->
+  <section class="seccion" id="estilos">
+    <div class="wrap">
+      <h2 class="h-seccion reveal">Elegí por estilo.</h2>
+
+      <div class="rolling" style="margin-top:44px">
+        <a class="roll reveal" href="catalogo.html#estilo=cumbia" aria-label="Ver pistas de Cumbia">
+          <span class="roll__cat" data-conteo="cumbia" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Cumbia</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Cumbia</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=rock" aria-label="Ver pistas de Rock">
+          <span class="roll__cat" data-conteo="rock" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Rock</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Rock</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=folclore" aria-label="Ver pistas de Folclore">
+          <span class="roll__cat" data-conteo="folclore" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Folclore</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Folclore</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=balada" aria-label="Ver pistas de Balada">
+          <span class="roll__cat" data-conteo="balada" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Balada</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Balada</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=bolero" aria-label="Ver pistas de Bolero">
+          <span class="roll__cat" data-conteo="bolero" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Bolero</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Bolero</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=pop" aria-label="Ver pistas de Pop">
+          <span class="roll__cat" data-conteo="pop" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Pop</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Pop</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=blues" aria-label="Ver pistas de Blues">
+          <span class="roll__cat" data-conteo="blues" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Blues</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Blues</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=tango" aria-label="Ver pistas de Tango">
+          <span class="roll__cat" data-conteo="tango" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Tango</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Tango</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=jazz" aria-label="Ver pistas de Jazz">
+          <span class="roll__cat" data-conteo="jazz" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Jazz</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Jazz</span></span>
+            </span>
+          </span>
+        </a>
+        <a class="roll reveal" href="catalogo.html#estilo=reggae" aria-label="Ver pistas de Reggae">
+          <span class="roll__cat" data-conteo="reggae" data-fmt="corto">Pistas</span>
+          <span class="roll__ventana">
+            <span class="roll__track">
+              <span class="roll__estado"><span class="roll__t">Reggae</span></span>
+              <span class="roll__estado roll__estado--hover" aria-hidden="true"><span class="roll__t">Reggae</span></span>
+            </span>
+          </span>
+        </a>
+      </div>
+
+      <div class="centro-pie reveal">
+        <a class="chev chev--grande" href="catalogo.html">Ver todas las pistas</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ---------- A medida ---------------------------------------------------
+       ⚠️ PRECIOS: Cover a pedido US$ 80 / Tema propio US$ 100.
+       Están en index.html y en catalogo.html: si cambian, tocalos en los dos.
+       Los "incluye" son estimados: revisalos.
+       -------------------------------------------------------------------- -->
+  <section class="precios negra" id="a-medida">
+    <div class="precios__reja" aria-hidden="true"></div>
+
+    <div class="wrap">
+      <div class="precios__cab reveal">
+        <span class="etiqueta-caja">A medida</span>
+        <h2 class="h-seccion">¿No está en el catálogo?</h2>
+        <p>Elegís la canción o traés la tuya. La grabamos con músicos e instrumentos reales, sólo para vos.</p>
+      </div>
+
+      <div class="precios__marco reveal">
+        <span class="cruz cruz--si" aria-hidden="true"></span>
+        <span class="cruz cruz--sd" aria-hidden="true"></span>
+        <span class="cruz cruz--ii" aria-hidden="true"></span>
+        <span class="cruz cruz--id" aria-hidden="true"></span>
+
+        <div class="precios__grid">
+
+          <article class="plan">
+            <div class="plan__cab">
+              <h3>Cover a pedido</h3>
+              <span class="chip">Lo más pedido</span>
+            </div>
+            <p class="plan__sub">Una canción que ya existe, producida entera para vos.</p>
+
+            <p class="plan__precio">
+              <span>US$</span><span class="num">80</span><span>por tema</span>
+            </p>
+
+            <ul class="plan__incluye">
+              <li>Entrega en 7 a 10 días</li>
+              <li>WAV 24 bit y MP3 320 kbps</li>
+              <li>Dos rondas de ajustes</li>
+            </ul>
+
+            <div class="plan__cta">
+              <a class="btn btn--acento"
+                 href="https://wa.me/5492664XXXXXX"
+                 data-wsp="Hola Idearum, quiero pedir un cover a medida."
+                 target="_blank" rel="noopener">Escribinos</a>
+            </div>
+          </article>
+
+          <article class="plan plan--destacado">
+            <div class="traza">
+              <div class="traza__luz" aria-hidden="true"></div>
+              <div class="traza__in">
+                <div class="plan__cab">
+                  <h3>Tema propio</h3>
+                  <span class="chip">Producción completa</span>
+                </div>
+                <p class="plan__sub">Tu composición, arreglada y grabada de cero.</p>
+
+                <p class="plan__precio">
+                  <span>US$</span><span class="num">100</span><span>por tema</span>
+                </p>
+
+                <ul class="plan__incluye">
+                  <li>Entrega en 15 a 20 días</li>
+                  <li>WAV 24 bit, MP3 320 kbps y pistas separadas</li>
+                  <li>Tres rondas de ajustes</li>
+                </ul>
+
+                <div class="plan__cta">
+                  <a class="btn btn--acento"
+                     href="https://wa.me/5492664XXXXXX"
+                     data-wsp="Hola Idearum, quiero producir un tema propio."
+                     target="_blank" rel="noopener">Escribinos</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <p class="precios__pie reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2 4 5v6c0 4.5 3.2 8.7 8 11 4.8-2.3 8-6.5 8-11V5l-8-3zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6z"/></svg>
+        <span>Consultás sin compromiso. Te respondemos por WhatsApp.</span>
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ---------- Antes y después ----------------------------------------------
+       ⚠️ CÓMO CARGAR LOS AUDIOS
+       Copiá los MP3 en assets/audio/ con estos nombres exactos:
+
+           ejemplo-1-antes.mp3   ejemplo-1-despues.mp3
+           ejemplo-2-antes.mp3   ejemplo-2-despues.mp3
+           ejemplo-3-antes.mp3   ejemplo-3-despues.mp3
+
+       Mientras el archivo no exista, el reproductor se muestra apagado y dice
+       "Disponible pronto": no rompe nada. Cambiá también el título, el autor y
+       el tipo de cada tarjeta acá abajo.
+       ------------------------------------------------------------------------ -->
+  <section class="seccion" id="ejemplos">
+    <div class="wrap">
+      <div class="ejemplos__cab reveal">
+        <h2 class="h-seccion">Escuchá el antes y el después.</h2>
+        <p>La maqueta que nos llega y la pista terminada. Los mismos temas, sin retoques.</p>
+      </div>
+
+      <div class="ejemplos__grid">
+        <article class="ejemplo reveal">
+          <span class="ejemplo__tipo">Cover a pedido</span>
+          <h3 class="ejemplo__titulo">Título del cover 1</h3>
+          <p class="ejemplo__meta meta">Autor original · Estilo</p>
+
+          <div class="ejemplo__pistas">
+            <div class="repro" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes"></div>
+            <div class="repro" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después"></div>
+          </div>
+        </article>
+        <article class="ejemplo reveal">
+          <span class="ejemplo__tipo">Tema propio</span>
+          <h3 class="ejemplo__titulo">Título del tema propio</h3>
+          <p class="ejemplo__meta meta">Composición del cliente · Estilo</p>
+
+          <div class="ejemplo__pistas">
+            <div class="repro" data-audio="assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes"></div>
+            <div class="repro" data-audio="assets/audio/ejemplo-2-despues.mp3" data-nombre="Después"></div>
+          </div>
+        </article>
+        <article class="ejemplo reveal">
+          <span class="ejemplo__tipo">Cover a pedido</span>
+          <h3 class="ejemplo__titulo">Título del cover 2</h3>
+          <p class="ejemplo__meta meta">Autor original · Estilo</p>
+
+          <div class="ejemplo__pistas">
+            <div class="repro" data-audio="assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes"></div>
+            <div class="repro" data-audio="assets/audio/ejemplo-3-despues.mp3" data-nombre="Después"></div>
+          </div>
+        </article>
+      </div>
+
+      <p class="ejemplos__nota nota reveal">Grabado en estudio con músicos e instrumentos reales.</p>
+    </div>
+  </section>
+
+  <!-- ---------- Credibilidad --------------------------------------------- -->
+  <section class="credibilidad negra">
+    <div class="wrap tres">
+      <div class="reveal">
+        <h3>Instrumentos reales</h3>
+        <p>Guitarras, bajo, batería y teclados grabados, no librerías genéricas.</p>
+      </div>
+      <div class="reveal">
+        <h3>Mezcla profesional</h3>
+        <p>Cada pista se mezcla y masteriza para que aguante cualquier equipo.</p>
+      </div>
+      <div class="reveal">
+        <h3>Entrega en alta calidad</h3>
+        <p>WAV 24 bit y MP3 320 kbps, listos para ensayo o para escenario.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__cols">
+      <div>
+        <h4>Catálogo</h4>
+        <ul>
+          <li><a href="catalogo.html">Todas las pistas</a></li>
+          <li><a href="catalogo.html#estilo=cumbia">Cumbia</a></li>
+          <li><a href="catalogo.html#estilo=rock">Rock</a></li>
+          <li><a href="catalogo.html#estilo=folclore">Folclore</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>A medida</h4>
+        <ul>
+          <li><a href="index.html#a-medida">Cover a pedido</a></li>
+          <li><a href="index.html#a-medida">Tema propio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a></li>
+          <li>Consultas y pedidos, todos los días.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__pie">
+      <p class="footer__marca"><img src="assets/img/logo.png?v=20260906" alt="" width="16" height="16"><span>Copyright &copy; <span data-anio>2026</span> Idearum. Todos los derechos reservados.</span></p>
+      <p>Producción musical.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="data/pistas.js?v=20260906" defer></script>
+<script src="js/app.js?v=20260906" defer></script>
+
+</body>
+</html>
