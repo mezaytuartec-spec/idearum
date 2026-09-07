@@ -46,6 +46,7 @@ import csv
 import json
 import os
 import sys
+import unicodedata
 
 # Para que los avisos con tildes se vean bien en la consola de Windows.
 try:
@@ -53,11 +54,12 @@ try:
 except Exception:
     pass
 
-# Si agregas o sacas un estilo, cambialo tambien en index.html (tiles),
+# Si agregas o sacas un estilo, cambialo tambien en js/app.js (ESTILOS),
 # en catalogo.html (pildoras de filtro) y en data/pistas.js.
 ESTILOS = [
-    "Rock", "Blues", "Pop", "Cumbia", "Folclore",
-    "Jazz", "Bolero", "Reggae", "Balada", "Tango",
+    "Balada", "Rock / Pop", "Tropical", "Cuarteto", "Latino", "Románticos",
+    "Canción del recuerdo", "Música cristiana", "Mariachi", "Folklore",
+    "Bolero", "Tango",
 ]
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,6 +91,15 @@ def abrir_csv(ruta):
         except csv.Error:
             dialecto = csv.excel
         return list(csv.DictReader(f, dialect=dialecto))
+
+
+def clave(texto):
+    """Normaliza un estilo para compararlo: sin tildes, sin mayusculas y sin
+    signos. Asi 'Rock/Pop', 'rock / pop' y 'ROCK POP' son todos 'Rock / Pop',
+    y 'Musica cristiana' encuentra 'Música cristiana'."""
+    t = unicodedata.normalize("NFD", texto)
+    t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+    return "".join(c for c in t.lower() if c.isalnum())
 
 
 def normalizar_cabeceras(fila):
@@ -124,7 +135,7 @@ def main():
         print("       La primera fila tiene que decir: titulo,autor,estilo")
         return 2
 
-    estilos_ok = {e.lower(): e for e in ESTILOS}
+    estilos_ok = {clave(e): e for e in ESTILOS}
 
     pistas = []
     vistos = {}
@@ -147,20 +158,20 @@ def main():
         if not autor:
             errores.append("fila {0}: falta el autor ({1})".format(i, titulo))
             continue
-        if estilo.lower() not in estilos_ok:
+        if clave(estilo) not in estilos_ok:
             errores.append(
                 "fila {0}: estilo no permitido: {1} ({2})".format(i, estilo or "vacio", titulo)
             )
             continue
 
-        estilo = estilos_ok[estilo.lower()]
-        clave = (titulo.lower(), autor.lower())
-        if clave in vistos:
+        estilo = estilos_ok[clave(estilo)]
+        dupe = (titulo.lower(), autor.lower())
+        if dupe in vistos:
             avisos.append(
-                "fila {0}: duplicada de la fila {1}: {2} - {3}".format(i, vistos[clave], titulo, autor)
+                "fila {0}: duplicada de la fila {1}: {2} - {3}".format(i, vistos[dupe], titulo, autor)
             )
         else:
-            vistos[clave] = i
+            vistos[dupe] = i
 
         pistas.append({
             "id": "{0:04d}".format(n),

@@ -27,10 +27,15 @@
     indice = new Array(lista.length);
     for (var i = 0; i < lista.length; i++) {
       var p = lista[i];
+      // El campo de busqueda dice "Buscar por autor" porque es lo mas comun,
+      // pero el indice incluye tambien el titulo y el estilo: quien escriba
+      // "tango" o el nombre de la cancion igual encuentra.
       indice[i] = {
         p: p,
         estilo: API.slug(p.estilo),
-        busca: API.normalizar(p.titulo) + " " + API.normalizar(p.autor)
+        busca: API.normalizar(p.titulo) + " " +
+               API.normalizar(p.autor) + " " +
+               API.normalizar(p.estilo)
       };
     }
   }
@@ -52,21 +57,9 @@
 
   /* ---------- Dibujado ----------------------------------------------------- */
 
-  function filaHTML(p) {
-    var titulo = API.escapar(p.titulo);
-    var autor = API.escapar(p.autor);
-    var estilo = API.escapar(p.estilo);
-    var href = API.escapar(API.wa(API.mensajePista(p)));
-    return '<div class="fila">' +
-             '<div class="fila__txt">' +
-               '<h3 class="fila__titulo">' + titulo + "</h3>" +
-               '<p class="fila__meta meta">' + autor + " &middot; " + estilo + "</p>" +
-             "</div>" +
-             '<a class="btn btn--primario btn--compacto" href="' + href +
-               '" target="_blank" rel="noopener" aria-label="Consultar por ' + titulo +
-               ' por WhatsApp">Consultar</a>' +
-           "</div>";
-  }
+  // El HTML de la fila lo arma app.js: lo comparten el catalogo y la vista
+  // previa de la home, asi las dos se ven y se comportan igual.
+  var filaHTML = API.filaHTML;
 
   // Un solo parseo y un solo appendChild por pagina. Nada de innerHTML += en bucle.
   function dibujarPagina(n) {

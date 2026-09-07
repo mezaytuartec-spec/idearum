@@ -1,7 +1,7 @@
 # Idearum
 
-Sitio estático de Idearum: catálogo de pistas instrumentales grabadas con
-instrumentos reales, más covers a pedido y producción de temas propios.
+Sitio estático de Idearum: pistas profesionales para cantantes, grabadas de
+cero, más covers a pedido y producción de temas propios.
 
 Toda la venta y el contacto ocurren por WhatsApp. No hay carrito, ni pasarela
 de pago, ni formularios, ni backend, ni base de datos.
@@ -88,8 +88,8 @@ en `index.html`.
 
 ### 4. Textos por revisar
 
-Los plazos de entrega, formatos y rondas de ajustes de las tarjetas de
-"A medida" son estimados. Están marcados con `⚠️` dentro del HTML.
+Los plazos de entrega y los formatos de las tarjetas de "A medida" son
+estimados. Están marcados con `⚠️` dentro del HTML.
 
 ---
 
@@ -97,20 +97,27 @@ Los plazos de entrega, formatos y rondas de ajustes de las tarjetas de
 
 | Producto | Precio | Dónde está |
 |---|---|---|
-| Pista del catálogo | US$ 45 | `index.html` (corredor) y `catalogo.html` |
-| Cover a pedido | US$ 80 | `index.html` y `catalogo.html` |
-| Tema propio | US$ 100 | `index.html` y `catalogo.html` |
+| Pista del catálogo | US$ 40 una · US$ 100 tres | `index.html` (corredor) y `catalogo.html` |
+| Cover a pedido | desde US$ 150 | `index.html` y `catalogo.html` |
+| Tema propio | desde US$ 200 | `index.html` y `catalogo.html` |
 
 ---
 
 ## Estilos musicales
 
-`Rock` · `Blues` · `Pop` · `Cumbia` · `Folclore` · `Jazz` · `Bolero` ·
-`Reggae` · `Balada` · `Tango`
+En el orden en que se muestran, de los más pedidos a los más de nicho:
+
+`Balada` · `Rock / Pop` · `Tropical` · `Cuarteto` · `Latino` · `Románticos` ·
+`Canción del recuerdo` · `Música cristiana` · `Mariachi` · `Folklore` ·
+`Bolero` · `Tango`
 
 Si se agrega o saca uno, hay que tocarlo en cuatro lugares: `data/pistas.js`,
-los tiles de `index.html`, las píldoras de filtro de `catalogo.html` y la
-lista `ESTILOS` de `tools/csv_a_js.py`.
+la constante `ESTILOS` de `js/app.js`, las píldoras de filtro de
+`catalogo.html` y la lista `ESTILOS` de `tools/csv_a_js.py`.
+
+El script del CSV compara los estilos sin tildes ni mayúsculas ni signos, así
+que en el Excel se puede escribir `Rock/Pop`, `rock / pop` o `Musica cristiana`
+y los reconoce igual.
 
 ---
 
@@ -148,6 +155,10 @@ reemplazarlas por material propio.
   JSON con `fetch()`: así funciona también abriendo el archivo directamente y
   no hace falta manejar estados de carga.
 - **Nada de `<script type="module">`.** Se rompe en algunos hosting.
+- **La home muestra una vista previa real del catálogo**, con las mismas
+  filas y los mismos botones que `catalogo.html`. El HTML de la fila lo arma
+  `filaHTML()` en `js/app.js` y lo usan las dos páginas, para que no se
+  puedan desincronizar.
 - **El amarillo `#FFDE21` aparece en tres lugares y nada más**: el subrayado
   del título del hero, la píldora de filtro activa y los dos botones
   "Escribinos". Sobre blanco tiene 1,3:1 de contraste, así que no se usa

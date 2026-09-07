@@ -164,7 +164,9 @@ ul { list-style: none; padding: 0; }
 
 .btn--compacto { padding: 8px 18px; font-size: 14px; }
 
-.btn .wa { width: 14px; height: 14px; fill: currentColor; flex: none; }
+/* Icono de WhatsApp dentro de un boton: acompana al texto, no es la marca.
+   El PNG blanco es para las pildoras negras; el negro, para las claras. */
+.btn .wa { width: 17px; height: 17px; flex: none; }
 
 /* Enlace con chevron */
 .chev {
@@ -368,7 +370,7 @@ ul { list-style: none; padding: 0; }
   padding: 72px 22px 62px;
   text-align: center;
 }
-.corredor__txt h2 { color: var(--blanco); max-width: 15ch; }
+.corredor__txt h2 { color: var(--blanco); max-width: 19ch; }
 .corredor__pie { max-width: 520px; }
 .corredor__pie p { color: rgba(255,255,255,.72); font-size: 17px; }
 .corredor__pie .precio {
@@ -430,6 +432,33 @@ ul { list-style: none; padding: 0; }
 .roll:hover .roll__cat { opacity: 0; }
 
 .centro-pie { text-align: center; padding-top: 48px; }
+
+/* ---------- 8c. Vista previa del catalogo (home) --------------------------
+   Las mismas filas del catalogo, cortadas por un difuminado al blanco que
+   deja ver que la lista sigue.
+   -------------------------------------------------------------------------- */
+
+.previa__cab { max-width: 720px; margin-bottom: 40px; }
+.previa__cab p { margin-top: 14px; color: var(--texto-sec); font-size: 21px; line-height: 1.3; }
+
+.previa__caja { position: relative; }
+.previa__caja .fila:last-child,
+.previa__caja .fila:nth-last-child(2) { border-bottom: 0; }
+
+.previa__velo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 130px;
+  pointer-events: none;
+  background: linear-gradient(to top,
+              var(--blanco) 12%, rgba(255,255,255,.55) 58%, rgba(255,255,255,0) 100%);
+}
+
+/* El boton se apoya justo debajo del difuminado, sin pisar la fila que se
+   desvanece. */
+.previa__pie { margin-top: -8px; text-align: center; position: relative; }
 
 /* ---------- 9. A medida (precios, sobre negro) ---------------------------- */
 
@@ -583,10 +612,19 @@ ul { list-style: none; padding: 0; }
   position: relative;
   height: 100%;
   border-radius: 9px;
-  background: #0a0a0b;
+  /* Un punto mas clara que el resto de la seccion: junto con la luz que
+     recorre el borde, separa el producto caro sin gritar. */
+  background: linear-gradient(#1c1c20, #141416);
   padding: 24px 22px 22px;
   display: flex;
   flex-direction: column;
+}
+
+.precios__extra {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 15px;
+  color: rgba(255, 255, 255, .62);
 }
 
 .precios__pie {
@@ -594,7 +632,7 @@ ul { list-style: none; padding: 0; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 22px;
+  margin-top: 14px;
   font-size: 14px;
   color: rgba(255,255,255,.55);
 }
@@ -708,6 +746,23 @@ ul { list-style: none; padding: 0; }
 .repro--vacio .repro__btn:hover { background: var(--borde); transform: none; }
 .repro--vacio .repro__barra { cursor: default; }
 
+/* La tarjeta de tema propio va oscura, igual que en los precios: el mismo
+   codigo visual para el mismo producto en las dos secciones. */
+.ejemplo--propio {
+  background: linear-gradient(#1c1c20, #0d0d0f);
+  color: var(--blanco);
+}
+.ejemplo--propio .ejemplo__tipo { background: rgba(255,255,255,.13); color: var(--blanco); }
+.ejemplo--propio .ejemplo__meta { color: rgba(255,255,255,.55); }
+.ejemplo--propio .repro { background: rgba(255,255,255,.07); }
+.ejemplo--propio .repro__nombre { color: var(--blanco); }
+.ejemplo--propio .repro__t { color: rgba(255,255,255,.55); }
+.ejemplo--propio .repro__barra { background: rgba(255,255,255,.18); }
+.ejemplo--propio .repro__llena { background: var(--blanco); }
+.ejemplo--propio .repro__btn { background: var(--blanco); color: var(--texto); }
+.ejemplo--propio .repro__btn:hover { background: var(--blanco); }
+.ejemplo--propio .repro--vacio .repro__btn { background: rgba(255,255,255,.22); color: rgba(255,255,255,.5); }
+
 .ejemplos__nota { margin-top: 26px; }
 
 /* ---------- 10. Credibilidad (franja negra) ------------------------------- */
@@ -762,11 +817,13 @@ ul { list-style: none; padding: 0; }
 .cat-cabecera .sub-hero  { font-size: 21px; }
 
 .cat-precio {
-  margin-top: 20px;
-  font-size: 17px;
+  margin-top: 14px;
+  font-size: 19px;
+  letter-spacing: -0.01em;
   color: var(--texto);
 }
 .cat-precio strong { font-weight: 600; }
+.cat-precio__sep { margin: 0 12px; color: var(--texto-sec); }
 
 /* Buscador */
 .buscador { position: relative; margin: 26px 0 6px; }
@@ -809,13 +866,15 @@ ul { list-style: none; padding: 0; }
   backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--borde);
 }
+/* En escritorio las doce pildoras entran en dos lineas: se ven todas de una.
+   En movil pasan a una sola fila con scroll horizontal (ver el media query). */
 .filtros__in {
   max-width: var(--ancho);
   margin: 0 auto;
   padding: 12px 22px;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -926,6 +985,21 @@ ul { list-style: none; padding: 0; }
   .ejemplos__grid { grid-template-columns: 1fr; }
   .ejemplos__cab { margin-bottom: 32px; }
   .ejemplos__cab p { font-size: 19px; }
+
+  /* En una sola columna alcanzan cuatro filas: tres legibles y la cuarta
+     bajo el difuminado. Las que sobran se ocultan. */
+  .previa__cab { margin-bottom: 30px; }
+  .previa__cab p { font-size: 19px; }
+  .previa__caja .fila:nth-child(n + 5) { display: none; }
+  .previa__caja .fila:nth-last-child(2) { border-bottom: 1px solid var(--borde); }
+  .previa__velo { height: 105px; }
+  .previa__pie { margin-top: -26px; }
+  .previa__pie .btn { width: 100%; }
+
+  .cat-precio { font-size: 17px; }
+  .cat-precio__sep { margin: 0 8px; }
+
+  .filtros__in { flex-wrap: nowrap; overflow-x: auto; }
 
   .roll { padding: 16px 0; }
   .roll__ventana, .roll__estado { height: 58px; }

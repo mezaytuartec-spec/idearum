@@ -50,8 +50,18 @@
 
   /* ========================================================================== */
 
-  var ESTILOS = ["Rock", "Blues", "Pop", "Cumbia", "Folclore", "Jazz",
-                 "Bolero", "Reggae", "Balada", "Tango"];
+  // Los doce estilos, en el orden en que se muestran en la web: primero los
+  // mas pedidos, al final los mas de nicho. Si tocas esta lista, tocala
+  // tambien en data/pistas.js, catalogo.html y tools/csv_a_js.py.
+  var ESTILOS = ["Balada", "Rock / Pop", "Tropical", "Cuarteto", "Latino",
+                 "Románticos", "Canción del recuerdo", "Música cristiana",
+                 "Mariachi", "Folklore", "Bolero", "Tango"];
+
+  // Filas de la vista previa del catalogo en la home. Son ocho y no seis a
+  // proposito: la grilla es de dos columnas, asi que quedan seis legibles
+  // (tres por lado) y la ultima fila se pierde bajo el difuminado, que es lo
+  // que da a entender que la lista sigue.
+  var PREVIA = 8;
 
   /* ---------- Utilidades ------------------------------------------------- */
 
@@ -111,6 +121,24 @@
   function mensajePista(p) {
     return "Hola Idearum, quiero escuchar la pista: " + p.titulo +
            " — " + p.autor + " (" + p.estilo + ") [ID: " + p.id + "]";
+  }
+
+  // Una fila del catalogo. Vive aca y no en catalogo.js porque la usan las
+  // dos paginas: el catalogo completo y la vista previa de la home.
+  function filaHTML(p) {
+    var titulo = escapar(p.titulo);
+    var autor = escapar(p.autor);
+    var estilo = escapar(p.estilo);
+    var href = escapar(wa(mensajePista(p)));
+    return '<div class="fila">' +
+             '<div class="fila__txt">' +
+               '<h3 class="fila__titulo">' + titulo + "</h3>" +
+               '<p class="fila__meta meta">' + autor + " &middot; " + estilo + "</p>" +
+             "</div>" +
+             '<a class="btn btn--primario btn--compacto" href="' + href +
+               '" target="_blank" rel="noopener" aria-label="Consultar por ' + titulo +
+               ' por WhatsApp">Consultar</a>' +
+           "</div>";
   }
 
   /* ---------- Links de WhatsApp ------------------------------------------ */
@@ -318,6 +346,35 @@
     escena.appendChild(frag);
   }
 
+  /* ---------- Vista previa del catalogo (home) ----------------------------
+     Muestra unas pocas pistas con el mismo diseno y los mismos botones que el
+     catalogo completo: es una muestra que funciona, no una maqueta.
+     Se toman repartidas a lo largo del listado y no las primeras seis, para
+     que se vean estilos distintos aunque el catalogo venga ordenado por
+     genero. La seleccion es estable: no cambia entre recargas.
+     ------------------------------------------------------------------------ */
+
+  function initPrevia() {
+    var caja = document.getElementById("previa-lista");
+    if (!caja || caja.children.length > 0) return;
+
+    var lista = pistas();
+    if (!lista.length) return;
+
+    var cuantas = Math.min(PREVIA, lista.length);
+    var paso = lista.length / cuantas;
+    var html = [];
+    for (var i = 0; i < cuantas; i++) {
+      html.push(filaHTML(lista[Math.floor(i * paso)]));
+    }
+
+    var buffer = document.createElement("div");
+    buffer.innerHTML = html.join("");
+    var frag = document.createDocumentFragment();
+    while (buffer.firstChild) frag.appendChild(buffer.firstChild);
+    caja.appendChild(frag);
+  }
+
   /* ---------- Reproductores de antes y despues ----------------------------
      Cada <div class="repro" data-audio="..." data-nombre="..."> se convierte
      en un reproductor propio. Si el archivo todavia no existe, la ficha queda
@@ -439,6 +496,7 @@
     escapar: escapar,
     pistas: pistas,
     mensajePista: mensajePista,
+    filaHTML: filaHTML,
     safe: safe
   };
 
@@ -449,6 +507,7 @@
     safe(initNav, "initNav");
     safe(initContadores, "initContadores");
     safe(initCorredor, "initCorredor");
+    safe(initPrevia, "initPrevia");
     safe(initRepros, "initRepros");
     safe(initAnio, "initAnio");
     safe(initReveals, "initReveals");
