@@ -88,9 +88,10 @@ ejemplo-2-antes.mp3   ejemplo-2-despues.mp3
 ejemplo-3-antes.mp3   ejemplo-3-despues.mp3
 ```
 
-Hasta que existan, cada reproductor se muestra apagado y dice
-"Disponible pronto". Los títulos y autores de las tres tarjetas se editan
-en `index.html`.
+Mientras no haya ningún audio subido, **la sección entera queda oculta**:
+la web nunca muestra fichas vacías ni textos de relleno. Aparece sola en
+cuanto se sube el primero. Los títulos y autores de las tres tarjetas se
+editan en `index.html` (hoy tienen textos de ejemplo).
 
 ### 4. Textos por revisar
 

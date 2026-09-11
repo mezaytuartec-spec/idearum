@@ -236,14 +236,14 @@ ul { list-style: none; padding: 0; }
 }
 .nav__links a:hover { opacity: 1; }
 
-.nav__burger { display: none; width: 24px; height: 24px; padding: 0; position: relative; }
+.nav__burger { display: none; width: 44px; height: 44px; margin-right: -10px; padding: 0; position: relative; }
 .nav__burger span {
-  position: absolute; left: 3px; right: 3px; height: 1px;
+  position: absolute; left: 13px; right: 13px; height: 1px;
   background: var(--texto);
   transition: transform .3s var(--ease), opacity .2s var(--ease);
 }
-.nav__burger span:nth-child(1) { top: 9px; }
-.nav__burger span:nth-child(2) { top: 14px; }
+.nav__burger span:nth-child(1) { top: 19px; }
+.nav__burger span:nth-child(2) { top: 24px; }
 .nav.is-abierta .nav__burger span:nth-child(1) { transform: translateY(2.5px) rotate(45deg); }
 .nav.is-abierta .nav__burger span:nth-child(2) { transform: translateY(-2.5px) rotate(-45deg); }
 
@@ -345,7 +345,9 @@ ul { list-style: none; padding: 0; }
 }
 .corredor__escena { position: absolute; inset: 0; transform-style: preserve-3d; }
 
-.corredor__card { position: absolute; overflow: hidden; backface-visibility: hidden; }
+/* El fondo gris oscuro dibuja la cinta desde el primer cuadro: mientras las
+   portadas terminan de bajar, se ven las tarjetas y no un bloque negro vacio. */
+.corredor__card { position: absolute; overflow: hidden; backface-visibility: hidden; background: #1c1c1f; }
 .corredor__card img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Velo para que el texto blanco se lea sobre cualquier portada. */
@@ -532,13 +534,15 @@ ul { list-style: none; padding: 0; }
 
 .plan { display: flex; flex-direction: column; padding: 24px 22px 22px; }
 
-.plan__cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.plan__cab h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+/* El titulo del plan nunca se corta ("Tema / propio"): si no entra junto al
+   chip, el chip baja a la linea de abajo. */
+.plan__cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.plan__cab h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
 .chip {
   flex: none;
   border-radius: 980px;
-  padding: 3px 10px;
-  font-size: 11px;
+  padding: 4px 10px;
+  font-size: 12px;
   letter-spacing: .02em;
   color: rgba(255,255,255,.75);
   background: rgba(255,255,255,.10);
@@ -628,15 +632,13 @@ ul { list-style: none; padding: 0; }
 }
 
 .precios__pie {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  display: block;
+  text-align: center;
   margin-top: 14px;
   font-size: 14px;
   color: rgba(255,255,255,.55);
 }
-.precios__pie svg { width: 15px; height: 15px; fill: currentColor; flex: none; }
+.precios__pie svg { display: inline-block; width: 15px; height: 15px; margin-right: 6px; vertical-align: -2px; fill: currentColor; }
 
 /* Botones dentro de la seccion negra */
 .precios .btn--secundario {
@@ -668,7 +670,7 @@ ul { list-style: none; padding: 0; }
   align-self: flex-start;
   border-radius: 980px;
   padding: 4px 11px;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--texto);
@@ -901,7 +903,7 @@ ul { list-style: none; padding: 0; }
 
 /* Resultados. La lista arranca con aire bajo la barra de filtros (antes ese
    espacio lo ocupaba un contador de pistas, que ya no se muestra). */
-.resultados { padding-top: 32px; }
+.resultados { padding: 32px 0 110px; }   /* abajo: aire antes de la seccion negra */
 
 .lista {
   display: grid;
@@ -972,12 +974,14 @@ ul { list-style: none; padding: 0; }
   }
   .hero .acciones { flex-direction: column; gap: 18px; }
   .hero .sub-hero { margin-bottom: 26px; }
+  .hero .chev { padding: 8px 0; }
+  .btn--compacto { padding: 10px 18px; }
 
   .negra { border-radius: 24px 24px 0 0; }
   .corredor.negra { margin-top: -24px; }
 
-  .corredor { height: 470px; }
-  .corredor__txt { padding: 48px 22px 44px; }
+  .corredor { height: 400px; }
+  .corredor__txt { padding: 40px 22px 34px; }
   .corredor__pie p { font-size: 15px; }
 
   .precios { padding: 80px 0 84px; }
@@ -993,8 +997,12 @@ ul { list-style: none; padding: 0; }
   .previa__cab p { font-size: 19px; }
   .previa__caja .fila:nth-child(n + 5) { display: none; }
   .previa__caja .fila:nth-last-child(2) { border-bottom: 1px solid var(--borde); }
-  .previa__velo { height: 105px; }
-  .previa__pie { margin-top: -26px; }
+  .previa__velo {
+    height: 118px;
+    background: linear-gradient(to top,
+                var(--blanco) 34%, rgba(255,255,255,.7) 66%, rgba(255,255,255,0) 100%);
+  }
+  .previa__pie { margin-top: 6px; }
   .previa__pie .btn { width: 100%; }
 
   .cat-precio { font-size: 17px; }
@@ -1007,7 +1015,15 @@ ul { list-style: none; padding: 0; }
   .roll__t { font-size: 40px; letter-spacing: -0.03em; }
   .roll__cat { display: none; }
 
-  .tres, .footer__cols { grid-template-columns: 1fr; }
+  .tres { grid-template-columns: 1fr; }
+
+  .footer { font-size: 14px; }
+  .footer__cols { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+  .footer__cols > div:last-child { grid-column: 1 / -1; }
+  .footer h4 { font-size: 13px; margin-bottom: 4px; }
+  .footer li { margin-bottom: 0; }
+  .footer li a { display: inline-block; padding: 7px 0; }
+  .footer__pie { flex-direction: column; font-size: 12px; }
   .tres { gap: 28px; }
 
   .precios__grid { grid-template-columns: 1fr; }
@@ -1022,6 +1038,5 @@ ul { list-style: none; padding: 0; }
 }
 
 @media (max-width: 480px) {
-  .fila { flex-wrap: wrap; }
-  .fila .btn { margin-left: auto; }
+  .fila__titulo { font-size: 17px; }
 }

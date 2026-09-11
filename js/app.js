@@ -285,6 +285,16 @@
     stops: 24           // muestras de la curva; subir solo si se ve facetado
   };
 
+  // En pantallas angostas las medidas en cqw dejan las tapas diminutas: se
+  // agrandan (alto al nacer y al salir) y se abren un poco mas los rieles.
+  // La razon de tamano entre tarjetas vecinas queda igual, asi la cinta sigue
+  // maciza.
+  var VIA_MOVIL = {};
+  for (var k in VIA) { if (VIA.hasOwnProperty(k)) VIA_MOVIL[k] = VIA[k]; }
+  VIA_MOVIL.birthHeight = 4;
+  VIA_MOVIL.exitHeight = 62;
+  VIA_MOVIL.railExit = 50;
+
   var TARJETAS = 13;    // tarjetas por riel a la vez (una por portada)
   var VELOCIDAD = 18;   // segundos que tarda una tarjeta en cruzar el corredor
   var EJE = 55;         // altura del eje del corredor, en % del alto
@@ -318,8 +328,9 @@
     if (!window.CSS || !CSS.supports || !CSS.supports("container-type", "inline-size")) return;
     if (!PORTADAS.length) return;
 
+    var via = caja.clientWidth < 700 ? VIA_MOVIL : VIA;
     var hoja = document.createElement("style");
-    hoja.textContent = keyframes(1, "corr-der", VIA) + keyframes(-1, "corr-izq", VIA);
+    hoja.textContent = keyframes(1, "corr-der", via) + keyframes(-1, "corr-izq", via);
     document.head.appendChild(hoja);
 
     var frag = document.createDocumentFragment();
@@ -344,10 +355,10 @@
         var img = document.createElement("img");
         img.src = PORTADAS[i % PORTADAS.length] + "?v=" + V_PORTADAS;
         img.alt = "";
-        // Sin lazy: el corredor esta casi arriba de todo y las portadas pesan
-        // poco. Con lazy las tarjetas aparecerian de a una al hacer scroll.
+        // Sin lazy y con prioridad normal: el corredor ya asoma en la primera
+        // pantalla del celular y las portadas pesan poco. Con prioridad baja
+        // tardaban segundos en aparecer y la seccion se veia vacia.
         img.decoding = "async";
-        img.setAttribute("fetchpriority", "low");
         img.draggable = false;
         card.appendChild(img);
 
@@ -395,6 +406,14 @@
      ------------------------------------------------------------------------ */
 
   var SONANDO = null;
+
+  // La seccion "antes y despues" arranca oculta (atributo hidden en el HTML)
+  // y aparece sola en cuanto carga al menos un audio: la web nunca muestra
+  // fichas vacias ni textos de relleno.
+  function mostrarSeccion(nodo) {
+    var sec = nodo.closest ? nodo.closest("section") : null;
+    if (sec && sec.hidden) sec.hidden = false;
+  }
 
   function reloj(seg) {
     if (!isFinite(seg) || seg < 0) seg = 0;
@@ -444,6 +463,7 @@
 
     audio.addEventListener("loadedmetadata", function () {
       t.textContent = reloj(audio.duration);
+      mostrarSeccion(caja);
     });
 
     audio.addEventListener("timeupdate", function () {
