@@ -135,9 +135,13 @@ o `Folklore tradicional` y los reconoce igual.
   Están recortadas para que el bombo con el logo caiga en el eje exacto de la
   página. Si se cambia la foto, los dos tercios de arriba tienen que quedar
   limpios: ahí va el texto.
-- **Portadas del corredor**: `assets/img/portadas/portada-01.jpg` a la 12.
-  Van cuadradas, ideal 640 × 640 px. Para reemplazar una, se pisa el archivo
-  con el mismo nombre. La lista está en `js/app.js`, constante `PORTADAS`.
+- **Portadas del corredor**: `assets/img/portadas/portada-01.jpg` a la 13.
+  Van cuadradas, ideal 640 × 640 px. La lista está en `js/app.js`, constante
+  `PORTADAS`. Para reemplazar una se pisa el archivo con el mismo nombre y
+  **se cambia `V_PORTADAS`** en `js/app.js`: si no, el navegador de quien ya
+  entró sigue mostrando la portada vieja (la guarda hasta 30 días).
+- La foto del hero tiene su propia versión en `css/styles.css` (`?v=` al lado
+  de `hero-1800.jpg` y `hero-900.jpg`): si se cambia la foto, se cambia eso.
 
 Las portadas de discos que hay hoy son de terceros y están puestas como
 referencia visual. Antes de usar el sitio comercialmente conviene

@@ -34,6 +34,11 @@
   //   07 degradado           08 Carlos Gardel       09 Dynamo
   //   10 Sinatra             11 Vicente Fernandez   12 Atahualpa Yupanqui
   //   13 Los del Fuego
+  // Version de las portadas. Si pisas una portada con otra imagen (mismo
+  // nombre de archivo), CAMBIA ESTE NUMERO: si no, el navegador de cada
+  // visitante sigue mostrando la vieja, que guarda hasta 30 dias en cache.
+  var V_PORTADAS = "20260911-2";
+
   var PORTADAS = [
     "assets/img/portadas/portada-01.jpg",
     "assets/img/portadas/portada-02.jpg",
@@ -337,7 +342,7 @@
         card.style.animationDelay = (-(i * VELOCIDAD) / TARJETAS) + "s";
 
         var img = document.createElement("img");
-        img.src = PORTADAS[i % PORTADAS.length];
+        img.src = PORTADAS[i % PORTADAS.length] + "?v=" + V_PORTADAS;
         img.alt = "";
         // Sin lazy: el corredor esta casi arriba de todo y las portadas pesan
         // poco. Con lazy las tarjetas aparecerian de a una al hacer scroll.

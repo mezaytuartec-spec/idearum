@@ -281,7 +281,7 @@ ul { list-style: none; padding: 0; }
                                   con el logo caiga en el eje exacto */
   min-height: 560px;
   max-height: 1050px;
-  background: #e9eef4 url("../assets/img/hero-1800.jpg") 50% 100% / cover no-repeat;
+  background: #e9eef4 url("../assets/img/hero-1800.jpg?v=20260911-2") 50% 100% / cover no-repeat;
 }
 
 /* Por defecto (y en cualquier pantalla angosta) el texto va arriba de la foto:
@@ -968,7 +968,7 @@ ul { list-style: none; padding: 0; }
     aspect-ratio: 5 / 4;
     min-height: 0;
     max-height: none;
-    background-image: url("../assets/img/hero-900.jpg");
+    background-image: url("../assets/img/hero-900.jpg?v=20260911-2");
   }
   .hero .acciones { flex-direction: column; gap: 18px; }
   .hero .sub-hero { margin-bottom: 26px; }
