@@ -17,7 +17,7 @@
   var filtradas = [];    // resultado actual
   var estado = { q: "", estilo: "todos", pagina: 1 };
 
-  var $input, $buscador, $limpiar, $lista, $conteo, $mas, $vacio, $pills;
+  var $input, $buscador, $limpiar, $lista, $mas, $vacio, $pills;
   var timer = null;
 
   /* ---------- Indice normalizado (una sola vez) --------------------------- */
@@ -78,20 +78,9 @@
     $lista.appendChild(frag);
   }
 
-  function actualizarConteo() {
-    var n = filtradas.length;
-    $conteo.textContent = n === 1 ? "1 pista" : n + " pistas";
-  }
-
+  // La web nunca dice cuantas pistas hay: el boton solo aparece o desaparece.
   function actualizarBotonMas() {
-    var mostradas = Math.min(estado.pagina * POR_PAGINA, filtradas.length);
-    var quedan = filtradas.length - mostradas;
-    if (quedan > 0) {
-      $mas.hidden = false;
-      $mas.querySelector("[data-restantes]").textContent = String(quedan);
-    } else {
-      $mas.hidden = true;
-    }
+    $mas.hidden = estado.pagina * POR_PAGINA >= filtradas.length;
   }
 
   function render() {
@@ -104,7 +93,6 @@
     $vacio.hidden = !sinResultados;
     $lista.hidden = sinResultados;
 
-    actualizarConteo();
     actualizarBotonMas();
   }
 
@@ -145,7 +133,6 @@
 
   function initCatalogo() {
     $lista = document.getElementById("lista");
-    $conteo = document.getElementById("conteo");
     $mas = document.getElementById("cargar-mas");
     $vacio = document.getElementById("vacio");
     $pills = document.getElementById("filtros");

@@ -12,17 +12,17 @@
      CONFIGURACION — LO UNICO QUE TENES QUE EDITAR EN ESTE ARCHIVO
      ========================================================================== */
 
-  // Numero de WhatsApp del negocio, en formato internacional y SIN signos:
-  //   54  = Argentina
-  //   9   = obligatorio para celulares argentinos
-  //   264 = codigo de area SIN el 0   (ej. San Juan 264, San Luis 2664)
-  //   XXXXXXX = numero SIN el 15
-  // Ejemplo real: 5492644123456
+  // Numero de WhatsApp del negocio: +54 9 2656 44-2608.
+  // Formato internacional y SIN signos:
+  //   54   = Argentina
+  //   9    = obligatorio para celulares argentinos
+  //   2656 = codigo de area SIN el 0
+  //   442608 = numero SIN el 15
   //
   // Al cambiarlo aca se actualizan TODOS los links de las dos paginas.
-  // (Opcional, para que tambien funcionen sin JavaScript: hace Buscar y
-  //  Reemplazar de 5492664XXXXXX en index.html y catalogo.html.)
-  var WSP = "5492664XXXXXX";
+  // (Para que tambien funcionen sin JavaScript: hace Buscar y Reemplazar
+  //  del numero viejo en index.html y catalogo.html.)
+  var WSP = "5492656442608";
 
   // Portadas que viajan por el corredor 3D de la home.
   // Para cambiarlas: pisa el archivo en assets/img/portadas/ con el tuyo
@@ -30,9 +30,10 @@
   // CUADRADAS: subi las portadas ya cuadradas, idealmente 640 x 640 px.
   //
   //   01 Abbey Road          02 Thriller            03 degradado
-  //   04 Dark Side           05 Exodus              06 Nevermind
+  //   04 Dark Side           05 Luis Miguel         06 Nevermind
   //   07 degradado           08 Carlos Gardel       09 Dynamo
-  //   10 Sinatra             11 Pablo Honey         12 Atahualpa Yupanqui
+  //   10 Sinatra             11 Vicente Fernandez   12 Atahualpa Yupanqui
+  //   13 Los del Fuego
   var PORTADAS = [
     "assets/img/portadas/portada-01.jpg",
     "assets/img/portadas/portada-02.jpg",
@@ -45,7 +46,8 @@
     "assets/img/portadas/portada-09.jpg",
     "assets/img/portadas/portada-10.jpg",
     "assets/img/portadas/portada-11.jpg",
-    "assets/img/portadas/portada-12.jpg"
+    "assets/img/portadas/portada-12.jpg",
+    "assets/img/portadas/portada-13.jpg"
   ];
 
   /* ========================================================================== */
@@ -278,7 +280,7 @@
     stops: 24           // muestras de la curva; subir solo si se ve facetado
   };
 
-  var TARJETAS = 12;    // tarjetas por riel a la vez (una por portada)
+  var TARJETAS = 13;    // tarjetas por riel a la vez (una por portada)
   var VELOCIDAD = 18;   // segundos que tarda una tarjeta en cruzar el corredor
   var EJE = 55;         // altura del eje del corredor, en % del alto
 

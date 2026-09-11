@@ -899,8 +899,9 @@ ul { list-style: none; padding: 0; }
   color: var(--texto);
 }
 
-/* Resultados */
-.cat-conteo { padding: 26px 0 10px; }
+/* Resultados. La lista arranca con aire bajo la barra de filtros (antes ese
+   espacio lo ocupaba un contador de pistas, que ya no se muestra). */
+.resultados { padding-top: 32px; }
 
 .lista {
   display: grid;

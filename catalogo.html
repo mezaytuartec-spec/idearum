@@ -4,24 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catálogo de pistas — Idearum</title>
-<meta name="description" content="Buscá entre más de 300 pistas por autor, título o estilo. Consultá la que quieras por WhatsApp y te mandamos el audio.">
+<meta name="description" content="Idearum — Pistas profesionales para cantantes.">
 <meta name="theme-color" content="#ffffff">
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Idearum">
-<meta property="og:title" content="Catálogo de pistas — Idearum">
-<meta property="og:description" content="Buscá entre más de 300 pistas por autor, título o estilo.">
+<meta property="og:title" content="Idearum — Pistas profesionales para cantantes">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png?v=20260907">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32-dark.png?v=20260907" media="(prefers-color-scheme: dark)">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260907">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png?v=20260911">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32-dark.png?v=20260911" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260911">
 <meta property="og:image" content="assets/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-<link rel="stylesheet" href="css/styles.css?v=20260907">
+<link rel="stylesheet" href="css/styles.css?v=20260911">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -36,6 +35,8 @@
 <!-- ==========================================================================
      ⚠️ QUÉ HAY QUE COMPLETAR EN ESTA PÁGINA
 
+     0. La web no muestra en ningún lado cuántas pistas hay: ni contador,
+        ni "quedan N", ni en la vista previa al compartir el link.
      1. PRECIOS DEL CATÁLOGO: US$ 40 una canción, US$ 100 tres. Aparecen una
         sola vez arriba, no en cada fila a propósito. El otro lugar donde
         figura el precio de las pistas es el corredor de index.html.
@@ -49,14 +50,14 @@
 <header class="nav">
   <div class="nav__in">
     <a class="nav__logo" href="index.html">
-      <img src="assets/img/logo.png?v=20260907" alt="" width="20" height="20">
+      <img src="assets/img/logo.png?v=20260911" alt="" width="20" height="20">
       <span>Idearum</span>
     </a>
 
     <nav class="nav__links" aria-label="Principal">
       <a href="catalogo.html">Catálogo</a>
       <a href="index.html#a-medida">Cover a pedido</a>
-      <a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+      <a href="https://wa.me/5492656442608" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
     </nav>
 
     <button class="nav__burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
@@ -70,7 +71,7 @@
   <a href="catalogo.html">Catálogo</a>
   <a href="index.html#a-medida">Cover a pedido</a>
   <a href="index.html#a-medida">Tema propio</a>
-  <a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+  <a href="https://wa.me/5492656442608" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
 </div>
 
 <main>
@@ -116,10 +117,8 @@
   </div>
 
   <!-- ---------- Resultados ------------------------------------------------ -->
-  <section>
+  <section class="resultados">
     <div class="wrap">
-
-      <p class="cat-conteo meta" aria-live="polite"><span id="conteo">Cargando…</span></p>
 
       <div class="lista" id="lista"></div>
 
@@ -127,16 +126,14 @@
         <h3>No encontramos esa pista.</h3>
         <p>Puede que igual la tengamos, o que la podamos producir.</p>
         <a class="btn btn--primario"
-           href="https://wa.me/5492664XXXXXX"
+           href="https://wa.me/5492656442608"
            data-wsp="Hola Idearum, busco una pista que no encontré en el catálogo: "
            target="_blank" rel="noopener">Preguntanos</a>
         <p class="nota" style="margin-top:10px">Te respondemos por WhatsApp.</p>
       </div>
 
       <div class="cargar-mas" id="cargar-mas" hidden>
-        <button class="btn btn--secundario" type="button">
-          Cargar más (<span data-restantes>0</span> restantes)
-        </button>
+        <button class="btn btn--secundario" type="button">Cargar más</button>
       </div>
 
     </div>
@@ -183,7 +180,7 @@
 
             <div class="plan__cta">
               <a class="btn btn--acento"
-                 href="https://wa.me/5492664XXXXXX"
+                 href="https://wa.me/5492656442608"
                  data-wsp="Hola Idearum, quiero pedir un cover a medida."
                  target="_blank" rel="noopener">Escribinos</a>
             </div>
@@ -210,7 +207,7 @@
 
                 <div class="plan__cta">
                   <a class="btn btn--acento"
-                     href="https://wa.me/5492664XXXXXX"
+                     href="https://wa.me/5492656442608"
                      data-wsp="Hola Idearum, quiero producir un tema propio."
                      target="_blank" rel="noopener">Escribinos</a>
                 </div>
@@ -256,21 +253,21 @@
       <div>
         <h4>Contacto</h4>
         <ul>
-          <li><a href="https://wa.me/5492664XXXXXX" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a></li>
+          <li><a href="https://wa.me/5492656442608" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a></li>
           <li>Consultas y pedidos, todos los días.</li>
         </ul>
       </div>
     </div>
     <div class="footer__pie">
-      <p class="footer__marca"><img src="assets/img/logo.png?v=20260907" alt="" width="16" height="16"><span>Copyright &copy; <span data-anio>2026</span> Idearum. Todos los derechos reservados.</span></p>
+      <p class="footer__marca"><img src="assets/img/logo.png?v=20260911" alt="" width="16" height="16"><span>Copyright &copy; <span data-anio>2026</span> Idearum. Todos los derechos reservados.</span></p>
       <p>Producción musical.</p>
     </div>
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20260907" defer></script>
-<script src="js/app.js?v=20260907" defer></script>
-<script src="js/catalogo.js?v=20260907" defer></script>
+<script src="data/pistas.js?v=20260911" defer></script>
+<script src="js/app.js?v=20260911" defer></script>
+<script src="js/catalogo.js?v=20260911" defer></script>
 
 </body>
 </html>

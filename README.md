@@ -45,16 +45,16 @@ idearum/
 
 ### 1. Número de WhatsApp
 
-En `js/app.js`, constante `WSP` (arriba de todo). Formato internacional sin
-signos: `54` + `9` + código de área sin el 0 + número sin el 15.
+Ya está cargado: **+54 9 2656 44-2608**. Vive en `js/app.js`, constante
+`WSP`, en formato internacional sin signos:
 
 ```js
-var WSP = "5492664XXXXXX";
+var WSP = "5492656442608";
 ```
 
-Cambiarlo ahí actualiza todos los links de las dos páginas. Opcionalmente,
-para que también funcionen sin JavaScript, hacer Buscar y Reemplazar de
-`5492664XXXXXX` en `index.html` y `catalogo.html`.
+Si alguna vez cambia, se toca ahí y se actualizan todos los links. Para que
+también funcionen sin JavaScript, hacer además Buscar y Reemplazar del número
+viejo en `index.html` y `catalogo.html`.
 
 ### 2. El catálogo
 
