@@ -50,12 +50,13 @@
 
   /* ========================================================================== */
 
-  // Los doce estilos, en el orden en que se muestran en la web: primero los
-  // mas pedidos, al final los mas de nicho. Si tocas esta lista, tocala
-  // tambien en data/pistas.js, catalogo.html y tools/csv_a_js.py.
+  // Los estilos, en el orden en que se muestran en la web: primero los mas
+  // pedidos, al final los mas de nicho y "Otros" para lo que no encaja.
+  // Si tocas esta lista, tocala tambien en catalogo.html (pildoras) y en
+  // tools/csv_a_js.py.
   var ESTILOS = ["Balada", "Rock / Pop", "Tropical", "Cuarteto", "Latino",
                  "Románticos", "Canción del recuerdo", "Música cristiana",
-                 "Mariachi", "Folklore", "Bolero", "Tango"];
+                 "Mariachi", "Folklore", "Bolero", "Tango", "Otros"];
 
   // Filas de la vista previa del catalogo en la home. Son ocho y no seis a
   // proposito: la grilla es de dos columnas, asi que quedan seis legibles
@@ -118,22 +119,26 @@
 
   // Mensaje preescrito de una pista del catalogo.
   // El ID es lo que le permite al dueno saber exactamente cual le piden.
+  // Algunas pistas no tienen autor cargado (en el Excel figura el genero en
+  // su lugar): el mensaje y la fila se arman sin el guion colgando.
   function mensajePista(p) {
     return "Hola Idearum, quiero escuchar la pista: " + p.titulo +
-           " — " + p.autor + " (" + p.estilo + ") [ID: " + p.id + "]";
+           (p.autor ? " — " + p.autor : "") +
+           " (" + p.estilo + ") [ID: " + p.id + "]";
   }
 
   // Una fila del catalogo. Vive aca y no en catalogo.js porque la usan las
   // dos paginas: el catalogo completo y la vista previa de la home.
   function filaHTML(p) {
     var titulo = escapar(p.titulo);
-    var autor = escapar(p.autor);
+    var autor = escapar(p.autor || "");
     var estilo = escapar(p.estilo);
     var href = escapar(wa(mensajePista(p)));
+    var meta = autor ? autor + " &middot; " + estilo : estilo;
     return '<div class="fila">' +
              '<div class="fila__txt">' +
                '<h3 class="fila__titulo">' + titulo + "</h3>" +
-               '<p class="fila__meta meta">' + autor + " &middot; " + estilo + "</p>" +
+               '<p class="fila__meta meta">' + meta + "</p>" +
              "</div>" +
              '<a class="btn btn--primario btn--compacto" href="' + href +
                '" target="_blank" rel="noopener" aria-label="Consultar por ' + titulo +

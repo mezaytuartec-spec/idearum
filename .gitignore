@@ -5,3 +5,8 @@ __pycache__/
 # Windows / macOS
 Thumbs.db
 .DS_Store
+
+# Planillas originales del catalogo: tienen datos de clientes (nombre, pais).
+# A la web solo llega data/pistas.js, que genera tools/csv_a_js.py.
+*.xlsx
+*.xls

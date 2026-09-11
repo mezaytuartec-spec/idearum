@@ -32,7 +32,7 @@ idearum/
 ├── js/
 │   ├── app.js          nav, revelados, corredor 3D, reproductores, WhatsApp
 │   └── catalogo.js     buscador, filtros y paginado del catálogo
-├── data/pistas.js      EL CATÁLOGO (hoy son 60 pistas de ejemplo)
+├── data/pistas.js      EL CATÁLOGO (se genera desde el Excel, no se edita a mano)
 ├── tools/csv_a_js.py   convierte el Excel del catálogo a data/pistas.js
 └── assets/
     ├── img/            hero, logo, favicons y portadas del corredor
@@ -56,21 +56,27 @@ Cambiarlo ahí actualiza todos los links de las dos páginas. Opcionalmente,
 para que también funcionen sin JavaScript, hacer Buscar y Reemplazar de
 `5492664XXXXXX` en `index.html` y `catalogo.html`.
 
-### 2. El catálogo real
+### 2. El catálogo
 
-1. Armar en Excel una planilla con tres columnas: `titulo`, `autor`, `estilo`.
-2. Guardarla como CSV UTF-8.
-3. Correr:
+Se genera directo desde el Excel (no hace falta pasarlo a CSV):
 
 ```
-python tools/csv_a_js.py mi_catalogo.csv
+python tools/csv_a_js.py Listado_2026_COMPLETO.xlsx
 ```
 
-Reescribe `data/pistas.js` con los IDs numerados de 0001 en adelante. El
-script avisa si hay filas vacías, duplicadas o con un estilo no permitido.
+Reescribe `data/pistas.js` e imprime un informe de todo lo que corrigió.
+Lee las columnas `Nombre`, `Autor`, `Estilo` y `Propio`; las demás (Cliente,
+País, Tonalidad…) se ignoran y **nunca se publican**.
 
-**Los IDs no se cambian una vez publicados**: son los que viajan en el mensaje
-de WhatsApp y permiten saber qué pista están pidiendo.
+- **El ID de cada pista es su número de fila en el Excel.** Cuando por
+  WhatsApp llega "[ID: 0142]", es la fila 142. Por eso las pistas nuevas van
+  siempre **al final** de la planilla: insertar filas en el medio les cambia
+  el número a las de abajo.
+- Los temas con **Propio = Sí no se publican**: son composiciones de clientes.
+- Duplicados (mismo tema, autor y estilo) quedan una sola vez. El mismo tema
+  en otro estilo se publica: es otro arreglo.
+- Repara letras dañadas por codificación ("Ma¤ana" → "Mañana"), acomoda
+  mayúsculas y unifica autores escritos de varias formas.
 
 ### 3. Los audios del antes y después
 
@@ -109,15 +115,17 @@ En el orden en que se muestran, de los más pedidos a los más de nicho:
 
 `Balada` · `Rock / Pop` · `Tropical` · `Cuarteto` · `Latino` · `Románticos` ·
 `Canción del recuerdo` · `Música cristiana` · `Mariachi` · `Folklore` ·
-`Bolero` · `Tango`
+`Bolero` · `Tango` · `Otros`
 
-Si se agrega o saca uno, hay que tocarlo en cuatro lugares: `data/pistas.js`,
-la constante `ESTILOS` de `js/app.js`, las píldoras de filtro de
-`catalogo.html` y la lista `ESTILOS` de `tools/csv_a_js.py`.
+`Otros` junta lo que en el Excel figura como "Otro".
 
-El script del CSV compara los estilos sin tildes ni mayúsculas ni signos, así
-que en el Excel se puede escribir `Rock/Pop`, `rock / pop` o `Musica cristiana`
-y los reconoce igual.
+Si se agrega o saca uno, hay que tocarlo en tres lugares: la constante
+`ESTILOS` de `js/app.js`, las píldoras de filtro de `catalogo.html` y la lista
+`ESTILOS` de `tools/csv_a_js.py`.
+
+El script compara los estilos sin tildes, mayúsculas, signos ni plurales:
+en el Excel se puede escribir `Baladas`, `Rock/Pop`, `Cancion del Recuerdo`
+o `Folklore tradicional` y los reconoce igual.
 
 ---
 
@@ -150,7 +158,7 @@ reemplazarlas por material propio.
 
 - **Los audios del catálogo no se suben.** Solo el listado. Cada pista tiene
   un botón que abre WhatsApp con un mensaje preescrito y el ID; el audio se
-  manda a mano. Eso evita hostear y proteger 500 archivos.
+  manda a mano. Eso evita hostear y proteger cientos de archivos.
 - **`data/pistas.js` es un script clásico que define `window.PISTAS`**, no un
   JSON con `fetch()`: así funciona también abriendo el archivo directamente y
   no hace falta manejar estados de carga.
