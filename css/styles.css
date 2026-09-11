@@ -327,6 +327,11 @@ ul { list-style: none; padding: 0; }
    Lo que tapa es el piso vacio del estudio, no se pierde nada. */
 .corredor.negra { margin-top: -34px; }
 
+/* La franja de cierre va pegada a la seccion negra de precios: con esquinas
+   redondeadas se veia el blanco de la pagina entre los dos negros. Va recta,
+   separada solo por la linea sutil de .credibilidad. */
+.credibilidad.negra { border-radius: 0; }
+
 .corredor {
   position: relative;
   overflow: hidden;
@@ -771,6 +776,7 @@ ul { list-style: none; padding: 0; }
 
 .credibilidad {
   padding: 84px 0;
+  border-top: 1px solid rgba(255, 255, 255, .12);
   background: #000;
   color: var(--blanco);
 }
@@ -1047,15 +1053,20 @@ ul { list-style: none; padding: 0; }
      fondo celeste y blanco del estudio EXTENDIDO hacia arriba, fundido sin
      corte: el texto queda sobre el cielo de la propia imagen. Se anclan abajo
      los instrumentos; si la pantalla es mas ancha, lo que se recorta es cielo.
-     La etiqueta "Produccion musical" se saca y los botones van en una linea. */
+     El bloque de texto se centra en la zona del cielo y los botones van en
+     una sola linea. */
   .hero__txt {
     position: absolute;
     z-index: 2;
     top: 0;
     left: 0;
     right: 0;
-    padding: 30px 0 0;
+    height: 64%;             /* la zona de cielo, arriba de los platillos */
+    display: flex;
+    align-items: center;
+    padding: 0 0 22px;       /* centro optico: apenas por encima del medio */
   }
+  .hero__txt .wrap { width: 100%; }
   .hero__foto {
     aspect-ratio: auto;
     height: max(600px, 138vw);
@@ -1063,7 +1074,7 @@ ul { list-style: none; padding: 0; }
     background-position: 50% 100%;
     background-size: cover;
   }
-  .hero .etiqueta { display: none; }
+  .hero .etiqueta { margin-bottom: 10px; }
   .hero .h-hero { margin-bottom: 10px; }
   .hero .sub-hero { font-size: 17px; margin-bottom: 20px; }
   .hero .acciones { flex-direction: row; gap: 12px 22px; }
