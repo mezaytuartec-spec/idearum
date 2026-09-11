@@ -1037,6 +1037,49 @@ ul { list-style: none; padding: 0; }
   .cat-cabecera { padding: 40px 0 20px; }
 }
 
+/* ---------- 15. Celular (hasta 600px) --------------------------------------
+   Solo telefonos: tablet y computadora no cambian.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+  /* Hero: el texto va ENCIMA de la foto, como en escritorio. La foto usa un
+     recorte vertical propio (hero-movil.jpg), centrado en la bateria: asi el
+     tercio de arriba queda limpio para el texto. La etiqueta "Produccion
+     musical" se saca y los dos botones van en una sola linea. */
+  .hero__txt {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 30px 0 0;
+  }
+  .hero__foto {
+    aspect-ratio: auto;
+    height: max(600px, 138vw);
+    background-image: url("../assets/img/hero-movil.jpg?v=20260911-6");
+    background-position: 50% 100%;
+    background-size: cover;
+  }
+  .hero .etiqueta { display: none; }
+  .hero .h-hero { margin-bottom: 10px; }
+  .hero .sub-hero { font-size: 17px; margin-bottom: 20px; }
+  .hero .acciones { flex-direction: row; gap: 12px 22px; }
+  .hero .chev { font-size: 18px; }
+  .hero .btn { padding: 11px 18px; font-size: 16px; }
+
+  /* Corredor: un poco mas alto para que entren las tapas grandes (la
+     geometria "de cerca" la arma el JS con VIA_MOVIL). */
+  .corredor { height: 440px; }
+  .corredor__txt { padding: 36px 22px 30px; }
+}
+
 @media (max-width: 480px) {
   .fila__titulo { font-size: 17px; }
+}
+
+/* Celulares chicos (360px): el titulo del hero baja a 36px para quedar en
+   dos lineas y no acercarse a los platillos de la foto. */
+@media (max-width: 380px) {
+  .hero .h-hero { font-size: 36px; }
 }

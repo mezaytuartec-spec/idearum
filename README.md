@@ -132,8 +132,10 @@ o `Folklore tradicional` y los reconoce igual.
 
 ## Imágenes
 
-- **Hero**: `assets/img/hero-1800.jpg` (escritorio) y `hero-900.jpg` (móvil).
-  Están recortadas para que el bombo con el logo caiga en el eje exacto de la
+- **Hero**: `assets/img/hero-1800.jpg` (escritorio), `hero-900.jpg` (tablet)
+  y `hero-movil.jpg` (celular: recorte vertical centrado en la batería, para
+  que el texto vaya encima de la foto también en el teléfono). Están
+  recortadas para que el bombo con el logo caiga en el eje exacto de la
   página. Si se cambia la foto, los dos tercios de arriba tienen que quedar
   limpios: ahí va el texto.
 - **Portadas del corredor**: `assets/img/portadas/portada-01.jpg` a la 13.

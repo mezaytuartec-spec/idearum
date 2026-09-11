@@ -285,15 +285,18 @@
     stops: 24           // muestras de la curva; subir solo si se ve facetado
   };
 
-  // En pantallas angostas las medidas en cqw dejan las tapas diminutas: se
-  // agrandan (alto al nacer y al salir) y se abren un poco mas los rieles.
-  // La razon de tamano entre tarjetas vecinas queda igual, asi la cinta sigue
-  // maciza.
+  // Celular: la camara "mas cerca". Con la geometria de escritorio, en una
+  // pantalla angosta los rieles se abren tan rapido que las tapas salen de
+  // cuadro siendo chicas. Aca nacen mas grandes, los rieles se abren mas
+  // despacio (fan mas bajo, railExit mas cerrado) y las portadas cruzan la
+  // pantalla grandes antes de salir.
   var VIA_MOVIL = {};
   for (var k in VIA) { if (VIA.hasOwnProperty(k)) VIA_MOVIL[k] = VIA[k]; }
-  VIA_MOVIL.birthHeight = 4;
-  VIA_MOVIL.exitHeight = 62;
-  VIA_MOVIL.railExit = 50;
+  VIA_MOVIL.birthHeight = 11;
+  VIA_MOVIL.exitHeight = 80;
+  VIA_MOVIL.railBirth = -7;
+  VIA_MOVIL.railExit = 36;
+  VIA_MOVIL.fan = 2.0;
 
   var TARJETAS = 13;    // tarjetas por riel a la vez (una por portada)
   var VELOCIDAD = 18;   // segundos que tarda una tarjeta en cruzar el corredor
