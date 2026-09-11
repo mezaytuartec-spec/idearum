@@ -299,6 +299,10 @@
   VIA_MOVIL.fan = 2.0;
 
   var TARJETAS = 13;    // tarjetas por riel a la vez (una por portada)
+  // Celular: menos tarjetas por riel para que queden separadas y cada tapa se
+  // vea entera (con 13 se superponian tanto que no se distinguia ninguna).
+  // Los dos rieles muestran portadas distintas, asi igual aparecen las 13.
+  var TARJETAS_MOVIL = 7;
   var VELOCIDAD = 18;   // segundos que tarda una tarjeta en cruzar el corredor
   var EJE = 55;         // altura del eje del corredor, en % del alto
 
@@ -331,7 +335,9 @@
     if (!window.CSS || !CSS.supports || !CSS.supports("container-type", "inline-size")) return;
     if (!PORTADAS.length) return;
 
-    var via = caja.clientWidth < 700 ? VIA_MOVIL : VIA;
+    var movil = caja.clientWidth < 700;
+    var via = movil ? VIA_MOVIL : VIA;
+    var n = movil ? TARJETAS_MOVIL : TARJETAS;
     var hoja = document.createElement("style");
     hoja.textContent = keyframes(1, "corr-der", via) + keyframes(-1, "corr-izq", via);
     document.head.appendChild(hoja);
@@ -340,7 +346,7 @@
     var rieles = ["corr-der", "corr-izq"];
 
     for (var r = 0; r < rieles.length; r++) {
-      for (var i = 0; i < TARJETAS; i++) {
+      for (var i = 0; i < n; i++) {
         var card = document.createElement("div");
         card.className = "corredor__card";
         card.style.left = "50%";
@@ -353,10 +359,13 @@
         card.style.animation = rieles[r] + " " + VELOCIDAD + "s linear infinite";
         // El retardo negativo suelta cada tarjeta a mitad de vuelo, asi el
         // corredor ya esta lleno en el primer cuadro.
-        card.style.animationDelay = (-(i * VELOCIDAD) / TARJETAS) + "s";
+        card.style.animationDelay = (-(i * VELOCIDAD) / n) + "s";
 
         var img = document.createElement("img");
-        img.src = PORTADAS[i % PORTADAS.length] + "?v=" + V_PORTADAS;
+        // Escritorio: los dos rieles en espejo. Celular: pares a la derecha,
+        // impares a la izquierda, para que entren las 13 con 7 por lado.
+        var cual = movil ? (i * 2 + r) % PORTADAS.length : i % PORTADAS.length;
+        img.src = PORTADAS[cual] + "?v=" + V_PORTADAS;
         img.alt = "";
         // Sin lazy y con prioridad normal: el corredor ya asoma en la primera
         // pantalla del celular y las portadas pesan poco. Con prioridad baja

@@ -1042,10 +1042,12 @@ ul { list-style: none; padding: 0; }
    -------------------------------------------------------------------------- */
 
 @media (max-width: 600px) {
-  /* Hero: el texto va ENCIMA de la foto, como en escritorio. La foto usa un
-     recorte vertical propio (hero-movil.jpg), centrado en la bateria: asi el
-     tercio de arriba queda limpio para el texto. La etiqueta "Produccion
-     musical" se saca y los dos botones van en una sola linea. */
+  /* Hero: el texto va ENCIMA de la foto, como en escritorio. hero-movil.jpg
+     es la foto a escala normal (bateria, guitarras y amplis completos) con el
+     fondo celeste y blanco del estudio EXTENDIDO hacia arriba, fundido sin
+     corte: el texto queda sobre el cielo de la propia imagen. Se anclan abajo
+     los instrumentos; si la pantalla es mas ancha, lo que se recorta es cielo.
+     La etiqueta "Produccion musical" se saca y los botones van en una linea. */
   .hero__txt {
     position: absolute;
     z-index: 2;
@@ -1057,7 +1059,7 @@ ul { list-style: none; padding: 0; }
   .hero__foto {
     aspect-ratio: auto;
     height: max(600px, 138vw);
-    background-image: url("../assets/img/hero-movil.jpg?v=20260911-6");
+    background-image: url("../assets/img/hero-movil.jpg?v=20260911-9");
     background-position: 50% 100%;
     background-size: cover;
   }

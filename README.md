@@ -133,8 +133,9 @@ o `Folklore tradicional` y los reconoce igual.
 ## Imágenes
 
 - **Hero**: `assets/img/hero-1800.jpg` (escritorio), `hero-900.jpg` (tablet)
-  y `hero-movil.jpg` (celular: recorte vertical centrado en la batería, para
-  que el texto vaya encima de la foto también en el teléfono). Están
+  y `hero-movil.jpg` (celular: la foto a escala normal con el fondo celeste y
+  blanco del estudio extendido hacia arriba, fundido sin corte, para que el
+  texto vaya encima de la foto también en el teléfono). Están
   recortadas para que el bombo con el logo caiga en el eje exacto de la
   página. Si se cambia la foto, los dos tercios de arriba tienen que quedar
   limpios: ahí va el texto.
