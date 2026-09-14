@@ -33,7 +33,9 @@ idearum/
 │   ├── app.js          nav, revelados, corredor 3D, reproductores, WhatsApp
 │   └── catalogo.js     buscador, filtros y paginado del catálogo
 ├── data/pistas.js      EL CATÁLOGO (se genera desde el Excel, no se edita a mano)
-├── tools/csv_a_js.py   convierte el Excel del catálogo a data/pistas.js
+├── tools/
+│   ├── csv_a_js.py     convierte el Excel del catálogo a data/pistas.js
+│   └── portadas.py     deja las portadas cuadradas, de 640 px y comprimidas
 └── assets/
     ├── img/            hero, logo, favicons y portadas del corredor
     │   └── origen/     originales y variantes que la web NO usa (no hace
@@ -146,15 +148,24 @@ o `Folklore tradicional` y los reconoce igual.
   página. Si se cambia la foto, los dos tercios de arriba tienen que quedar
   limpios: ahí va el texto.
 - **Portadas del corredor**: `assets/img/portadas/portada-01.jpg` a la 13.
-  Van cuadradas, ideal 640 × 640 px. La lista está en `js/app.js`, constante
-  `PORTADAS`. Para reemplazar una se pisa el archivo con el mismo nombre y
+  Van **cuadradas**, ideal 640 × 640 px. La lista está en `js/app.js`,
+  constante `PORTADAS`, y arriba hay un comentario que dice qué disco es cada
+  número. Para reemplazar una se pisa el archivo con el mismo nombre y
   **se cambia `V_PORTADAS`** en `js/app.js`: si no, el navegador de quien ya
   entró sigue mostrando la portada vieja (la guarda hasta 30 días).
-- La foto del hero tiene su propia versión en `css/styles.css` (`?v=` al lado
-  de `hero-1800.jpg`, `hero-900.jpg` y `hero-movil.jpg`): si se cambia la foto,
-  se cambia eso **y también el `?v=` de las tres líneas `<link rel="preload">`
-  del `<head>` de `index.html`**, que tienen que decir exactamente lo mismo. Si
-  no coinciden, el navegador se baja la foto dos veces.
+
+  Si la que conseguiste no es cuadrada o es más grande de 640 px, pasala por:
+
+  ```
+  python tools/portadas.py
+  ```
+
+  Recorta las que no son cuadradas, achica las que se pasan de 640 y deja
+  todas con la misma calidad. No agranda las chicas: eso suma peso sin sumar
+  nitidez, así que conviene buscarlas de 640 px o más.
+- Las tres fotos del hero se nombran **en un solo lugar**: el `<picture>` de
+  `index.html`. El CSS ya no sabe cómo se llaman, sólo qué forma tienen en
+  cada pantalla. Si se cambia una foto, se sube el `?v=` de esa línea.
 
 Las portadas de discos que hay hoy son de terceros y están puestas como
 referencia visual. Antes de usar el sitio comercialmente conviene
@@ -168,8 +179,13 @@ alguna, conviene volver a pasarla por un compresor antes de subirla.
 
 ## Subir a producción
 
-1. Bumpear el `?v=AAAAMMDD` de cada `<link>` y `<script>` en los dos HTML.
-   Sin eso, Hostinger puede seguir sirviendo el CSS y el JS viejos.
+1. Bumpear el `?v=AAAAMMDD` del `<link>` del CSS y de los `<script>` en los
+   dos HTML. Sin eso, Hostinger puede seguir sirviendo el CSS y el JS viejos.
+
+   El `?v=` que va al lado de una **imagen** es distinto: ese se toca **solo
+   cuando pisás esa imagen**. Subirlo por costumbre obliga a todos los que ya
+   entraron a bajar de nuevo una foto que no cambió. Para las trece portadas
+   juntas, el que manda es `V_PORTADAS` en `js/app.js`.
 2. Subir el contenido de la carpeta por FTP o por el administrador de
    archivos, incluido el `.htaccess`.
 3. `assets/img/origen/` y `tools/` no se usan desde el navegador: se pueden
@@ -181,10 +197,10 @@ alguna, conviene volver a pasarla por un compresor antes de subirla.
 
 Sin librerías, sin compilación y sin cambiar nada de lo que se ve:
 
-- **La foto del hero se pide antes que la hoja de estilos** (`<link rel="preload">`
-  en el `<head>`, una línea por tamaño de pantalla). Es la imagen más grande
-  de la primera pantalla; sin eso el navegador recién se entera de que existe
-  después de leer todo el CSS.
+- **La foto del hero es un `<picture>` y no un fondo de CSS.** Es la imagen
+  más grande de la primera pantalla; como fondo, el navegador recién se
+  enteraba de que existía después de leer todo el CSS. Así la encuentra
+  mientras lee el HTML y empieza a bajarla enseguida.
 - **El corredor de portadas y la luz del borde de "Tema propio" se congelan
   cuando su sección no está en pantalla.** Son las dos únicas animaciones que
   corren solas; pausarlas ahorra batería en el teléfono y no se nota.

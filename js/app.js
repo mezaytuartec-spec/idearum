@@ -29,15 +29,18 @@
   // (mismo nombre) o agrega/saca lineas de esta lista. Las tarjetas son
   // CUADRADAS: subi las portadas ya cuadradas, idealmente 640 x 640 px.
   //
-  //   01 Abbey Road          02 Thriller            03 degradado
-  //   04 Dark Side           05 Luis Miguel         06 Nevermind
-  //   07 degradado           08 Carlos Gardel       09 Dynamo
-  //   10 Sinatra             11 Vicente Fernandez   12 Atahualpa Yupanqui
+  // Que hay en cada archivo hoy. Es solo una ayuda para saber cual pisar:
+  // acordate de corregir esta lista cuando cambies alguna.
+  //   01 Mercedes Sosa          02 Thriller             03 Los Palmeras
+  //   04 Horacio Guarany        05 Luis Miguel          06 Alejandro Fernandez
+  //   07 Elvis                  08 Carlos Gardel        09 Dynamo
+  //   10 Sinatra                11 Vicente Fernandez    12 Sandro
   //   13 Los del Fuego
+  //
   // Version de las portadas. Si pisas una portada con otra imagen (mismo
   // nombre de archivo), CAMBIA ESTE NUMERO: si no, el navegador de cada
   // visitante sigue mostrando la vieja, que guarda hasta 30 dias en cache.
-  var V_PORTADAS = "20260911-2";
+  var V_PORTADAS = "20260914-2";
 
   var PORTADAS = [
     "assets/img/portadas/portada-01.jpg",
