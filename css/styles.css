@@ -70,10 +70,7 @@ ul { list-style: none; padding: 0; }
   padding: 0 22px;
 }
 
-.seccion       { padding: 110px 0; }
-.seccion--gris { background: var(--gris-fondo); }
-
-.divisor { height: 1px; background: var(--borde); border: 0; margin: 0; }
+.seccion { padding: 110px 0; }
 
 /* ---------- 4. Tipografia ------------------------------------------------ */
 
@@ -165,7 +162,9 @@ ul { list-style: none; padding: 0; }
 .btn--compacto { padding: 8px 18px; font-size: 14px; }
 
 /* Icono de WhatsApp dentro de un boton: acompana al texto, no es la marca.
-   El PNG blanco es para las pildoras negras; el negro, para las claras. */
+   La web usa solo el blanco, que va sobre los botones negros. La version
+   negra, por si algun dia hace falta sobre un boton claro, esta guardada en
+   assets/img/origen/ (esa carpeta no hace falta subirla al hosting). */
 .btn .wa { width: 17px; height: 17px; flex: none; }
 
 /* Enlace con chevron */
@@ -274,14 +273,24 @@ ul { list-style: none; padding: 0; }
 
 /* La foto ocupa todo el ancho. Los dos tercios de arriba son fondo limpio:
    ahi va el texto. En movil el texto pasa a ir ARRIBA de la foto, porque
-   recortada en vertical no queda aire suficiente para sostenerlo. */
+   recortada en vertical no queda aire suficiente para sostenerlo.
+
+   Los archivos NO se nombran aca: van en el <picture> de index.html, asi el
+   navegador los encuentra leyendo el HTML y no despues de leer este archivo.
+   Aca solo se dice que forma tiene la foto en cada pantalla. */
 .hero__foto {
+  display: block;
   position: relative;
+  background: #e9eef4;
+}
+.hero__foto img {
+  width: 100%;
   aspect-ratio: 1800 / 1021;   /* la del archivo, recortado para que el bombo
                                   con el logo caiga en el eje exacto */
   min-height: 560px;
   max-height: 1050px;
-  background: #e9eef4 url("../assets/img/hero-1800.jpg?v=20260911-2") 50% 100% / cover no-repeat;
+  object-fit: cover;           /* lo mismo que hacia background-size: cover */
+  object-position: 50% 100%;   /* anclada abajo: lo que se recorta es cielo */
 }
 
 /* Por defecto (y en cualquier pantalla angosta) el texto va arriba de la foto:
@@ -350,6 +359,13 @@ ul { list-style: none; padding: 0; }
 }
 .corredor__escena { position: absolute; inset: 0; transform-style: preserve-3d; }
 
+/* Las dos animaciones que corren solas —el corredor y la luz que recorre el
+   borde de "Tema propio"— se congelan cuando su seccion no esta en pantalla.
+   La clase la pone y la saca js/app.js. No se nota nada al mirar la web: lo
+   que se ahorra es el telefono dibujando sin parar algo que nadie ve. */
+.fuera-de-vista .corredor__card,
+.fuera-de-vista .traza__luz { animation-play-state: paused; }
+
 /* El fondo gris oscuro dibuja la cinta desde el primer cuadro: mientras las
    portadas terminan de bajar, se ven las tarjetas y no un bloque negro vacio. */
 .corredor__card { position: absolute; overflow: hidden; backface-visibility: hidden; background: #1c1c1f; }
@@ -394,51 +410,6 @@ ul { list-style: none; padding: 0; }
 @supports not (container-type: inline-size) {
   .corredor__mundo { display: none; }
 }
-
-/* ---------- 8b. Lista de estilos ----------------------------------------
-   Cada fila rueda de negro a amarillo al pasar el mouse.
-   -------------------------------------------------------------------------- */
-
-.rolling { display: flex; flex-direction: column; }
-
-.roll {
-  position: relative;
-  display: block;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--borde);
-}
-.roll:first-child { border-top: 1px solid var(--borde); }
-
-.roll__ventana { display: block; position: relative; overflow: hidden; height: 80px; }
-.roll__track { display: block; transition: transform .5s cubic-bezier(.76, 0, .24, 1); }
-.roll:hover .roll__track,
-.roll:focus-visible .roll__track { transform: translateY(-50%); }
-
-.roll__estado { height: 80px; display: flex; align-items: center; }
-.roll__t {
-  font-size: 72px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  color: var(--texto);
-}
-.roll__estado--hover .roll__t { color: var(--amarillo); font-style: italic; }
-
-.roll__cat {
-  position: absolute;
-  top: 30px;
-  right: 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--texto-sec);
-  transition: opacity .3s var(--ease);
-}
-.roll:hover .roll__cat { opacity: 0; }
-
-.centro-pie { text-align: center; padding-top: 48px; }
 
 /* ---------- 8c. Vista previa del catalogo (home) --------------------------
    Las mismas filas del catalogo, cortadas por un difuminado al blanco que
@@ -645,13 +616,6 @@ ul { list-style: none; padding: 0; }
 }
 .precios__pie svg { display: inline-block; width: 15px; height: 15px; margin-right: 6px; vertical-align: -2px; fill: currentColor; }
 
-/* Botones dentro de la seccion negra */
-.precios .btn--secundario {
-  color: var(--blanco);
-  border-color: rgba(255,255,255,.28);
-}
-.precios .btn--secundario:hover { border-color: var(--blanco); }
-
 /* ---------- 9b. Antes y despues (reproductores) --------------------------- */
 
 .ejemplos__cab { max-width: 720px; margin-bottom: 48px; }
@@ -822,7 +786,6 @@ ul { list-style: none; padding: 0; }
 
 .cat-cabecera { padding: 64px 0 28px; }
 .cat-cabecera .h-seccion { margin-bottom: 8px; }
-.cat-cabecera .sub-hero  { font-size: 21px; }
 
 .cat-precio {
   margin-top: 14px;
@@ -972,11 +935,10 @@ ul { list-style: none; padding: 0; }
   /* En movil la foto se recorta mas cuadrada, para que el kit de bateria y
      las guitarras se sigan viendo grandes. */
   .hero__txt { padding: 48px 0 36px; }
-  .hero__foto {
+  .hero__foto img {
     aspect-ratio: 5 / 4;
     min-height: 0;
     max-height: none;
-    background-image: url("../assets/img/hero-900.jpg?v=20260911-2");
   }
   .hero .acciones { flex-direction: column; gap: 18px; }
   .hero .sub-hero { margin-bottom: 26px; }
@@ -1016,12 +978,7 @@ ul { list-style: none; padding: 0; }
 
   .filtros__in { flex-wrap: nowrap; overflow-x: auto; }
 
-  .roll { padding: 16px 0; }
-  .roll__ventana, .roll__estado { height: 58px; }
-  .roll__t { font-size: 40px; letter-spacing: -0.03em; }
-  .roll__cat { display: none; }
-
-  .tres { grid-template-columns: 1fr; }
+  .tres { grid-template-columns: 1fr; gap: 28px; }
 
   .footer { font-size: 14px; }
   .footer__cols { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
@@ -1030,7 +987,6 @@ ul { list-style: none; padding: 0; }
   .footer li { margin-bottom: 0; }
   .footer li a { display: inline-block; padding: 7px 0; }
   .footer__pie { flex-direction: column; font-size: 12px; }
-  .tres { gap: 28px; }
 
   .precios__grid { grid-template-columns: 1fr; }
   .precios__marco { padding: 12px; }
@@ -1067,12 +1023,10 @@ ul { list-style: none; padding: 0; }
     padding: 0 0 22px;       /* centro optico: apenas por encima del medio */
   }
   .hero__txt .wrap { width: 100%; }
-  .hero__foto {
+  .hero__foto img {
     aspect-ratio: auto;
     height: max(600px, 138vw);
-    background-image: url("../assets/img/hero-movil.jpg?v=20260911-9");
-    background-position: 50% 100%;
-    background-size: cover;
+    max-height: none;
   }
   .hero .etiqueta { margin-bottom: 10px; }
   .hero .h-hero { margin-bottom: 10px; }

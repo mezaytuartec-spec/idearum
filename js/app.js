@@ -1,7 +1,7 @@
 /* ============================================================================
    IDEARUM — app.js
-   Nav, revelados, contadores, corredor de portadas, reproductores de audio
-   y links de WhatsApp.
+   Nav, revelados, corredor de portadas, reproductores de audio y links de
+   WhatsApp.
    Patron IIFE clasico. Sin dependencias. Sin modulos.
    ============================================================================ */
 
@@ -57,13 +57,10 @@
 
   /* ========================================================================== */
 
-  // Los estilos, en el orden en que se muestran en la web: primero los mas
-  // pedidos, al final los mas de nicho y "Otros" para lo que no encaja.
-  // Si tocas esta lista, tocala tambien en catalogo.html (pildoras) y en
-  // tools/csv_a_js.py.
-  var ESTILOS = ["Balada", "Rock / Pop", "Tropical", "Cuarteto", "Latino",
-                 "Románticos", "Canción del recuerdo", "Música cristiana",
-                 "Mariachi", "Folklore", "Bolero", "Tango", "Otros"];
+  // Los trece estilos (los doce del negocio + "Otros") viven en DOS lugares y
+  // tienen que decir lo mismo: las pildoras de catalogo.html y la tabla de
+  // equivalencias de tools/csv_a_js.py. Antes habia una tercera copia aca,
+  // que no leia nadie: se borro para no tener que mantenerla sincronizada.
 
   // Filas de la vista previa del catalogo en la home. Son ocho y no seis a
   // proposito: la grilla es de dos columnas, asi que quedan seis legibles
@@ -234,35 +231,6 @@
     window.setTimeout(mostrarTodo, 6000);
   }
 
-  /* ---------- Contadores por estilo (home) -------------------------------- */
-
-  function initContadores() {
-    var lista = pistas();
-    var total = lista.length;
-
-    var conteo = {};
-    for (var i = 0; i < lista.length; i++) {
-      var k = slug(lista[i].estilo);
-      conteo[k] = (conteo[k] || 0) + 1;
-    }
-
-    var nodos = document.querySelectorAll("[data-conteo]");
-    for (var j = 0; j < nodos.length; j++) {
-      var clave = nodos[j].getAttribute("data-conteo");
-      var n = clave === "total" ? total : (conteo[clave] || 0);
-      if (nodos[j].getAttribute("data-fmt") === "corto") {
-        nodos[j].textContent = n === 1 ? "1 pista" : n + " pistas";
-      } else {
-        nodos[j].textContent = n === 1 ? "1 pista disponible" : n + " pistas disponibles";
-      }
-    }
-
-    var totales = document.querySelectorAll("[data-total]");
-    for (var t = 0; t < totales.length; t++) {
-      totales[t].textContent = String(total);
-    }
-  }
-
   /* ---------- Corredor de portadas ----------------------------------------
      Geometria del recorrido. Todo en cqw (porcentaje del ancho del contenedor).
      Se puede tocar, pero interactua: la cinta se ve maciza mientras las
@@ -351,11 +319,11 @@
         card.className = "corredor__card";
         card.style.left = "50%";
         card.style.top = EJE + "%";
-        card.style.width = VIA.cardWidth + "cqw";
-        card.style.height = VIA.cardHeight + "cqw";
-        card.style.marginLeft = (-VIA.cardWidth / 2) + "cqw";
-        card.style.marginTop = (-VIA.cardHeight / 2) + "cqw";
-        card.style.borderRadius = VIA.cardRadius + "cqw";
+        card.style.width = via.cardWidth + "cqw";
+        card.style.height = via.cardHeight + "cqw";
+        card.style.marginLeft = (-via.cardWidth / 2) + "cqw";
+        card.style.marginTop = (-via.cardHeight / 2) + "cqw";
+        card.style.borderRadius = via.cardRadius + "cqw";
         card.style.animation = rieles[r] + " " + VELOCIDAD + "s linear infinite";
         // El retardo negativo suelta cada tarjeta a mitad de vuelo, asi el
         // corredor ya esta lleno en el primer cuadro.
@@ -412,20 +380,17 @@
 
   /* ---------- Reproductores de antes y despues ----------------------------
      Cada <div class="repro" data-audio="..." data-nombre="..."> se convierte
-     en un reproductor propio. Si el archivo todavia no existe, la ficha queda
+     en un reproductor propio. Si el archivo no estuviera, la ficha queda
      apagada y dice "Disponible pronto" en lugar de romperse.
      Suena uno por vez: al arrancar uno se pausan los demas.
+
+     Los seis MP3 pesan juntos casi 3 MB. El reproductor se dibuja de entrada,
+     pero el audio NO se toca hasta que la seccion se acerca a la pantalla
+     (o hasta que alguien aprieta play): quien entra a la home y no baja hasta
+     ahi no se baja un solo byte de musica.
      ------------------------------------------------------------------------ */
 
   var SONANDO = null;
-
-  // La seccion "antes y despues" arranca oculta (atributo hidden en el HTML)
-  // y aparece sola en cuanto carga al menos un audio: la web nunca muestra
-  // fichas vacias ni textos de relleno.
-  function mostrarSeccion(nodo) {
-    var sec = nodo.closest ? nodo.closest("section") : null;
-    if (sec && sec.hidden) sec.hidden = false;
-  }
 
   function reloj(seg) {
     if (!isFinite(seg) || seg < 0) seg = 0;
@@ -434,8 +399,9 @@
     return m + ":" + (s < 10 ? "0" : "") + s;
   }
 
+  // Devuelve la funcion que baja el audio, o null si no hay nada que bajar.
   function armarRepro(caja) {
-    if (caja.children.length > 0) return;   // montaje idempotente
+    if (caja.children.length > 0) return null;   // montaje idempotente
 
     var src = caja.getAttribute("data-audio") || "";
     var nombre = caja.getAttribute("data-nombre") || "Pista";
@@ -464,60 +430,116 @@
       t.textContent = motivo;
     }
 
-    if (!src) { apagar("Disponible pronto"); return; }
+    if (!src) { apagar("Disponible pronto"); return null; }
 
-    var audio = new Audio();
-    audio.preload = "metadata";
-    audio.src = src;
+    var audio = null;
 
-    // Si el MP3 no esta subido todavia, el reproductor queda apagado.
-    audio.addEventListener("error", function () { apagar("Disponible pronto"); });
+    // Se llama una sola vez: la primera que haga falta.
+    function cargar() {
+      if (audio) return audio;
 
-    audio.addEventListener("loadedmetadata", function () {
-      t.textContent = reloj(audio.duration);
-      mostrarSeccion(caja);
-    });
+      audio = new Audio();
+      audio.preload = "metadata";
 
-    audio.addEventListener("timeupdate", function () {
-      if (!audio.duration) return;
-      llena.style.width = (audio.currentTime / audio.duration * 100) + "%";
-      t.textContent = reloj(audio.duration - audio.currentTime);
-    });
+      // Si el MP3 faltara, el reproductor queda apagado.
+      audio.addEventListener("error", function () { apagar("Disponible pronto"); });
 
-    audio.addEventListener("ended", function () {
-      caja.classList.remove("is-sonando");
-      llena.style.width = "0";
-      t.textContent = reloj(audio.duration);
-      if (SONANDO === audio) SONANDO = null;
-    });
+      audio.addEventListener("loadedmetadata", function () {
+        t.textContent = reloj(audio.duration);
+      });
+
+      audio.addEventListener("timeupdate", function () {
+        if (!audio.duration) return;
+        llena.style.width = (audio.currentTime / audio.duration * 100) + "%";
+        t.textContent = reloj(audio.duration - audio.currentTime);
+      });
+
+      audio.addEventListener("ended", function () {
+        caja.classList.remove("is-sonando");
+        llena.style.width = "0";
+        t.textContent = reloj(audio.duration);
+        if (SONANDO === audio) SONANDO = null;
+      });
+
+      audio.addEventListener("pause", function () {
+        caja.classList.remove("is-sonando");
+        btn.setAttribute("aria-label", "Reproducir " + nombre);
+      });
+
+      audio.src = src;
+      return audio;
+    }
 
     btn.addEventListener("click", function () {
-      if (audio.paused) {
-        if (SONANDO && SONANDO !== audio) SONANDO.pause();
-        SONANDO = audio;
-        audio.play().then(null, function () { apagar("Disponible pronto"); });
+      var a = cargar();
+      if (a.paused) {
+        if (SONANDO && SONANDO !== a) SONANDO.pause();
+        SONANDO = a;
+        a.play().then(null, function () { apagar("Disponible pronto"); });
         caja.classList.add("is-sonando");
         btn.setAttribute("aria-label", "Pausar " + nombre);
       } else {
-        audio.pause();
+        a.pause();
       }
     });
 
-    audio.addEventListener("pause", function () {
-      caja.classList.remove("is-sonando");
-      btn.setAttribute("aria-label", "Reproducir " + nombre);
-    });
-
     barra.addEventListener("click", function (e) {
-      if (!audio.duration) return;
+      if (!audio || !audio.duration) return;
       var r = barra.getBoundingClientRect();
       audio.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * audio.duration;
     });
+
+    return cargar;
   }
 
   function initRepros() {
     var cajas = document.querySelectorAll(".repro");
-    for (var i = 0; i < cajas.length; i++) armarRepro(cajas[i]);
+    if (!cajas.length) return;
+
+    var pendientes = [];
+    for (var i = 0; i < cajas.length; i++) {
+      var cargar = armarRepro(cajas[i]);
+      if (cargar) pendientes.push(cargar);
+    }
+    if (!pendientes.length) return;
+
+    function bajarTodos() {
+      for (var j = 0; j < pendientes.length; j++) pendientes[j]();
+      pendientes = [];
+    }
+
+    // Sin IntersectionObserver no hay forma de saber cuando se acerca: se
+    // bajan las duraciones de entrada, como antes.
+    var sec = document.getElementById("ejemplos");
+    if (!sec || !("IntersectionObserver" in window)) { bajarTodos(); return; }
+
+    var obs = new IntersectionObserver(function (entradas) {
+      if (!entradas[0].isIntersecting) return;
+      obs.disconnect();
+      bajarTodos();
+    }, { rootMargin: "400px 0px" });
+
+    obs.observe(sec);
+  }
+
+  /* ---------- Ahorro: congelar lo que no se ve -----------------------------
+     El corredor de portadas y la luz que recorre el borde de "Tema propio"
+     giran sin parar. Mientras su seccion esta fuera de pantalla no aportan
+     nada y el navegador igual las sigue dibujando: la clase fuera-de-vista
+     las pausa (el CSS hace el trabajo) y se sueltan al volver a asomar.
+     ------------------------------------------------------------------------ */
+
+  function initAhorro() {
+    var cajas = document.querySelectorAll(".corredor, .precios");
+    if (!cajas.length || !("IntersectionObserver" in window)) return;
+
+    var obs = new IntersectionObserver(function (entradas) {
+      for (var i = 0; i < entradas.length; i++) {
+        entradas[i].target.classList.toggle("fuera-de-vista", !entradas[i].isIntersecting);
+      }
+    }, { rootMargin: "120px 0px" });
+
+    for (var j = 0; j < cajas.length; j++) obs.observe(cajas[j]);
   }
 
   /* ---------- Ano del footer ---------------------------------------------- */
@@ -529,17 +551,16 @@
     }
   }
 
-  /* ---------- API compartida con catalogo.js ------------------------------ */
+  /* ---------- API compartida con catalogo.js ------------------------------
+     Solo estas cinco: son las que catalogo.js usa de verdad. Todo lo demas
+     (wa, escapar, mensajePista) se queda adentro del archivo.
+     El HTML tambien mira si existe window.IDEARUM para saber si el JS cargo.
+     ------------------------------------------------------------------------ */
 
   window.IDEARUM = {
-    WSP: WSP,
-    ESTILOS: ESTILOS,
-    wa: wa,
     slug: slug,
     normalizar: normalizar,
-    escapar: escapar,
     pistas: pistas,
-    mensajePista: mensajePista,
     filaHTML: filaHTML,
     safe: safe
   };
@@ -549,10 +570,10 @@
   function arrancar() {
     safe(initWsp, "initWsp");
     safe(initNav, "initNav");
-    safe(initContadores, "initContadores");
     safe(initCorredor, "initCorredor");
     safe(initPrevia, "initPrevia");
     safe(initRepros, "initRepros");
+    safe(initAhorro, "initAhorro");
     safe(initAnio, "initAnio");
     safe(initReveals, "initReveals");
   }

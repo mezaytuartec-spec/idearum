@@ -68,8 +68,27 @@
 </IfModule>
 
 # ----- Compresion -----
+# El HTML, el CSS, el JS y data/pistas.js son texto: viajan a un cuarto de su
+# peso. Las imagenes y los MP3 NO se listan a proposito: ya vienen comprimidos
+# y volver a comprimirlos solo gasta procesador del servidor.
+
+# Brotli es lo que usa LiteSpeed (el servidor de Hostinger) y aprieta mas que
+# gzip. Si el hosting no lo tiene, este bloque se ignora solo y queda el de
+# abajo.
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/javascript application/javascript application/json image/svg+xml text/plain
+</IfModule>
+
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml text/plain
+</IfModule>
+
+# Avisa a los proxies que el mismo archivo se sirve comprimido o sin comprimir
+# segun el navegador, para que no guarden la version equivocada.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|css|js|json)$">
+    Header append Vary Accept-Encoding
+  </FilesMatch>
 </IfModule>
 
 # ----- Redireccion a HTTPS (descomentar cuando el dominio tenga SSL activo) -----

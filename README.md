@@ -36,7 +36,9 @@ idearum/
 ├── tools/csv_a_js.py   convierte el Excel del catálogo a data/pistas.js
 └── assets/
     ├── img/            hero, logo, favicons y portadas del corredor
-    └── audio/          los MP3 del antes y después (todavía vacía)
+    │   └── origen/     originales y variantes que la web NO usa (no hace
+    │                   falta subirlos al hosting)
+    └── audio/          los seis MP3 del antes y después
 ```
 
 ---
@@ -80,18 +82,23 @@ País, Tonalidad…) se ignoran y **nunca se publican**.
 
 ### 3. Los audios del antes y después
 
-Copiar seis MP3 en `assets/audio/` con estos nombres exactos:
+Ya están cargados. Son seis MP3 en `assets/audio/`:
 
 ```
-ejemplo-1-antes.mp3   ejemplo-1-despues.mp3
-ejemplo-2-antes.mp3   ejemplo-2-despues.mp3
-ejemplo-3-antes.mp3   ejemplo-3-despues.mp3
+ejemplo-1-antes.mp3   ejemplo-1-despues.mp3    cover a pedido
+ejemplo-2-antes.mp3   ejemplo-2-despues.mp3    tema propio
+ejemplo-3-antes.mp3   ejemplo-3-despues.mp3    tema propio
 ```
 
-Mientras no haya ningún audio subido, **la sección entera queda oculta**:
-la web nunca muestra fichas vacías ni textos de relleno. Aparece sola en
-cuanto se sube el primero. Los títulos y autores de las tres tarjetas se
-editan en `index.html` (hoy tienen textos de ejemplo).
+Para cambiar un ejemplo se pisa el archivo con el mismo nombre y se sube el
+`?v=` de los `<script>` del final de `index.html`.
+
+Los títulos de las tres tarjetas describen qué se escucha ("De un karaoke a
+una pista grabada"). Si se quiere poner el nombre real de cada canción, se
+edita el `<h3 class="ejemplo__titulo">` de cada una en `index.html`.
+
+Si algún archivo llegara a faltar, ese reproductor queda apagado y dice
+"Disponible pronto": no rompe nada.
 
 ### 4. Textos por revisar
 
@@ -120,9 +127,8 @@ En el orden en que se muestran, de los más pedidos a los más de nicho:
 
 `Otros` junta lo que en el Excel figura como "Otro".
 
-Si se agrega o saca uno, hay que tocarlo en tres lugares: la constante
-`ESTILOS` de `js/app.js`, las píldoras de filtro de `catalogo.html` y la lista
-`ESTILOS` de `tools/csv_a_js.py`.
+Si se agrega o saca uno, hay que tocarlo en dos lugares: las píldoras de
+filtro de `catalogo.html` y la lista `ESTILOS` de `tools/csv_a_js.py`.
 
 El script compara los estilos sin tildes, mayúsculas, signos ni plurales:
 en el Excel se puede escribir `Baladas`, `Rock/Pop`, `Cancion del Recuerdo`
@@ -145,11 +151,18 @@ o `Folklore tradicional` y los reconoce igual.
   **se cambia `V_PORTADAS`** en `js/app.js`: si no, el navegador de quien ya
   entró sigue mostrando la portada vieja (la guarda hasta 30 días).
 - La foto del hero tiene su propia versión en `css/styles.css` (`?v=` al lado
-  de `hero-1800.jpg` y `hero-900.jpg`): si se cambia la foto, se cambia eso.
+  de `hero-1800.jpg`, `hero-900.jpg` y `hero-movil.jpg`): si se cambia la foto,
+  se cambia eso **y también el `?v=` de las tres líneas `<link rel="preload">`
+  del `<head>` de `index.html`**, que tienen que decir exactamente lo mismo. Si
+  no coinciden, el navegador se baja la foto dos veces.
 
 Las portadas de discos que hay hoy son de terceros y están puestas como
 referencia visual. Antes de usar el sitio comercialmente conviene
 reemplazarlas por material propio.
+
+Todas las imágenes están recomprimidas al máximo que aguantan sin que se note
+(JPEG progresivo; los PNG quedaron pixel por pixel idénticos). Si se reemplaza
+alguna, conviene volver a pasarla por un compresor antes de subirla.
 
 ---
 
@@ -159,6 +172,30 @@ reemplazarlas por material propio.
    Sin eso, Hostinger puede seguir sirviendo el CSS y el JS viejos.
 2. Subir el contenido de la carpeta por FTP o por el administrador de
    archivos, incluido el `.htaccess`.
+3. `assets/img/origen/` y `tools/` no se usan desde el navegador: se pueden
+   dejar sin subir.
+
+---
+
+## Qué se hizo para que vaya liviana
+
+Sin librerías, sin compilación y sin cambiar nada de lo que se ve:
+
+- **La foto del hero se pide antes que la hoja de estilos** (`<link rel="preload">`
+  en el `<head>`, una línea por tamaño de pantalla). Es la imagen más grande
+  de la primera pantalla; sin eso el navegador recién se entera de que existe
+  después de leer todo el CSS.
+- **El corredor de portadas y la luz del borde de "Tema propio" se congelan
+  cuando su sección no está en pantalla.** Son las dos únicas animaciones que
+  corren solas; pausarlas ahorra batería en el teléfono y no se nota.
+- **Los seis MP3 (casi 3 MB) no se tocan hasta que la sección se acerca.**
+  Quien entra a la home y no baja hasta ahí no descarga ni un byte de música.
+- **Imágenes recomprimidas**: el hero pesa un 12 % menos y el ícono de iOS un
+  32 %, sin diferencia visible.
+- **Compresión en el servidor**: `.htaccess` pide Brotli y, si el hosting no
+  lo tiene, gzip. El CSS y el JS viajan a un cuarto de su peso, así que **no
+  están minificados a propósito**: se ganan unos pocos KB y se pierde poder
+  leerlos y corregirlos desde el administrador de archivos de Hostinger.
 
 ---
 
