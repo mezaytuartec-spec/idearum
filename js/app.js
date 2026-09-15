@@ -391,6 +391,13 @@
      pero el audio NO se toca hasta que la seccion se acerca a la pantalla
      (o hasta que alguien aprieta play): quien entra a la home y no baja hasta
      ahi no se baja un solo byte de musica.
+
+     Hay dos formas del mismo reproductor:
+       - la completa (home): boton, nombre, reloj y barra para adelantar;
+       - la corta, <div class="repro repro--mini" data-detalle="Karaoke">
+         (catalogo): una pastilla que se aprieta entera y muestra el avance
+         como un relleno de fondo. No tiene reloj, asi que no baja nada hasta
+         que alguien aprieta play.
      ------------------------------------------------------------------------ */
 
   var SONANDO = null;
@@ -408,29 +415,47 @@
 
     var src = caja.getAttribute("data-audio") || "";
     var nombre = caja.getAttribute("data-nombre") || "Pista";
+    var detalle = caja.getAttribute("data-detalle") || "";
+    var etiqueta = detalle ? nombre + ", " + detalle : nombre;   // para lectores de pantalla
+    var iconos =
+      '<svg class="icono-play" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0l12 7-12 7z"/></svg>' +
+      '<svg class="icono-pausa" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0h4v14H0zM8 0h4v14H8z"/></svg>';
 
-    caja.innerHTML =
-      '<button class="repro__btn" type="button" aria-label="Reproducir ' + escapar(nombre) + '">' +
-        '<svg class="icono-play" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0l12 7-12 7z"/></svg>' +
-        '<svg class="icono-pausa" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0h4v14H0zM8 0h4v14H8z"/></svg>' +
-      "</button>" +
-      '<div class="repro__cuerpo">' +
-        '<div class="repro__fila">' +
+    if (caja.classList.contains("repro--mini")) {
+      caja.innerHTML =
+        '<button class="repro__pastilla" type="button" aria-label="Reproducir ' + escapar(etiqueta) + '">' +
+          '<span class="repro__llena"></span>' +
+          '<span class="repro__btn" aria-hidden="true">' + iconos + "</span>" +
           '<span class="repro__nombre">' + escapar(nombre) + "</span>" +
-          '<span class="repro__t">--:--</span>' +
-        "</div>" +
-        '<div class="repro__barra"><span class="repro__llena"></span></div>' +
-      "</div>";
+          (detalle ? '<span class="repro__detalle">' + escapar(detalle) + "</span>" : "") +
+        "</button>";
+    } else {
+      caja.innerHTML =
+        '<button class="repro__btn" type="button" aria-label="Reproducir ' + escapar(etiqueta) + '">' +
+          iconos +
+        "</button>" +
+        '<div class="repro__cuerpo">' +
+          '<div class="repro__fila">' +
+            '<span class="repro__nombre">' + escapar(nombre) + "</span>" +
+            '<span class="repro__t">--:--</span>' +
+          "</div>" +
+          '<div class="repro__barra"><span class="repro__llena"></span></div>' +
+        "</div>";
+    }
 
-    var btn = caja.querySelector(".repro__btn");
-    var t = caja.querySelector(".repro__t");
-    var barra = caja.querySelector(".repro__barra");
+    var btn = caja.querySelector("button");
+    var t = caja.querySelector(".repro__t");          // la corta no tiene reloj
+    var barra = caja.querySelector(".repro__barra");  // ni barra para adelantar
     var llena = caja.querySelector(".repro__llena");
+
+    function tiempo(texto) {
+      if (t) t.textContent = texto;
+    }
 
     function apagar(motivo) {
       caja.classList.add("repro--vacio");
       btn.disabled = true;
-      t.textContent = motivo;
+      if (t) t.textContent = motivo; else btn.title = motivo;
     }
 
     if (!src) { apagar("Disponible pronto"); return null; }
@@ -448,25 +473,25 @@
       audio.addEventListener("error", function () { apagar("Disponible pronto"); });
 
       audio.addEventListener("loadedmetadata", function () {
-        t.textContent = reloj(audio.duration);
+        tiempo(reloj(audio.duration));
       });
 
       audio.addEventListener("timeupdate", function () {
         if (!audio.duration) return;
         llena.style.width = (audio.currentTime / audio.duration * 100) + "%";
-        t.textContent = reloj(audio.duration - audio.currentTime);
+        tiempo(reloj(audio.duration - audio.currentTime));
       });
 
       audio.addEventListener("ended", function () {
         caja.classList.remove("is-sonando");
         llena.style.width = "0";
-        t.textContent = reloj(audio.duration);
+        tiempo(reloj(audio.duration));
         if (SONANDO === audio) SONANDO = null;
       });
 
       audio.addEventListener("pause", function () {
         caja.classList.remove("is-sonando");
-        btn.setAttribute("aria-label", "Reproducir " + nombre);
+        btn.setAttribute("aria-label", "Reproducir " + etiqueta);
       });
 
       audio.src = src;
@@ -480,17 +505,19 @@
         SONANDO = a;
         a.play().then(null, function () { apagar("Disponible pronto"); });
         caja.classList.add("is-sonando");
-        btn.setAttribute("aria-label", "Pausar " + nombre);
+        btn.setAttribute("aria-label", "Pausar " + etiqueta);
       } else {
         a.pause();
       }
     });
 
-    barra.addEventListener("click", function (e) {
-      if (!audio || !audio.duration) return;
-      var r = barra.getBoundingClientRect();
-      audio.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * audio.duration;
-    });
+    if (barra) {
+      barra.addEventListener("click", function (e) {
+        if (!audio || !audio.duration) return;
+        var r = barra.getBoundingClientRect();
+        audio.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * audio.duration;
+      });
+    }
 
     return cargar;
   }
@@ -502,7 +529,8 @@
     var pendientes = [];
     for (var i = 0; i < cajas.length; i++) {
       var cargar = armarRepro(cajas[i]);
-      if (cargar) pendientes.push(cargar);
+      // La corta no muestra la duracion: no hay por que bajar nada antes del play.
+      if (cargar && !cajas[i].classList.contains("repro--mini")) pendientes.push(cargar);
     }
     if (!pendientes.length) return;
 

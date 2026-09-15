@@ -717,6 +717,53 @@ ul { list-style: none; padding: 0; }
 .repro--vacio .repro__btn:hover { background: var(--borde); transform: none; }
 .repro--vacio .repro__barra { cursor: default; }
 
+/* Version corta (arriba del catalogo): la pastilla entera es el boton y el
+   avance se ve como un relleno que crece de fondo. Sin reloj ni barra: es
+   para escuchar la diferencia en dos toques, no para recorrer el tema.
+   El min-height reserva el lugar antes de que el JS la dibuje, asi la lista
+   de pistas no pega un salto hacia abajo al cargar. */
+.repro--mini { display: block; min-height: 44px; padding: 0; background: none; border-radius: 0; }
+
+.repro__pastilla {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 0 5px;
+  border-radius: 980px;
+  background: var(--gris-fondo);
+  text-align: left;
+  transition: background-color .2s var(--ease);
+}
+.repro__pastilla:hover { background: #ebebf0; }
+.repro__pastilla:hover .repro__btn { background: #000; transform: scale(1.06); }
+
+/* El texto y el boton van por encima del relleno. */
+.repro__pastilla .repro__btn,
+.repro__pastilla .repro__nombre,
+.repro__detalle { position: relative; white-space: nowrap; }
+.repro__detalle {
+  min-width: 0;
+  margin-left: -4px;
+  overflow: hidden;
+  text-overflow: ellipsis;       /* por si una fuente de otro sistema ocupa mas */
+  font-size: 13px;
+  color: var(--texto-sec);
+}
+
+.repro--mini .repro__llena {
+  border-radius: 0;
+  background: rgba(0, 0, 0, .07);
+  transition: width .25s linear;
+}
+
+.repro--vacio .repro__pastilla { cursor: default; }
+.repro--vacio .repro__pastilla:hover { background: var(--gris-fondo); }
+.repro--vacio .repro__pastilla:hover .repro__btn { background: var(--borde); transform: none; }
+
 /* La tarjeta de tema propio va oscura, igual que en los precios: el mismo
    codigo visual para el mismo producto en las dos secciones. */
 .ejemplo--propio {
@@ -826,6 +873,20 @@ ul { list-style: none; padding: 0; }
   background: var(--borde); color: var(--blanco); font-size: 14px; line-height: 1;
 }
 .buscador.tiene-texto .buscador__limpiar { display: flex; }
+
+/* Antes y despues en version corta, debajo del buscador. Tres parejas: arriba
+   el antes, abajo el despues. */
+.muestras { margin-top: 22px; }
+.muestras__titulo { margin-bottom: 10px; font-size: 14px; color: var(--texto-sec); }
+.muestras__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.muestras__par { display: flex; flex-direction: column; gap: 8px; }
+
+/* Sin JS los botones no existen: mejor no mostrar el titulo solo. */
+.no-js .muestras { display: none; }
 
 /* Pildoras de filtro — barra sticky bajo la nav */
 .filtros {
@@ -997,6 +1058,26 @@ ul { list-style: none; padding: 0; }
   .lista { grid-template-columns: 1fr; }
 
   .cat-cabecera { padding: 40px 0 20px; }
+
+  /* Las tres parejas pasan a una fila que se desliza con el dedo, igual que
+     las pildoras de filtro: ocupan dos renglones y no seis, y la lista de
+     pistas no queda empujada hacia abajo. La que asoma al costado avisa que
+     hay mas. */
+  .muestras { margin-top: 18px; }
+  .muestras__grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(216px, 1fr);   /* en tablet entran las tres */
+    gap: 12px;
+    margin: 0 -22px;
+    padding: 0 22px;
+    overflow-x: auto;
+    scroll-padding: 0 22px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .muestras__grid::-webkit-scrollbar { display: none; }
+  .muestras__par { scroll-snap-align: start; }
 }
 
 /* ---------- 15. Celular (hasta 600px) --------------------------------------

@@ -20,7 +20,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-<link rel="stylesheet" href="css/styles.css?v=20260914-2">
+<link rel="stylesheet" href="css/styles.css?v=20260914-3">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -45,6 +45,10 @@
      4. LAS PISTAS: se cargan desde data/pistas.js. No se tocan acá.
      5. LAS PÍLDORAS DE FILTRO de más abajo tienen que coincidir con los
         estilos que uses en data/pistas.js.
+     6. LOS SEIS BOTONES DE ANTES Y DESPUÉS (debajo del buscador) usan los
+        mismos MP3 que la sección de la home, en assets/audio/. Si pisás un
+        audio, cambia en las dos páginas. Lo que dice cada botón está en su
+        data-nombre y data-detalle.
      ========================================================================== -->
 
 <header class="nav">
@@ -92,6 +96,27 @@
         <input id="q" type="search" autocomplete="off" spellcheck="false"
                placeholder="Buscar por autor">
         <button class="buscador__limpiar" id="limpiar" type="button" aria-label="Limpiar búsqueda">&times;</button>
+      </div>
+
+      <!-- Versión corta del antes y después. Cada pastilla es un botón de
+           play; suena una por vez. No se descarga ningún audio hasta que
+           alguien aprieta play, así el catálogo carga igual de rápido. -->
+      <div class="muestras" role="group" aria-labelledby="muestras-titulo">
+        <p class="muestras__titulo" id="muestras-titulo">Escuchá el antes y el después</p>
+        <div class="muestras__grid">
+          <div class="muestras__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después" data-detalle="Pista grabada"></div>
+          </div>
+          <div class="muestras__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes" data-detalle="Maqueta"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-2-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
+          </div>
+          <div class="muestras__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes" data-detalle="Idea"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-3-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -151,7 +176,7 @@
       <div class="precios__cab reveal">
         <span class="etiqueta-caja">A medida</span>
         <h2 class="h-seccion">¿No estaba en la lista?</h2>
-        <p>Elegís la canción o traés la tuya. La grabamos con músicos e instrumentos reales, sólo para vos.</p>
+        <p>Elegí la canción que quieras y la grabamos de cero y en la tonalidad que necesites.</p>
       </div>
 
       <div class="precios__marco reveal">
@@ -265,9 +290,9 @@
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20260914-2" defer></script>
-<script src="js/app.js?v=20260914-2" defer></script>
-<script src="js/catalogo.js?v=20260914-2" defer></script>
+<script src="data/pistas.js?v=20260914-3" defer></script>
+<script src="js/app.js?v=20260914-3" defer></script>
+<script src="js/catalogo.js?v=20260914-3" defer></script>
 
 </body>
 </html>

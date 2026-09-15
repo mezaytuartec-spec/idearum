@@ -102,6 +102,12 @@ edita el `<h3 class="ejemplo__titulo">` de cada una en `index.html`.
 Si algún archivo llegara a faltar, ese reproductor queda apagado y dice
 "Disponible pronto": no rompe nada.
 
+Los mismos seis audios suenan también **arriba del catálogo**, debajo del
+buscador, en una versión corta: seis botones ("Antes · Karaoke", "Después ·
+Pista grabada"…) sin reloj ni barra. Lo que dice cada uno está en el
+`data-nombre` y el `data-detalle` de `catalogo.html`. Ahí no se descarga ningún
+audio hasta que alguien aprieta play, así el catálogo carga igual de rápido.
+
 ### 4. Textos por revisar
 
 Los plazos de entrega y los formatos de las tarjetas de "A medida" son
