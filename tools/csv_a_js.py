@@ -31,6 +31,8 @@ QUE HACE CON LOS DATOS
   filas no le cambia el ID a las demas; insertar filas en el medio, si.
   Por eso: las pistas nuevas, siempre AL FINAL de la planilla.
 - Temas con "Propio" = Si: NO se publican. Son composiciones de clientes.
+  Lo mismo con los temas cuyo AUTOR figure en AUTORES_PROPIOS, mas abajo:
+  sirve para los que quedaron sin marcar en la planilla.
 - Estilos: acepta plurales y variantes ("Baladas", "Boleros", "Rock/Pop",
   "Cancion del Recuerdo", "Folklore tradicional"...). "Otro" va a "Otros".
 - Duplicados (mismo titulo, autor y estilo): queda solo el primero.
@@ -101,6 +103,17 @@ ALIAS_COLUMNA = {
     "estilo": ("estilo", "genero"),
     "propio": ("propio",),
 }
+
+# Autores que en realidad son clientes: el tema lo compusieron ellos, asi que
+# NO se publica, aunque en el Excel la columna "Propio" haya quedado vacia.
+# Se compara sin tildes, sin mayusculas y sin signos, asi que da igual escribir
+# "Martin Gonzalez" o "Martín González".
+#
+# Ojo: esto mira la columna AUTOR, no la de Cliente. Que alguien figure como
+# cliente de un cover de Charly Garcia no saca ese cover del catalogo.
+AUTORES_PROPIOS = (
+    "Martin Gonzalez",
+)
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SALIDA_POR_DEFECTO = os.path.join(RAIZ, "data", "pistas.js")
@@ -338,6 +351,7 @@ def main():
 
     informe = collections.defaultdict(list)
     candidatas = []
+    propios = {clave(a) for a in AUTORES_PROPIOS}
     genericos = ({clave(e) for e in ESTILOS} | {clave(a) for a in ALIAS_ESTILO} |
                  {"himno", "himnos", "gospel", "cumbia", "cristiano", "cristiana",
                   "tradicional", "anonimo", "varios"})
@@ -380,6 +394,11 @@ def main():
         if clave(a2) in genericos:
             informe["generico"].append("fila %d: %s  (autor %r)" % (nro, t2, a2))
             a2 = ""
+
+        if clave(a2) in propios:
+            informe["propio"].append("fila %d: %s - %s  (autor en AUTORES_PROPIOS)"
+                                     % (nro, t2, a2))
+            continue
 
         candidatas.append({"nro": nro, "titulo": t2, "autor": a2, "estilo": estilo})
 

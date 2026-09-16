@@ -2,7 +2,7 @@
    IDEARUM - CATALOGO DE PISTAS
    Archivo generado automaticamente por tools/csv_a_js.py
    Origen: Listado_2026_COMPLETO.xlsx
-   Pistas: 313
+   Pistas: 312
 
    No lo edites a mano: se sobrescribe cada vez que corres el script.
    Para cambiar algo, corregilo en el Excel y volve a correr:
@@ -82,7 +82,6 @@ window.PISTAS = [
   { id: "0030", titulo: "Yo te Amo", autor: "Gildardo Alvarez", estilo: "Balada" },
   { id: "0199", titulo: "A mi manera", autor: "La Berisso", estilo: "Rock / Pop" },
   { id: "0225", titulo: "A quien le importa", autor: "Alaska", estilo: "Rock / Pop" },
-  { id: "0196", titulo: "Algo Cambio", autor: "Martin Gonzalez", estilo: "Rock / Pop" },
   { id: "0217", titulo: "Amazing grace", autor: "Elvis", estilo: "Rock / Pop" },
   { id: "0216", titulo: "American Trilogy", autor: "Elvis", estilo: "Rock / Pop" },
   { id: "0188", titulo: "Amor Infiel", autor: "Trocha Angosta", estilo: "Rock / Pop" },

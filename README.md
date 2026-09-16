@@ -77,6 +77,10 @@ País, Tonalidad…) se ignoran y **nunca se publican**.
   siempre **al final** de la planilla: insertar filas en el medio les cambia
   el número a las de abajo.
 - Los temas con **Propio = Sí no se publican**: son composiciones de clientes.
+  Lo mismo con los que tengan un autor de la lista `AUTORES_PROPIOS`, arriba
+  de `tools/csv_a_js.py`: sirve para los que quedaron sin marcar en el Excel.
+  Mira la columna **Autor**, no la de Cliente: que alguien figure como cliente
+  de un cover no saca ese cover del catálogo.
 - Duplicados (mismo tema, autor y estilo) quedan una sola vez. El mismo tema
   en otro estilo se publica: es otro arreglo.
 - Repara letras dañadas por codificación ("Ma¤ana" → "Mañana"), acomoda
