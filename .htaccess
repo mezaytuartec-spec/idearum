@@ -1,5 +1,12 @@
 # ============================================================================
-# Idearum — .htaccess (Apache / LiteSpeed, que es lo que usa Hostinger)
+# Idearum — .htaccess
+#
+# OJO: HOY EL SITIO ESTA EN VERCEL, Y VERCEL NO LEE ESTE ARCHIVO.
+# Lo que manda alla es vercel.json, en esta misma carpeta: si cambias algo de
+# cache aca, cambialo tambien alli. Este archivo se deja por si el sitio vuelve
+# a Hostinger o a cualquier hosting con Apache / LiteSpeed.
+#
+# (Apache / LiteSpeed, que es lo que usa Hostinger)
 #
 # Sin este archivo, Hostinger puede seguir sirviendo el CSS y el JS viejos
 # durante semanas despues de subir una actualizacion.

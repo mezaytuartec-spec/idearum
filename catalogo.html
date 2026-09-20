@@ -4,21 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catálogo de pistas — Idearum</title>
-<meta name="description" content="Idearum — Pistas profesionales para cantantes.">
+<meta name="description" content="Catálogo de pistas de Idearum para cantantes: balada, rock, tropical, cuarteto, folklore, mariachi y más. Buscá por autor y consultá por WhatsApp.">
 <meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://pistasparacantantes.com/catalogo.html">
 
+<!-- Vista previa al compartir el link (WhatsApp, Facebook, X). Las direcciones
+     TIENEN que ser absolutas, con https:// y el dominio: con una ruta relativa
+     WhatsApp muestra el link pelado, sin imagen ni texto. Si algun dia cambia
+     el dominio, se cambia aca y en el rel="canonical", en las DOS paginas. -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Idearum">
 <meta property="og:title" content="Idearum — Pistas profesionales para cantantes">
-<meta name="twitter:card" content="summary_large_image">
-
-<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png?v=20260914-1">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32-dark.png?v=20260914-1" media="(prefers-color-scheme: dark)">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
-<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:description" content="Grabadas de cero y con otra impronta. Catálogo listo, covers a pedido y producción de temas propios.">
+<meta property="og:url" content="https://pistasparacantantes.com/catalogo.html">
+<meta property="og:image" content="https://pistasparacantantes.com/assets/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="El estudio de Idearum: teclado, guitarras, batería, amplificadores y micrófono.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pistasparacantantes.com/assets/img/og.jpg">
+
+<!-- Iconos. En la barra del navegador van los PNG de 96 px: Google pide que el
+     favicon sea cuadrado y de 48 px o un multiplo, y los de 32 quedaban por
+     debajo del minimo. El favicon.ico de la raiz es el respaldo que usa el
+     buscador; ese conviene dejarlo quieto (sin ?v= y sin moverlo de lugar).
+     El amarillo va ANTES que el negro a proposito: el robot de Google ignora
+     el atributo media y, si se quedara con el ultimo, mostraria el amarillo,
+     que sobre el fondo blanco del buscador casi no se ve. -->
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96-dark.png?v=20260920-1" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
 
 <link rel="stylesheet" href="css/styles.css?v=20260915-1">
 
@@ -293,6 +310,12 @@
 <script src="data/pistas.js?v=20260915-1" defer></script>
 <script src="js/app.js?v=20260915-1" defer></script>
 <script src="js/catalogo.js?v=20260915-1" defer></script>
+
+<!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
+     Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:
+     proyecto → pestaña Analytics → Enable. Hasta que se active, este archivo
+     no existe en el servidor y el navegador lo ignora sin romper nada. -->
+<script defer src="/_vercel/insights/script.js"></script>
 
 </body>
 </html>

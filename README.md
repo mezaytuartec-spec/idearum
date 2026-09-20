@@ -6,8 +6,28 @@ cero, más covers a pedido y producción de temas propios.
 Toda la venta y el contacto ocurren por WhatsApp. No hay carrito, ni pasarela
 de pago, ni formularios, ni backend, ni base de datos.
 
-Sin dependencias, sin npm y sin paso de compilación: se sube la carpeta tal
-cual a Hostinger o a cualquier hosting estático.
+Sin dependencias, sin npm y sin paso de compilación.
+
+---
+
+## Dónde está publicado
+
+- **Dominio**: <https://pistasparacantantes.com>
+- **Hosting**: Vercel, conectado a este repo de GitHub. **Cada `git push` a
+  `main` publica solo**, en menos de un minuto. No hay que subir nada por FTP.
+- `idearum.vercel.app` redirige al dominio propio, así que no hay dos
+  versiones del sitio dando vueltas.
+- El **dominio aparece escrito** en `index.html` y `catalogo.html`: en el
+  `rel="canonical"`, en `og:url` y en `og:image`. Si algún día cambia, hay que
+  cambiarlo en esos tres lugares de las dos páginas, y también en
+  `robots.txt` y `sitemap.xml`.
+
+### Medir las visitas
+
+El script de medición ya está puesto al final de las dos páginas, pero **no
+cuenta nada hasta que se active una vez** en el panel: proyecto en Vercel →
+pestaña **Analytics** → **Enable**. Hasta entonces no se guarda ninguna
+visita, y lo que pasó antes de activarlo no se recupera.
 
 ---
 
@@ -27,7 +47,11 @@ Y abrir http://localhost:8765/
 idearum/
 ├── index.html          home
 ├── catalogo.html       listado de pistas + buscador + filtros
-├── .htaccess           headers de cache (obligatorio en Hostinger)
+├── vercel.json         headers de cache (es el que manda HOY, en Vercel)
+├── .htaccess           lo mismo pero para Apache/Hostinger: Vercel lo ignora
+├── favicon.ico         el ícono que usa Google; no moverlo ni renombrarlo
+├── robots.txt
+├── sitemap.xml
 ├── css/styles.css
 ├── js/
 │   ├── app.js          nav, revelados, corredor 3D, reproductores, WhatsApp
@@ -190,16 +214,23 @@ alguna, conviene volver a pasarla por un compresor antes de subirla.
 ## Subir a producción
 
 1. Bumpear el `?v=AAAAMMDD` del `<link>` del CSS y de los `<script>` en los
-   dos HTML. Sin eso, Hostinger puede seguir sirviendo el CSS y el JS viejos.
+   dos HTML, si cambió el CSS o el JS.
 
    El `?v=` que va al lado de una **imagen** es distinto: ese se toca **solo
    cuando pisás esa imagen**. Subirlo por costumbre obliga a todos los que ya
    entraron a bajar de nuevo una foto que no cambió. Para las trece portadas
    juntas, el que manda es `V_PORTADAS` en `js/app.js`.
-2. Subir el contenido de la carpeta por FTP o por el administrador de
-   archivos, incluido el `.htaccess`.
-3. `assets/img/origen/` y `tools/` no se usan desde el navegador: se pueden
-   dejar sin subir.
+
+   Esto importa **más que antes**: `vercel.json` le pide al navegador que
+   guarde todo lo que está en `assets/` durante 30 días. Sin cambiar el `?v=`,
+   quien ya entró sigue viendo la imagen vieja.
+2. `git push`. Vercel publica solo.
+3. Si el cambio se tiene que ver ya en el celular, abrir el sitio y recargar
+   con la pestaña en blanco (o probar en una ventana de incógnito): así se
+   descarta el caché propio y se ve lo que ve un visitante nuevo.
+
+`assets/img/origen/` y `tools/` no se usan desde el navegador, pero no
+molestan: nadie los pide nunca.
 
 ---
 

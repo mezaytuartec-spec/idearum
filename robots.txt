@@ -1,0 +1,5 @@
+# Idearum — pistasparacantantes.com
+User-agent: *
+Allow: /
+
+Sitemap: https://pistasparacantantes.com/sitemap.xml
