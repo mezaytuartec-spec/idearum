@@ -644,7 +644,9 @@
       if (SONANDO && !SONANDO.paused) SONANDO.pause();
       soltarFila();
 
-      var fuente = "assets/audio/previas/" + id + ".mp3";
+      // Ruta absoluta: las filas tambien aparecen en las paginas de pista/,
+      // y desde ahi una ruta relativa buscaria pista/assets/...
+      var fuente = "/assets/audio/previas/" + id + ".mp3";
       if (a.src.indexOf(fuente) === -1) a.src = fuente;
       try { a.volume = 1; } catch (e2) {}
       a.currentTime = 0;
