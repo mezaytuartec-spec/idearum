@@ -20,9 +20,10 @@ Se reconocen por el nombre del encabezado (sin importar mayusculas ni tildes):
     autor   ->  "Autor", "Artista" o "Interprete"
     estilo  ->  "Estilo" o "Genero"
     propio  ->  "Propio"   (opcional)
+    tono    ->  "Tonalidad" (opcional, se normaliza sola)
 
 Las demas columnas (Cliente, Pais, Tonalidad, Anio...) se ignoran y NUNCA se
-publican: en la web solo aparecen titulo, autor y estilo.
+publican: en la web solo aparecen titulo, autor, estilo y tonalidad.
 
 QUE HACE CON LOS DATOS
 ----------------------
@@ -54,12 +55,14 @@ OPCIONES
 
 import argparse
 import collections
+import datetime
 import csv
 import json
 import os
 import re
 import sys
 import unicodedata
+from urllib.parse import quote
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -102,7 +105,69 @@ ALIAS_COLUMNA = {
     "autor": ("autor", "artista", "interprete"),
     "estilo": ("estilo", "genero"),
     "propio": ("propio",),
+    "tono": ("tonalidad", "tono"),
 }
+
+# ---------------------------------------------------------------- tonalidad
+# En la planilla la tonalidad esta escrita a mano y aparece de muchas formas
+# distintas para la misma nota: "Do Mayor", "Do mayor", "ReMayor", "Mi b
+# Mayor", "Re menor2", "SI b Mayor". Aca se reduce todo a una sola forma.
+#
+# Ademas se juntan las que suenan igual aunque se escriban distinto: Re# menor
+# y Mib menor son la misma tonalidad, y para un cantante da lo mismo cual de
+# las dos diga. Se prefiere el bemol en las mayores y el sostenido en las
+# menores, que es como estan escritas en su mayoria.
+
+ALTURA = {
+    "do": 0, "do#": 1, "reb": 1, "re": 2, "re#": 3, "mib": 3, "mi": 4,
+    "fa": 5, "fa#": 6, "solb": 6, "sol": 7, "sol#": 8, "lab": 8,
+    "la": 9, "la#": 10, "sib": 10, "si": 11,
+}
+NOMBRE_TONO = {
+    0: ("Do", "Do"), 1: ("Reb", "Do#"), 2: ("Re", "Re"), 3: ("Mib", "Re#"),
+    4: ("Mi", "Mi"), 5: ("Fa", "Fa"), 6: ("Fa#", "Fa#"), 7: ("Sol", "Sol"),
+    8: ("Lab", "Sol#"), 9: ("La", "La"), 10: ("Sib", "Sib"), 11: ("Si", "Si"),
+}
+
+
+def tono_web(crudo):
+    """'Mi b Mayor' -> 'Mib mayor'. Devuelve "" si no se entiende."""
+    if not crudo:
+        return ""
+    t = unicodedata.normalize("NFD", str(crudo))
+    t = "".join(c for c in t if unicodedata.category(c) != "Mn").lower()
+    t = t.replace("\ufffd", " ")
+    if "guia" in t:
+        return ""
+    t = t.split("_")[0]                      # 'Do# menor_Fa menor' -> el primero
+    t = re.sub(r"\d+", " ", t)               # 'Re menor2' -> 'Re menor'
+    t = re.sub(r"[^a-z#\s]", " ", t)
+    t = " ".join(t.split())
+    if not t:
+        return ""
+    modo = "menor" if "menor" in t else ("mayor" if "mayor" in t else "")
+    t = " ".join(t.replace("menor", " ").replace("mayor", " ").split())
+    t = re.sub(r"\s+b\b", "b", t)
+    t = re.sub(r"\s+#", "#", t).replace(" ", "")
+    if t not in ALTURA:
+        return ""
+    alt = ALTURA[t]
+    if not modo:
+        return NOMBRE_TONO[alt][0]
+    return "%s %s" % (NOMBRE_TONO[alt][0 if modo == "mayor" else 1], modo)
+
+
+def orden_tono(t):
+    """Para listarlas como las ordena un musico: mayores y despues menores."""
+    if not t:
+        return (9, 99)
+    partes = t.split()
+    nota = unicodedata.normalize("NFD", partes[0]).lower()
+    nota = "".join(c for c in nota if unicodedata.category(c) != "Mn")
+    modo = partes[1] if len(partes) > 1 else ""
+    return ({"mayor": 0, "menor": 1}.get(modo, 2), ALTURA.get(nota, 99))
+
+
 
 # Autores que en realidad son clientes: el tema lo compusieron ellos, asi que
 # NO se publica, aunque en el Excel la columna "Propio" haya quedado vacia.
@@ -117,6 +182,9 @@ AUTORES_PROPIOS = (
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SALIDA_POR_DEFECTO = os.path.join(RAIZ, "data", "pistas.js")
+
+# Donde viven las muestras de 30 segundos, una por pista, con el nombre del ID.
+PREVIAS = os.path.join(RAIZ, "assets", "audio", "previas")
 
 CABECERA = """/* ============================================================================
    IDEARUM - CATALOGO DE PISTAS
@@ -318,11 +386,315 @@ def estilo_web(crudo):
 
 # ---------------------------------------------------------------- principal
 
+# ============================================================================
+# UNA PAGINA POR PISTA
+# ============================================================================
+# Nadie busca "pistas para cantantes": busca "pista de El dia que me quieras".
+# Con las pistas metidas todas adentro de catalogo.html, Google no tiene nada
+# que mostrar para esa busqueda. Por eso cada pista tiene ademas su propia
+# pagina, con su titulo, su autor y su tonalidad, y todas juntas van al
+# sitemap.xml. Se generan solas desde el Excel: no se tocan a mano.
+
+DOMINIO = "https://pistasparacantantes.com"
+WSP_WEB = "5492656442608"      # el mismo que esta en js/app.js
+CARPETA_PAGINAS = "pista"
+
+
+def slug_url(texto):
+    """'El Día que me Quieras' -> 'el-dia-que-me-quieras'"""
+    t = unicodedata.normalize("NFD", texto or "")
+    t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+    t = t.lower().replace("ñ", "n")
+    t = re.sub(r"[^a-z0-9]+", "-", t)
+    return t.strip("-")[:60] or "pista"
+
+
+def esc(t):
+    return (str(t).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+PAGINA = """<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="{{URL}}">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Idearum">
+<meta property="og:title" content="Idearum &mdash; Pistas profesionales para cantantes">
+<meta property="og:description" content="{{DESC}}">
+<meta property="og:url" content="{{URL}}">
+<meta property="og:image" content="{{DOM}}/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{DOM}}/assets/img/og.jpg">
+
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96-dark.png?v={{V}}" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96.png?v={{V}}">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png?v=20260914-1">
+
+<link rel="stylesheet" href="/css/styles.css?v={{V}}">
+
+<script>
+  document.documentElement.classList.remove("no-js");
+  setTimeout(function () {
+    if (!window.IDEARUM) document.documentElement.classList.add("no-js");
+  }, 5000);
+</script>
+
+<script type="application/ld+json">{{JSONLD}}</script>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="nav__logo" href="/index.html">
+      <img src="/assets/img/logo.png?v=20260914-1" alt="" width="20" height="20">
+      <span>Idearum</span>
+    </a>
+    <nav class="nav__links" aria-label="Principal">
+      <a href="/catalogo.html">Cat&aacute;logo</a>
+      <a href="/index.html#a-medida">Cover a pedido</a>
+      <a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+    </nav>
+    <button class="nav__burger" type="button" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu">
+  <a href="/index.html">Inicio</a>
+  <a href="/catalogo.html">Cat&aacute;logo</a>
+  <a href="/index.html#a-medida">Cover a pedido</a>
+  <a href="/index.html#a-medida">Tema propio</a>
+  <a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
+</div>
+
+<main>
+  <section class="pista-cab">
+    <div class="wrap">
+      <nav class="miga" aria-label="D&oacute;nde estoy">
+        <a href="/catalogo.html">Cat&aacute;logo</a>
+        <span aria-hidden="true">&rsaquo;</span>
+        <a href="/catalogo.html#estilo={{ESTILOSLUG}}">{{ESTILO}}</a>
+      </nav>
+
+      <h1 class="pista-titulo">{{TITULO}}</h1>
+      <p class="pista-autor">{{AUTOR_TXT}}</p>
+
+      <dl class="pista-datos">
+        <div><dt>Estilo</dt><dd>{{ESTILO}}</dd></div>
+        {{TONO_DATO}}
+        <div><dt>Formato</dt><dd>WAV y MP3 320&nbsp;kbps</dd></div>
+        <div><dt>C&oacute;digo</dt><dd>{{ID}}</dd></div>
+      </dl>
+
+      {{MUESTRA}}
+
+      <div class="pista-compra">
+        <p class="pista-precio"><span>US$</span><span class="num">40</span></p>
+        <a class="btn btn--primario btn--grande"
+           href="https://wa.me/{{WSP}}?text={{MSG}}"
+           target="_blank" rel="noopener">Pedir esta pista</a>
+        <p class="nota">Te la mandamos por WhatsApp en WAV y MP3. Tres canciones, US$&nbsp;100.</p>
+      </div>
+
+      <div class="pista-otra">
+        <h2>&iquest;La necesit&aacute;s en otra tonalidad?</h2>
+        <p>La volvemos a grabar de cero en el tono que te sirva, con m&uacute;sicos e
+           instrumentos reales. Entrega en 7 a 10 d&iacute;as, desde US$&nbsp;150.</p>
+        <a class="chev" href="/index.html#a-medida">Ver c&oacute;mo funciona</a>
+      </div>
+    </div>
+  </section>
+
+  {{RELACIONADAS}}
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__cols">
+      <div>
+        <h4>Cat&aacute;logo</h4>
+        <ul>
+          <li><a href="/catalogo.html">Todas las pistas</a></li>
+          <li><a href="/catalogo.html#estilo={{ESTILOSLUG}}">{{ESTILO}}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>A medida</h4>
+        <ul>
+          <li><a href="/index.html#a-medida">Cover a pedido</a></li>
+          <li><a href="/index.html#a-medida">Tema propio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Escribinos por WhatsApp</a></li>
+          <li>Consultas y pedidos, todos los d&iacute;as.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__pie">
+      <p class="footer__marca"><img src="/assets/img/logo.png?v=20260914-1" alt="" width="16" height="16"><span>Copyright &copy; <span data-anio>2026</span> Idearum. Todos los derechos reservados.</span></p>
+      <p>Producci&oacute;n musical.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/app.js?v={{V}}" defer></script>
+
+</body>
+</html>
+"""
+
+
+def escribir_paginas(pistas, version):
+    """Deja una pagina por pista en pista/ y devuelve la lista de URLs."""
+    import shutil
+    carpeta = os.path.join(RAIZ, CARPETA_PAGINAS)
+    if os.path.isdir(carpeta):
+        shutil.rmtree(carpeta)      # se regenera entera: no quedan paginas viejas
+    os.makedirs(carpeta)
+
+    por_estilo = collections.defaultdict(list)
+    for p in pistas:
+        por_estilo[p["estilo"]].append(p)
+
+    urls = []
+    for p in pistas:
+        ident = "%04d" % p["nro"]
+        archivo = "%s-%s.html" % (slug_url(p["titulo"]), ident)
+        url = "%s/%s/%s" % (DOMINIO, CARPETA_PAGINAS, archivo)
+        autor = p["autor"]
+        tono = p["tono"]
+
+        trozos = ["Pista de %s" % p["titulo"]]
+        if autor:
+            trozos.append(autor)
+        titulo_pagina = "%s | Idearum" % " — ".join(trozos)
+        if tono:
+            titulo_pagina = "Pista de %s%s (%s) | Idearum" % (
+                p["titulo"], (" — " + autor) if autor else "", tono)
+
+        desc = ("Pista musical de %s%s, estilo %s%s. Grabada de cero con músicos e "
+                "instrumentos reales. Escuchá la muestra y pedila por WhatsApp."
+                % (p["titulo"], (" de " + autor) if autor else "", p["estilo"],
+                   (", en " + tono) if tono else ""))
+
+        mensaje = "Hola Idearum, quiero esta pista: %s%s (%s%s) [ID: %s]" % (
+            p["titulo"], (" — " + autor) if autor else "", p["estilo"],
+            (", " + tono) if tono else "", ident)
+
+        tiene = os.path.exists(os.path.join(PREVIAS, ident + ".mp3"))
+        if tiene:
+            muestra = ('<div class="pista-muestra">\n'
+                       '        <p class="etiqueta">Escuch&aacute; 30 segundos</p>\n'
+                       '        <div class="repro" data-audio="/assets/audio/previas/%s.mp3" data-nombre="%s"></div>\n'
+                       '      </div>' % (ident, esc(p["titulo"])))
+        else:
+            muestra = ('<p class="pista-sin-muestra">Esta pista todav&iacute;a no tiene muestra en l&iacute;nea. '
+                       'Escribinos y te la mandamos para que la escuches antes de comprarla.</p>')
+
+        # Otras del mismo estilo, para que Google (y la gente) sigan navegando.
+        otras = [o for o in por_estilo[p["estilo"]] if o["nro"] != p["nro"]][:6]
+        if otras:
+            filas = []
+            for o in otras:
+                oid = "%04d" % o["nro"]
+                ometa = " &middot; ".join(x for x in [esc(o["autor"]), esc(o["estilo"])] if x)
+                if o["tono"]:
+                    ometa += ' &middot; <span class="fila__tono">%s</span>' % esc(o["tono"])
+                filas.append(
+                    '<div class="fila">'
+                    '<span class="fila__hueco" aria-hidden="true"></span>'
+                    '<div class="fila__txt">'
+                    '<h3 class="fila__titulo"><a href="/%s/%s-%s.html">%s</a></h3>'
+                    '<p class="fila__meta meta">%s</p>'
+                    '</div></div>'
+                    % (CARPETA_PAGINAS, slug_url(o["titulo"]), oid, esc(o["titulo"]), ometa))
+            relacionadas = (
+                '<section class="seccion pista-mas">\n    <div class="wrap">\n'
+                '      <h2 class="h-seccion">M&aacute;s de %s</h2>\n'
+                '      <div class="lista lista--una">%s</div>\n'
+                '      <p class="centro"><a class="chev" href="/catalogo.html#estilo=%s">Ver todo el cat&aacute;logo</a></p>\n'
+                '    </div>\n  </section>' % (esc(p["estilo"]), "".join(filas), slug_url(p["estilo"])))
+        else:
+            relacionadas = ""
+
+        jsonld = json.dumps({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "Pista musical de %s" % p["titulo"],
+            "description": desc,
+            "category": p["estilo"],
+            "sku": ident,
+            "brand": {"@type": "Brand", "name": "Idearum"},
+            "offers": {
+                "@type": "Offer",
+                "url": url,
+                "price": "40",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+            },
+        }, ensure_ascii=False)
+
+        tono_dato = ("<div><dt>Tonalidad</dt><dd>%s</dd></div>" % esc(tono)) if tono else ""
+        autor_txt = esc(autor) if autor else "Autor no identificado"
+
+        html = PAGINA
+        for marca, valor in (
+            ("{{TITLE}}", esc(titulo_pagina)), ("{{DESC}}", esc(desc)),
+            ("{{URL}}", url), ("{{DOM}}", DOMINIO), ("{{V}}", version),
+            ("{{JSONLD}}", jsonld), ("{{TITULO}}", esc(p["titulo"])),
+            ("{{AUTOR_TXT}}", autor_txt), ("{{ESTILO}}", esc(p["estilo"])),
+            ("{{ESTILOSLUG}}", slug_url(p["estilo"])), ("{{TONO_DATO}}", tono_dato),
+            ("{{ID}}", ident), ("{{MUESTRA}}", muestra),
+            ("{{RELACIONADAS}}", relacionadas), ("{{WSP}}", WSP_WEB),
+            ("{{MSG}}", quote(mensaje, safe="")),
+        ):
+            html = html.replace(marca, valor)
+
+        with open(os.path.join(carpeta, archivo), "w", encoding="utf-8", newline="\n") as f:
+            f.write(html)
+        urls.append(url)
+
+    return urls
+
+
+def escribir_sitemap(urls):
+    hoy = datetime.date.today().isoformat()
+    partes = ['<?xml version="1.0" encoding="UTF-8"?>',
+              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u, pri in [(DOMINIO + "/", "1.0"), (DOMINIO + "/catalogo.html", "0.9")]:
+        partes.append("  <url><loc>%s</loc><lastmod>%s</lastmod><priority>%s</priority></url>" % (u, hoy, pri))
+    for u in urls:
+        partes.append("  <url><loc>%s</loc><lastmod>%s</lastmod><priority>0.6</priority></url>" % (u, hoy))
+    partes.append("</urlset>")
+    with open(os.path.join(RAIZ, "sitemap.xml"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(partes) + "\n")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Listado del catalogo -> data/pistas.js")
     ap.add_argument("archivo", help="Excel (.xlsx) o CSV con titulo, autor y estilo")
     ap.add_argument("--salida", default=SALIDA_POR_DEFECTO)
     ap.add_argument("--forzar", action="store_true")
+    ap.add_argument("--sin-paginas", action="store_true",
+                    help="no regenera la carpeta pista/ ni el sitemap")
+    ap.add_argument("--version", default="20261006-1",
+                    help="el ?v= que llevan el CSS y el JS en las paginas generadas")
     args = ap.parse_args()
 
     if not os.path.exists(args.archivo):
@@ -400,7 +772,13 @@ def main():
                                      % (nro, t2, a2))
             continue
 
-        candidatas.append({"nro": nro, "titulo": t2, "autor": a2, "estilo": estilo})
+        tono_c = espacios(celda(fila, "tono"))
+        tono = tono_web(tono_c)
+        if tono_c and not tono:
+            informe["tono"].append("fila %d: no entiendo la tonalidad %r (%s)" % (nro, tono_c, t2))
+
+        candidatas.append({"nro": nro, "titulo": t2, "autor": a2,
+                           "estilo": estilo, "tono": tono})
 
     # Un mismo autor escrito de varias formas: se queda la version mas
     # completa (la que tiene tildes y mayusculas).
@@ -479,18 +857,43 @@ def main():
         print(CABECERA.format(origen=os.path.basename(args.archivo), total=len(pistas)), file=f)
         for i, p in enumerate(pistas):
             coma = "," if i < len(pistas) - 1 else ""
-            print('  {{ id: {0}, titulo: {1}, autor: {2}, estilo: {3} }}{4}'.format(
-                json.dumps("%04d" % p["nro"]),
+            ident = "%04d" % p["nro"]
+            # demo: 1 avisa que existe assets/audio/previas/<id>.mp3, para que
+            # la web dibuje el boton de escuchar solo donde hay algo que sonar.
+            demo = ",  demo: 1" if os.path.exists(os.path.join(PREVIAS, ident + ".mp3")) else ""
+            print('  {{ id: {0}, titulo: {1}, autor: {2}, estilo: {3}, tono: {4}{5} }}{6}'.format(
+                json.dumps(ident),
                 json.dumps(p["titulo"], ensure_ascii=False),
                 json.dumps(p["autor"], ensure_ascii=False),
                 json.dumps(p["estilo"], ensure_ascii=False),
+                json.dumps(p["tono"], ensure_ascii=False),
+                demo,
                 coma), file=f)
         print(PIE, file=f, end="")
+
+    seccion("TONALIDADES QUE NO ENTENDI", informe["tono"])
+
+    con_tono = sum(1 for p in pistas if p["tono"])
+    con_demo = sum(1 for p in pistas
+                   if os.path.exists(os.path.join(PREVIAS, "%04d.mp3" % p["nro"])))
+    print("\nTONALIDAD: %d de %d pistas la tienen (%.0f%%), en %d tonalidades distintas"
+          % (con_tono, len(pistas), 100.0 * con_tono / len(pistas),
+             len(set(p["tono"] for p in pistas if p["tono"]))))
+    print("MUESTRAS DE 30 s: %d de %d pistas tienen una (%.0f%%)"
+          % (con_demo, len(pistas), 100.0 * con_demo / len(pistas)))
 
     print("\nPOR ESTILO")
     cuenta = collections.Counter(p["estilo"] for p in pistas)
     for e in ESTILOS:
         print("   %-22s %4d" % (e, cuenta.get(e, 0)))
+    if args.sin_paginas:
+        print("\n(--sin-paginas: no toque la carpeta pista/ ni el sitemap)")
+    else:
+        urls = escribir_paginas(pistas, args.version)
+        escribir_sitemap(urls)
+        print("\nPAGINAS: una por pista en %s/  (%d archivos) + sitemap.xml"
+              % (CARPETA_PAGINAS, len(urls)))
+
     print("\nListo: %d pistas publicadas en %s" % (len(pistas), args.salida))
     return 0
 

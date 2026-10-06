@@ -62,6 +62,16 @@ ul { list-style: none; padding: 0; }
 
 :focus-visible { outline: 2px solid var(--texto); outline-offset: 3px; border-radius: 4px; }
 
+/* Texto que no se ve pero que leen los lectores de pantalla. */
+.solo-lectores {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ---------- 3. Layout ---------------------------------------------------- */
 
 .wrap {
@@ -832,7 +842,40 @@ ul { list-style: none; padding: 0; }
 /* ---------- 12. Catalogo -------------------------------------------------- */
 
 .cat-cabecera { padding: 64px 0 28px; }
-.cat-cabecera .h-seccion { margin-bottom: 8px; }
+.cat-cabecera .h-seccion { margin-bottom: 12px; }
+
+.cat-bajada {
+  max-width: 54ch;
+  font-size: 21px;
+  line-height: 1.35;
+  color: var(--texto-sec);
+}
+
+/* Buscador y tonalidad en la misma linea; en movil se apilan. */
+.cat-buscar { display: flex; gap: 10px; margin: 26px 0 0; }
+.cat-buscar .buscador { flex: 1; min-width: 0; margin: 0; }
+.cat-tono { flex: none; }
+.cat-tono select {
+  height: 48px;
+  max-width: 100%;
+  padding: 0 38px 0 18px;
+  font: inherit;
+  font-size: 15px;
+  color: var(--texto);
+  background: var(--gris-fondo);
+  border: 1px solid transparent;
+  border-radius: 980px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%2386868b' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 11px 7px;
+  transition: border-color .2s var(--ease), background-color .2s var(--ease);
+}
+.cat-tono select:hover { border-color: var(--borde); }
+.cat-tono select:focus { outline: none; background-color: var(--blanco); border-color: var(--borde); }
 
 .cat-precio {
   margin-top: 14px;
@@ -943,15 +986,65 @@ ul { list-style: none; padding: 0; }
 }
 
 .fila {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   padding: 16px 0;
   border-bottom: 1px solid var(--borde);
   min-height: 72px;
 }
-.fila__txt { min-width: 0; }
+.fila__txt { min-width: 0; flex: 1; }
+
+/* Boton de escuchar. Va en circulo vacio y no relleno: en una lista larga,
+   trescientos circulos negros competirian con el boton de Consultar, que es
+   el que tiene que ganar. Se rellena al pasar el mouse y mientras suena. */
+.fila__play {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  color: var(--texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color .2s var(--ease), border-color .2s var(--ease),
+              color .2s var(--ease), transform .2s var(--ease);
+}
+.fila__play svg { width: 11px; height: 11px; fill: currentColor; }
+.fila__play .icono-pausa { display: none; }
+.fila__play:hover { border-color: var(--texto); transform: scale(1.06); }
+.fila.is-sonando .fila__play {
+  background: var(--texto);
+  border-color: var(--texto);
+  color: var(--blanco);
+}
+.fila.is-sonando .fila__play .icono-play { display: none; }
+.fila.is-sonando .fila__play .icono-pausa { display: block; }
+
+/* Las pistas sin muestra dejan el lugar vacio, para que todos los titulos
+   arranquen a la misma altura. */
+.fila__hueco { flex: none; width: 36px; height: 36px; }
+
+/* Si el archivo no llegara a cargar, el boton queda apagado. */
+.fila--sin-audio .fila__play { opacity: .35; cursor: default; }
+.fila--sin-audio .fila__play:hover { border-color: var(--borde); transform: none; }
+
+/* Avance de la muestra: una linea finita abajo de la fila. */
+.fila__progreso {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 2px;
+  background: var(--texto);
+  pointer-events: none;
+}
+
+/* La tonalidad es el dato que decide la compra de un cantante: va en el
+   color del texto y no en el gris del resto de la linea. */
+.fila__tono { color: var(--texto); font-weight: 500; }
 .fila__titulo {
   font-size: 19px;
   font-weight: 600;
@@ -964,10 +1057,140 @@ ul { list-style: none; padding: 0; }
 
 .cargar-mas { text-align: center; padding: 44px 0 0; }
 
-.vacio { padding: 64px 0; text-align: center; border-bottom: 1px solid var(--borde); }
-.vacio h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 10px; }
-.vacio p  { color: var(--texto-sec); margin-bottom: 24px; }
+/* "No encontramos esa pista" es, en realidad, el momento de mayor intencion
+   de compra de la web: casi ningun titulo se busca dos veces. Por eso esta
+   caja no se disculpa, ofrece. */
+.vacio {
+  padding: 56px 26px 52px;
+  margin-top: 8px;
+  text-align: center;
+  background: var(--gris-fondo);
+  border-radius: 18px;
+}
+.vacio h3 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 auto 12px;
+  max-width: 18ch;
+}
+.vacio p { color: var(--texto-sec); margin: 0 auto 22px; max-width: 46ch; }
+.vacio__precio {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 26px;
+  font-size: 17px;
+  color: var(--texto-sec);
+}
+.vacio__precio .num {
+  margin-bottom: -2px;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--texto);
+}
+.vacio .nota { margin-top: 14px; margin-bottom: 0; }
 
+.btn--grande { padding: 15px 30px; font-size: 18px; }
+
+
+/* ---------- 12b. Pagina de una pista -------------------------------------
+   Una por cada pista del catalogo, generada por tools/csv_a_js.py. Es la que
+   aparece cuando alguien busca su cancion en Google, asi que arranca con el
+   titulo, la tonalidad y el boton de escuchar, sin nada arriba.
+   -------------------------------------------------------------------------- */
+
+.pista-cab { padding: 52px 0 72px; }
+
+.miga { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--texto-sec); margin-bottom: 26px; }
+.miga a { color: var(--texto-sec); }
+.miga a:hover { color: var(--texto); }
+
+.pista-titulo {
+  font-size: clamp(34px, 5.6vw, 54px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+.pista-autor { font-size: 21px; color: var(--texto-sec); margin-bottom: 30px; }
+
+.pista-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 0 0 32px;
+  padding: 0;
+}
+.pista-datos > div {
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 11px 16px;
+}
+.pista-datos dt { font-size: 12px; color: var(--texto-sec); margin-bottom: 2px; }
+.pista-datos dd { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+
+.pista-muestra { max-width: 440px; margin-bottom: 34px; }
+.pista-muestra .etiqueta { margin-bottom: 10px; }
+.pista-muestra .repro { background: var(--gris-fondo); }
+.pista-muestra .repro__barra { background: #dcdce1; }
+
+.pista-sin-muestra {
+  max-width: 50ch;
+  margin-bottom: 34px;
+  font-size: 15px;
+  color: var(--texto-sec);
+}
+
+.pista-compra {
+  border-top: 1px solid var(--borde);
+  padding-top: 28px;
+  margin-bottom: 44px;
+}
+.pista-precio {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  margin-bottom: 18px;
+  font-size: 17px;
+  color: var(--texto-sec);
+}
+.pista-precio .num {
+  margin-bottom: -2px;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--texto);
+}
+.pista-compra .nota { margin-top: 12px; }
+
+.pista-otra {
+  background: var(--gris-fondo);
+  border-radius: 18px;
+  padding: 26px 26px 24px;
+  max-width: 620px;
+}
+.pista-otra h2 { font-size: 21px; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 8px; }
+.pista-otra p { color: var(--texto-sec); font-size: 15.5px; margin-bottom: 14px; }
+
+.pista-mas { padding: 0 0 100px; }
+.pista-mas .h-seccion { font-size: 28px; margin-bottom: 18px; }
+.lista--una { grid-template-columns: 1fr; }
+.fila__titulo a { color: inherit; }
+.fila__titulo a:hover { text-decoration: underline; }
+.centro { text-align: center; padding-top: 30px; }
+
+@media (max-width: 833px) {
+  .pista-cab { padding: 34px 0 52px; }
+  .pista-autor { font-size: 18px; margin-bottom: 24px; }
+  .pista-precio .num { font-size: 40px; }
+  .pista-mas { padding-bottom: 70px; }
+}
 
 /* ---------- 13. Reveal ---------------------------------------------------- */
 
@@ -1036,6 +1259,16 @@ ul { list-style: none; padding: 0; }
 
   .cat-precio { font-size: 17px; }
   .cat-precio__sep { margin: 0 8px; }
+
+  .cat-bajada { font-size: 18px; }
+  .cat-buscar { flex-direction: column; gap: 8px; }
+  .cat-tono select { width: 100%; }
+
+  .fila { gap: 11px; }
+  .fila__play, .fila__hueco { width: 34px; height: 34px; }
+  .vacio { padding: 44px 20px 40px; }
+  .vacio h3 { font-size: 23px; }
+  .vacio__precio .num { font-size: 38px; }
 
   .filtros__in { flex-wrap: nowrap; overflow-x: auto; }
 

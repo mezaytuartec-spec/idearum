@@ -15,9 +15,9 @@
 
   var indice = [];       // catalogo precalculado, se arma una sola vez
   var filtradas = [];    // resultado actual
-  var estado = { q: "", estilo: "todos", pagina: 1 };
+  var estado = { q: "", estilo: "todos", tono: "", pagina: 1 };
 
-  var $input, $buscador, $limpiar, $lista, $mas, $vacio, $pills;
+  var $input, $buscador, $limpiar, $lista, $mas, $vacio, $pills, $tono;
   var timer = null;
 
   /* ---------- Indice normalizado (una sola vez) --------------------------- */
@@ -27,15 +27,16 @@
     indice = new Array(lista.length);
     for (var i = 0; i < lista.length; i++) {
       var p = lista[i];
-      // El campo de busqueda dice "Buscar por autor" porque es lo mas comun,
-      // pero el indice incluye tambien el titulo y el estilo: quien escriba
-      // "tango" o el nombre de la cancion igual encuentra.
+      // El buscador mira titulo, autor, estilo y tonalidad a la vez: quien
+      // escriba "tango", el nombre de la cancion o "la menor" igual encuentra.
       indice[i] = {
         p: p,
         estilo: API.slug(p.estilo),
+        tono: p.tono || "",
         busca: API.normalizar(p.titulo) + " " +
                API.normalizar(p.autor) + " " +
-               API.normalizar(p.estilo)
+               API.normalizar(p.estilo) + " " +
+               API.normalizar(p.tono || "")
       };
     }
   }
@@ -46,9 +47,11 @@
     var q = API.normalizar(estado.q).trim();
     var e = estado.estilo;
     var out = [];
+    var t = estado.tono;
     for (var i = 0; i < indice.length; i++) {
       var it = indice[i];
       if (e !== "todos" && it.estilo !== e) continue;
+      if (t && it.tono !== t) continue;
       if (q && it.busca.indexOf(q) === -1) continue;
       out.push(it.p);
     }
@@ -96,6 +99,40 @@
     actualizarBotonMas();
   }
 
+  /* ---------- Desplegable de tonalidades -----------------------------------
+     Las opciones salen del propio catalogo, no de una lista escrita a mano:
+     si manana entra una pista en una tonalidad nueva, aparece sola. Van
+     ordenadas como las ordena un musico (las mayores y despues las menores),
+     no por orden alfabetico.
+     ------------------------------------------------------------------------ */
+
+  var NOTAS = ["do", "reb", "re", "do#", "mib", "re#", "mi", "fa", "fa#",
+               "sol", "lab", "sol#", "la", "sib", "si"];
+
+  function ordenTono(t) {
+    var partes = API.normalizar(t).split(" ");
+    var nota = NOTAS.indexOf(partes[0]);
+    var modo = partes[1] === "menor" ? 1 : (partes[1] === "mayor" ? 0 : 2);
+    return modo * 100 + (nota < 0 ? 99 : nota);
+  }
+
+  function llenarTonos() {
+    if (!$tono) return;
+    var vistos = {};
+    var lista = [];
+    for (var i = 0; i < indice.length; i++) {
+      var t = indice[i].tono;
+      if (t && !vistos[t]) { vistos[t] = 1; lista.push(t); }
+    }
+    lista.sort(function (a, b) { return ordenTono(a) - ordenTono(b); });
+
+    var html = ['<option value="">Cualquier tonalidad</option>'];
+    for (var j = 0; j < lista.length; j++) {
+      html.push('<option value="' + lista[j] + '">' + lista[j] + "</option>");
+    }
+    $tono.innerHTML = html.join("");
+  }
+
   /* ---------- Filtro de estilo + hash de la URL ---------------------------- */
 
   function pintarPills() {
@@ -139,9 +176,11 @@
     $buscador = document.getElementById("buscador");
     $input = document.getElementById("q");
     $limpiar = document.getElementById("limpiar");
+    $tono = document.getElementById("tono");
     if (!$lista || !$pills || !$input) return;
 
     construirIndice();
+    llenarTonos();
 
     // Estilo inicial tomado del hash: catalogo.html#estilo=rock
     estado.estilo = leerHash();
@@ -176,6 +215,13 @@
       render();
       $input.focus();
     });
+
+    if ($tono) {
+      $tono.addEventListener("change", function () {
+        estado.tono = $tono.value;
+        render();
+      });
+    }
 
     $mas.addEventListener("click", function () {
       estado.pagina++;

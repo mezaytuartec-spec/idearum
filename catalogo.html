@@ -37,7 +37,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
 
-<link rel="stylesheet" href="css/styles.css?v=20260915-1">
+<link rel="stylesheet" href="css/styles.css?v=20261006-1">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -100,20 +100,32 @@
   <!-- ---------- Cabecera + buscador -------------------------------------- -->
   <section class="cat-cabecera">
     <div class="wrap">
-      <h1 class="h-seccion">Catálogo</h1>
+      <h1 class="h-seccion">Catálogo de pistas</h1>
+      <p class="cat-bajada">Buscá tu canción. Si está, te la mandamos hoy. Si no está, la grabamos de cero en la tonalidad que necesites.</p>
+
+      <!-- El buscador va antes que todo a propósito: casi nadie recorre una
+           lista de cientos de temas, la gente viene con una canción en la
+           cabeza. Y cuando no la encuentra, ahí abajo está la oferta de
+           grabarla a medida, que es la consulta que más vale. -->
+      <div class="cat-buscar">
+        <div class="buscador" id="buscador">
+          <svg class="buscador__lupa" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/>
+          </svg>
+          <label class="solo-lectores" for="q">Buscar pistas por título, autor o tonalidad</label>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="Buscar por canción o autor">
+          <button class="buscador__limpiar" id="limpiar" type="button" aria-label="Limpiar búsqueda">&times;</button>
+        </div>
+
+        <div class="cat-tono">
+          <label class="solo-lectores" for="tono">Filtrar por tonalidad</label>
+          <select id="tono"><option value="">Cualquier tonalidad</option></select>
+        </div>
+      </div>
 
       <!-- ⚠️ PRECIOS DEL CATÁLOGO — si cambian, tocá también el corredor de index.html. -->
       <p class="cat-precio"><strong>Una canción US$&nbsp;40</strong><span class="cat-precio__sep">·</span><strong>Tres canciones US$&nbsp;100</strong></p>
-
-      <div class="buscador" id="buscador">
-        <svg class="buscador__lupa" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/>
-        </svg>
-        <label class="nota" for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Buscar pistas por autor o por título</label>
-        <input id="q" type="search" autocomplete="off" spellcheck="false"
-               placeholder="Buscar por autor">
-        <button class="buscador__limpiar" id="limpiar" type="button" aria-label="Limpiar búsqueda">&times;</button>
-      </div>
 
       <!-- Versión corta del antes y después. Cada pastilla es un botón de
            play; suena una por vez. No se descarga ningún audio hasta que
@@ -164,14 +176,20 @@
 
       <div class="lista" id="lista"></div>
 
+      <!-- Que una búsqueda no encuentre nada no es un callejón sin salida:
+           es el momento de mayor intención de compra de toda la web. Casi
+           ningún título se pide dos veces, así que la mayoría de las búsquedas
+           terminan acá, y acá es donde está el trabajo a medida. -->
       <div class="vacio" id="vacio" hidden>
-        <h3>No encontramos esa pista.</h3>
-        <p>Puede que igual la tengamos, o que la podamos producir.</p>
-        <a class="btn btn--primario"
+        <h3>Esa no la tenemos grabada. Te la grabamos.</h3>
+        <p>La producimos de cero, con músicos e instrumentos reales y en la tonalidad
+           que necesites. Entrega en 7 a 10 días, en WAV y MP3.</p>
+        <p class="vacio__precio"><span>desde US$</span><span class="num">150</span></p>
+        <a class="btn btn--primario btn--grande"
            href="https://wa.me/5492656442608"
            data-wsp="Hola Idearum, busco una pista que no encontré en el catálogo: "
-           target="_blank" rel="noopener">Preguntanos</a>
-        <p class="nota" style="margin-top:10px">Te respondemos por WhatsApp.</p>
+           target="_blank" rel="noopener">Pedila por WhatsApp</a>
+        <p class="nota">Decinos qué canción es y te pasamos el presupuesto.</p>
       </div>
 
       <div class="cargar-mas" id="cargar-mas" hidden>
@@ -307,9 +325,9 @@
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20260915-1" defer></script>
-<script src="js/app.js?v=20260915-1" defer></script>
-<script src="js/catalogo.js?v=20260915-1" defer></script>
+<script src="data/pistas.js?v=20261006-1" defer></script>
+<script src="js/app.js?v=20261006-1" defer></script>
+<script src="js/catalogo.js?v=20261006-1" defer></script>
 
 <!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
      Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:

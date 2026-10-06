@@ -57,15 +57,44 @@ idearum/
 │   ├── app.js          nav, revelados, corredor 3D, reproductores, WhatsApp
 │   └── catalogo.js     buscador, filtros y paginado del catálogo
 ├── data/pistas.js      EL CATÁLOGO (se genera desde el Excel, no se edita a mano)
+├── pista/              una página por pista (se generan solas, no se tocan)
 ├── tools/
-│   ├── csv_a_js.py     convierte el Excel del catálogo a data/pistas.js
+│   ├── csv_a_js.py     Excel -> data/pistas.js + las páginas + sitemap.xml
+│   ├── previas.py      recorta los demos a muestras de 30 segundos
 │   └── portadas.py     deja las portadas cuadradas, de 640 px y comprimidas
 └── assets/
     ├── img/            hero, logo, favicons y portadas del corredor
     │   └── origen/     originales y variantes que la web NO usa (no hace
     │                   falta subirlos al hosting)
-    └── audio/          los seis MP3 del antes y después
+    └── audio/
+        ├── ejemplo-*   los seis MP3 del antes y después
+        └── previas/    una muestra de 30 s por pista, con el ID de nombre
 ```
+
+---
+
+## Cómo se arma el catálogo, de punta a punta
+
+Son dos comandos y siempre en este orden. El Excel manda; todo lo demás se
+genera y no se edita a mano.
+
+```
+python tools/csv_a_js.py Listado_2026_pistas.xlsx
+python tools/previas.py "C:\ruta\a\la\carpeta\de\demos"
+python tools/csv_a_js.py Listado_2026_pistas.xlsx
+```
+
+Sí, el primero va dos veces, y es a propósito:
+
+1. La primera corrida arma `data/pistas.js` y le da a cada pista su **ID**,
+   que es el número de fila del Excel.
+2. `previas.py` necesita esos IDs, porque guarda cada muestra con ese nombre
+   (`0143.mp3`). Cruza solo los nombres de los archivos con los títulos.
+3. La segunda corrida se fija qué muestras quedaron y marca esas pistas con
+   `demo: 1`, que es lo que hace aparecer el botón de escuchar en la web.
+
+Si solo cambiaste el Excel y no tocaste los audios, con una sola corrida del
+primero alcanza.
 
 ---
 
@@ -100,6 +129,10 @@ País, Tonalidad…) se ignoran y **nunca se publican**.
   WhatsApp llega "[ID: 0142]", es la fila 142. Por eso las pistas nuevas van
   siempre **al final** de la planilla: insertar filas en el medio les cambia
   el número a las de abajo.
+- La **tonalidad** se publica y se puede filtrar. En la planilla está escrita
+  de muchas formas para la misma nota (`Do Mayor`, `Do mayor`, `ReMayor`,
+  `Mi b Mayor`, `Re menor2`): el script las unifica solo, y junta las que
+  suenan igual aunque se escriban distinto (Re# menor y Mib menor).
 - Los temas con **Propio = Sí no se publican**: son composiciones de clientes.
   Lo mismo con los que tengan un autor de la lista `AUTORES_PROPIOS`, arriba
   de `tools/csv_a_js.py`: sirve para los que quedaron sin marcar en el Excel.
@@ -110,7 +143,32 @@ País, Tonalidad…) se ignoran y **nunca se publican**.
 - Repara letras dañadas por codificación ("Ma¤ana" → "Mañana"), acomoda
   mayúsculas y unifica autores escritos de varias formas.
 
-### 3. Los audios del antes y después
+### 3. Las muestras de 30 segundos
+
+Son el cambio que más mueve la aguja de toda la web: nadie paga una pista que
+no escuchó, y antes cada “quiero escuchar” era un mensaje a mano.
+
+`tools/previas.py` toma una carpeta con los temas completos y deja en
+`assets/audio/previas/` un recorte de 30 segundos por pista, a 128 kbps. **El
+tema entero no se sube nunca.**
+
+Para cruzar cada archivo con su pista mira el nombre, salteando las marcas de
+siempre (`(Demo)`, `_muestra`, `Título - Autor`). Cuando un archivo podría ser
+de dos pistas distintas —dos versiones del mismo tema en estilos o tonalidades
+diferentes— **no elige ninguna**: la deja sin muestra y la lista al final. Para
+resolverlo, agregale el autor al nombre del archivo y volvé a correrlo:
+
+```
+(Demo) Abrazame - Jorge Vazquez.mp3
+```
+
+Probá primero sin generar nada, para ver el cruce:
+
+```
+python tools/previas.py "C:\ruta\a\los\demos" --probar
+```
+
+### 4. Los audios del antes y después
 
 Ya están cargados. Son seis MP3 en `assets/audio/`:
 
@@ -136,7 +194,7 @@ Pista grabada"…) sin reloj ni barra. Lo que dice cada uno está en el
 `data-nombre` y el `data-detalle` de `catalogo.html`. Ahí no se descarga ningún
 audio hasta que alguien aprieta play, así el catálogo carga igual de rápido.
 
-### 4. Textos por revisar
+### 5. Textos por revisar
 
 Los plazos de entrega y los formatos de las tarjetas de "A medida" son
 estimados. Están marcados con `⚠️` dentro del HTML.
@@ -234,6 +292,23 @@ molestan: nadie los pide nunca.
 
 ---
 
+## Una página por pista
+
+Nadie busca “pistas para cantantes”: busca “pista de El día que me quieras”.
+Con las pistas metidas todas dentro de `catalogo.html`, Google no tiene nada
+que mostrarle a esa persona.
+
+Por eso cada pista tiene además su propia página en `pista/`, con su título,
+su autor, su tonalidad, su muestra y su botón de pedido. Las genera
+`tools/csv_a_js.py` junto con el `sitemap.xml`, y **la carpeta se rehace
+entera cada vez**: no se edita a mano ni se le agregan archivos, porque la
+próxima corrida los borra.
+
+Si cambiás el título de una pista en el Excel, cambia la dirección de su
+página. Es normal; el link viejo deja de funcionar.
+
+---
+
 ## Qué se hizo para que vaya liviana
 
 Sin librerías, sin compilación y sin cambiar nada de lo que se ve:
@@ -249,6 +324,10 @@ Sin librerías, sin compilación y sin cambiar nada de lo que se ve:
   Quien entra a la home y no baja hasta ahí no descarga ni un byte de música.
 - **Imágenes recomprimidas**: el hero pesa un 12 % menos y el ícono de iOS un
   32 %, sin diferencia visible.
+- **Las muestras no se descargan hasta que alguien aprieta play**, y hay un
+  solo reproductor de audio para las trescientas y pico de filas, al que se le
+  cambia la fuente. Trescientos reproductores servirían para lo mismo y
+  gastarían memoria de más.
 - **Compresión en el servidor**: `.htaccess` pide Brotli y, si el hosting no
   lo tiene, gzip. El CSS y el JS viajan a un cuarto de su peso, así que **no
   están minificados a propósito**: se ganan unos pocos KB y se pierde poder

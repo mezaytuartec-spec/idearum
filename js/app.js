@@ -129,20 +129,40 @@
   // Algunas pistas no tienen autor cargado (en el Excel figura el genero en
   // su lugar): el mensaje y la fila se arman sin el guion colgando.
   function mensajePista(p) {
-    return "Hola Idearum, quiero escuchar la pista: " + p.titulo +
+    // La tonalidad va en el mensaje a proposito: es el primer dato que se
+    // termina preguntando por WhatsApp, y asi ya viene contestado.
+    var entre = p.estilo + (p.tono ? ", " + p.tono : "");
+    return "Hola Idearum, quiero esta pista: " + p.titulo +
            (p.autor ? " — " + p.autor : "") +
-           " (" + p.estilo + ") [ID: " + p.id + "]";
+           " (" + entre + ") [ID: " + p.id + "]";
   }
 
   // Una fila del catalogo. Vive aca y no en catalogo.js porque la usan las
   // dos paginas: el catalogo completo y la vista previa de la home.
+  // Los iconos de play y pausa, que comparten el reproductor grande y las filas.
+  var ICONOS =
+    '<svg class="icono-play" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0l12 7-12 7z"/></svg>' +
+    '<svg class="icono-pausa" viewBox="0 0 12 14" aria-hidden="true"><path d="M0 0h4v14H0zM8 0h4v14H8z"/></svg>';
+
+  // Una fila del catalogo. Vive aca y no en catalogo.js porque la usan las
+  // dos paginas: el catalogo completo y la vista previa de la home.
+  //
+  // El boton de escuchar aparece solo en las pistas que tienen muestra
+  // (demo: 1 en data/pistas.js). Las que no la tienen dejan el lugar vacio,
+  // para que todos los titulos arranquen a la misma altura.
   function filaHTML(p) {
     var titulo = escapar(p.titulo);
     var autor = escapar(p.autor || "");
     var estilo = escapar(p.estilo);
     var href = escapar(wa(mensajePista(p)));
-    var meta = autor ? autor + " &middot; " + estilo : estilo;
+    var meta = (autor ? autor + " &middot; " + estilo : estilo) +
+               (p.tono ? ' &middot; <span class="fila__tono">' + escapar(p.tono) + "</span>" : "");
+    var play = p.demo
+      ? '<button class="fila__play" type="button" data-demo="' + escapar(p.id) +
+          '" aria-label="Escuchar un fragmento de ' + titulo + '">' + ICONOS + "</button>"
+      : '<span class="fila__hueco" aria-hidden="true"></span>';
     return '<div class="fila">' +
+             play +
              '<div class="fila__txt">' +
                '<h3 class="fila__titulo">' + titulo + "</h3>" +
                '<p class="fila__meta meta">' + meta + "</p>" +
@@ -150,6 +170,7 @@
              '<a class="btn btn--primario btn--compacto" href="' + href +
                '" target="_blank" rel="noopener" aria-label="Consultar por ' + titulo +
                ' por WhatsApp">Consultar</a>' +
+             '<span class="fila__progreso" aria-hidden="true"></span>' +
            "</div>";
   }
 
@@ -502,6 +523,7 @@
       var a = cargar();
       if (a.paused) {
         if (SONANDO && SONANDO !== a) SONANDO.pause();
+        soltarFila();
         SONANDO = a;
         a.play().then(null, function () { apagar("Disponible pronto"); });
         caja.classList.add("is-sonando");
@@ -551,6 +573,93 @@
     }, { rootMargin: "400px 0px" });
 
     obs.observe(sec);
+  }
+
+  /* ---------- Escuchar una pista del catalogo ------------------------------
+     Cada fila con muestra tiene un boton de play. Suena un solo audio en toda
+     la web: el mismo SONANDO que usan los reproductores de antes y despues.
+
+     Hay UN solo elemento de audio para las 335 filas, al que se le cambia la
+     fuente: 335 reproductores servirian para lo mismo y gastarian memoria de
+     mas. El click se escucha en la lista entera y no fila por fila, asi
+     agregar filas al dibujar mas paginas no cuesta nada.
+
+     Los ultimos segundos bajan de volumen solos, para que la muestra no corte
+     de golpe. (En iPhone el volumen no se puede tocar por software: ahi corta
+     seco, que es como estaba antes.)
+     ------------------------------------------------------------------------ */
+
+  var DESVANECER = 1.4;        // segundos de bajada al final
+  var audioFila = null;        // el unico <audio> de las filas
+  var filaSonando = null;      // la fila que esta sonando
+
+  function soltarFila() {
+    if (!filaSonando) return;
+    filaSonando.classList.remove("is-sonando");
+    var barra = filaSonando.querySelector(".fila__progreso");
+    if (barra) barra.style.width = "0";
+    filaSonando = null;
+  }
+
+  function initFilas() {
+    var listas = document.querySelectorAll(".lista");
+    if (!listas.length) return;
+
+    function crear() {
+      if (audioFila) return audioFila;
+      audioFila = new Audio();
+      audioFila.preload = "none";
+
+      audioFila.addEventListener("timeupdate", function () {
+        if (!filaSonando || !audioFila.duration) return;
+        var barra = filaSonando.querySelector(".fila__progreso");
+        if (barra) {
+          barra.style.width = (audioFila.currentTime / audioFila.duration * 100) + "%";
+        }
+        var falta = audioFila.duration - audioFila.currentTime;
+        if (falta < DESVANECER) {
+          try { audioFila.volume = Math.max(0, falta / DESVANECER); } catch (e) {}
+        }
+      });
+      audioFila.addEventListener("ended", soltarFila);
+      audioFila.addEventListener("pause", soltarFila);
+      audioFila.addEventListener("error", function () {
+        if (filaSonando) filaSonando.classList.add("fila--sin-audio");
+        soltarFila();
+      });
+      return audioFila;
+    }
+
+    function alHacerClick(e) {
+      var btn = e.target.closest ? e.target.closest(".fila__play") : null;
+      if (!btn) return;
+      var fila = btn.closest(".fila");
+      var id = btn.getAttribute("data-demo");
+      var a = crear();
+
+      if (filaSonando === fila && !a.paused) {   // ya sonaba: se pausa
+        a.pause();
+        return;
+      }
+      if (SONANDO && !SONANDO.paused) SONANDO.pause();
+      soltarFila();
+
+      var fuente = "assets/audio/previas/" + id + ".mp3";
+      if (a.src.indexOf(fuente) === -1) a.src = fuente;
+      try { a.volume = 1; } catch (e2) {}
+      a.currentTime = 0;
+      SONANDO = a;
+      filaSonando = fila;
+      fila.classList.add("is-sonando");
+      a.play().then(null, function () {
+        fila.classList.add("fila--sin-audio");
+        soltarFila();
+      });
+    }
+
+    for (var i = 0; i < listas.length; i++) {
+      listas[i].addEventListener("click", alHacerClick);
+    }
   }
 
   /* ---------- Ahorro: congelar lo que no se ve -----------------------------
@@ -604,6 +713,7 @@
     safe(initCorredor, "initCorredor");
     safe(initPrevia, "initPrevia");
     safe(initRepros, "initRepros");
+    safe(initFilas, "initFilas");
     safe(initAhorro, "initAhorro");
     safe(initAnio, "initAnio");
     safe(initReveals, "initReveals");
