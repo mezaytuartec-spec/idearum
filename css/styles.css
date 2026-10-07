@@ -1135,6 +1135,17 @@ ul { list-style: none; padding: 0; }
 .pista-datos dt { font-size: 12px; color: var(--texto-sec); margin-bottom: 2px; }
 .pista-datos dd { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
 
+/* La gente busca "karaoke de tal cancion". La pagina lo dice con esa palabra
+   y de paso aclara en que se diferencia, que es lo que termina vendiendo. */
+.pista-karaoke {
+  max-width: 58ch;
+  margin-bottom: 30px;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--texto-sec);
+}
+.pista-karaoke strong { color: var(--texto); font-weight: 600; }
+
 .pista-muestra { max-width: 440px; margin-bottom: 34px; }
 .pista-muestra .etiqueta { margin-bottom: 10px; }
 .pista-muestra .repro { background: var(--gris-fondo); }

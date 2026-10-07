@@ -501,6 +501,11 @@ PAGINA = """<!DOCTYPE html>
         <div><dt>C&oacute;digo</dt><dd>{{ID}}</dd></div>
       </dl>
 
+      <p class="pista-karaoke">&iquest;Buscabas el <strong>karaoke de {{TITULO}}</strong>? Es para lo mismo:
+         suena sin voz para que cantes vos. La diferencia es que est&aacute; grabada de
+         cero con m&uacute;sicos e instrumentos reales, no es un karaoke armado con
+         sonidos de computadora.</p>
+
       {{MUESTRA}}
 
       <div class="pista-compra">
@@ -592,10 +597,13 @@ def escribir_paginas(pistas, version):
             titulo_pagina = "Pista de %s%s (%s) | Idearum" % (
                 p["titulo"], (" — " + autor) if autor else "", tono)
 
-        desc = ("Pista musical de %s%s, estilo %s%s. Grabada de cero con músicos e "
-                "instrumentos reales. Escuchá la muestra y pedila por WhatsApp."
-                % (p["titulo"], (" de " + autor) if autor else "", p["estilo"],
-                   (", en " + tono) if tono else ""))
+        # La descripcion que muestra Google. Incluye "karaoke" porque es la
+        # palabra con la que la gente busca esto, aunque el producto sea mejor
+        # que un karaoke: si la pagina no la dice, no aparece en esa busqueda.
+        desc = ("Pista de %s%s para cantar%s, estilo %s. Karaoke profesional "
+                "grabado con músicos reales. Escuchá la muestra."
+                % (p["titulo"], (" de " + autor) if autor else "",
+                   (" en " + tono) if tono else "", p["estilo"]))
 
         mensaje = "Hola Idearum, quiero esta pista: %s%s (%s%s) [ID: %s]" % (
             p["titulo"], (" — " + autor) if autor else "", p["estilo"],
