@@ -12,13 +12,19 @@ Esos recortes son los que suenan en la web. El tema entero NO se sube nunca.
 
 COMO CRUZA LOS ARCHIVOS
 Compara el nombre del archivo con el titulo de la pista, salteando las marcas
-de siempre: "(Demo)", "(demo )", "_muestra", "Titulo - Autor". Hace tres
+de siempre: "(Demo)", "(demo )", "_muestra", "Titulo - Autor". Hace cinco
 pasadas, de mas segura a menos:
 
   1. el titulo es identico
-  2. un titulo contiene al otro entero ("Penas y Alegrias del Amor" dentro de
+  2. son las mismas palabras en otro orden ("La Oveja Triste" / "La triste
+     oveja"), sin contar articulos ni preposiciones
+  3. un titulo contiene al otro entero ("Penas y Alegrias del Amor" dentro de
      "Las Penas y Alegrias del Amor")
-  3. hay una sola letra de diferencia ("Through it All" / "Throught it all")
+  4. hay una sola letra de diferencia ("Through it All" / "Throught it all")
+  5. casi las mismas palabras, con una de diferencia ("Ser como Nunca Fui" /
+     "Ser Quien Nunca Fui")
+
+Las ultimas dos son las mas flojas: el informe las lista aparte para mirarlas.
 
 Si un archivo puede ser de dos pistas distintas (dos versiones del mismo tema,
 en estilos o tonalidades diferentes) NO elige ninguna: lo deja sin asignar y lo
@@ -72,6 +78,25 @@ def clave(s):
 
 def pegado(s):
     return clave(s).replace(" ", "")
+
+
+# Palabras que no distinguen un titulo de otro.
+VACIAS = {"el", "la", "los", "las", "un", "una", "de", "del", "y", "a", "en",
+          "que", "mi", "tu", "su", "lo", "al", "the", "of"}
+
+
+def fichas(s):
+    """Las palabras que importan de un titulo, sin orden. 'La triste oveja' y
+    'La Oveja Triste' dan lo mismo."""
+    return frozenset(w for w in clave(s).split() if w not in VACIAS)
+
+
+def sirve(f):
+    """Un conjunto de palabras alcanza para comparar si tiene dos palabras, o
+    una sola pero larga. Con una palabra corta se cruzaria cualquier cosa."""
+    if len(f) >= 2:
+        return True
+    return len(f) == 1 and len(next(iter(f))) >= 4
 
 
 def distancia(a, b):
@@ -198,7 +223,35 @@ def cruzar(pistas, archivos):
         if not encontrado:
             pendientes.append(ruta)
 
-    # 2. un titulo contiene al otro
+    # 2. las mismas palabras en otro orden
+    pendientes2 = []
+    for ruta in pendientes:
+        base = os.path.basename(ruta)
+        cands = [fichas(c) for c in variantes(base)]
+        cands = [c for c in cands if sirve(c)]
+        hall = {}
+        for p in pistas:
+            if p["id"] in tomadas:
+                continue
+            fp = fichas(p["titulo"])
+            if sirve(fp) and any(fp == c for c in cands):
+                hall[p["id"]] = p
+        hall = list(hall.values())
+        if len(hall) == 1:
+            tomadas[hall[0]["id"]] = base
+            asignadas.append((ruta, hall[0], "otro orden"))
+        elif len(hall) > 1:
+            p = desempatar(base, hall)
+            if p:
+                tomadas[p["id"]] = base
+                asignadas.append((ruta, p, "otro orden"))
+            else:
+                dudosos.append((base, hall))
+        else:
+            pendientes2.append(ruta)
+    pendientes = pendientes2
+
+    # 3. un titulo contiene al otro
     quedan = []
     for ruta in pendientes:
         base = os.path.basename(ruta)
@@ -228,8 +281,8 @@ def cruzar(pistas, archivos):
         else:
             quedan.append(ruta)
 
-    # 3. una letra de diferencia
-    sin_pista = []
+    # 4. una letra de diferencia
+    quedan2 = []
     for ruta in quedan:
         base = os.path.basename(ruta)
         cands = [pegado(c) for c in variantes(base)]
@@ -251,6 +304,38 @@ def cruzar(pistas, archivos):
             if p:
                 tomadas[p["id"]] = base
                 asignadas.append((ruta, p, "una letra"))
+            else:
+                dudosos.append((base, hall))
+        else:
+            quedan2.append(ruta)
+
+    # 5. casi las mismas palabras: una de diferencia. Es la mas floja de todas,
+    # por eso pide tres palabras en comun como minimo y va al final.
+    sin_pista = []
+    for ruta in quedan2:
+        base = os.path.basename(ruta)
+        cands = [c for c in (fichas(x) for x in variantes(base)) if len(c) >= 3]
+        hall = {}
+        for p in pistas:
+            if p["id"] in tomadas:
+                continue
+            fp = fichas(p["titulo"])
+            if len(fp) < 3:
+                continue
+            for c in cands:
+                comun = len(fp & c)
+                if comun >= 3 and comun >= max(len(fp), len(c)) - 1:
+                    hall[p["id"]] = p
+                    break
+        hall = list(hall.values())
+        if len(hall) == 1:
+            tomadas[hall[0]["id"]] = base
+            asignadas.append((ruta, hall[0], "casi iguales"))
+        elif len(hall) > 1:
+            p = desempatar(base, hall)
+            if p:
+                tomadas[p["id"]] = base
+                asignadas.append((ruta, p, "casi iguales"))
             else:
                 dudosos.append((base, hall))
         else:
@@ -296,7 +381,7 @@ def main():
     print("  audios en la carpeta ........ %d" % len(archivos))
     print("  pistas en el catalogo ....... %d" % len(pistas))
     print("  cruzados .................... %d" % len(asignadas))
-    for como in ("identico", "contiene", "una letra"):
+    for como in ("identico", "otro orden", "contiene", "una letra", "casi iguales"):
         n = sum(1 for a in asignadas if a[2] == como)
         if n:
             print("       %-20s %4d%s" % (como, n, "" if como == "identico" else "   <- conviene revisar"))
@@ -305,8 +390,10 @@ def main():
     print("  sin pista en el catalogo .... %d" % len(sin_pista))
     print("=" * 74)
 
-    for como, titulo in (("contiene", "ASIGNADOS PORQUE UN TITULO CONTIENE AL OTRO"),
-                         ("una letra", "ASIGNADOS POR UNA LETRA DE DIFERENCIA")):
+    for como, titulo in (("otro orden", "ASIGNADOS POR LAS MISMAS PALABRAS EN OTRO ORDEN"),
+                         ("contiene", "ASIGNADOS PORQUE UN TITULO CONTIENE AL OTRO"),
+                         ("una letra", "ASIGNADOS POR UNA LETRA DE DIFERENCIA"),
+                         ("casi iguales", "ASIGNADOS POR CASI LAS MISMAS PALABRAS")):
         filas = [a for a in asignadas if a[2] == como]
         if filas:
             print("\n%s (%d) — revisar:" % (titulo, len(filas)))

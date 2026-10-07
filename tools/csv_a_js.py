@@ -825,9 +825,29 @@ def main():
         pistas.append(p)
         misma_cancion[(clave(p["titulo"]), clave(p["autor"]))].append(p)
 
+    # El mismo tema del mismo autor cargado en dos estilos distintos es casi
+    # siempre un error de la planilla, no dos arreglos diferentes: hay un solo
+    # audio para los dos. Queda la fila mas vieja (la de numero mas chico) y se
+    # avisa cual se saco, para corregirlo en el Excel si quedo el estilo que no
+    # va. Publicar las dos ensucia el catalogo y deja el audio sin asignar,
+    # porque el script no puede saber a cual de las dos corresponde.
+    sobran = set()
     for grupo in misma_cancion.values():
         if len(grupo) > 1:
-            informe["dos_estilos"].append("%s - %s: %s" % (
+            grupo.sort(key=lambda x: x["nro"])
+            queda = grupo[0]
+            for p in grupo[1:]:
+                sobran.add(p["nro"])
+                informe["dos_estilos"].append(
+                    "%s - %s: queda %s (fila %d), se saca %s (fila %d)"
+                    % (p["titulo"], p["autor"], queda["estilo"], queda["nro"],
+                       p["estilo"], p["nro"]))
+    if sobran:
+        pistas = [p for p in pistas if p["nro"] not in sobran]
+
+    for grupo in []:
+        if len(grupo) > 1:
+            informe["_viejo"].append("%s - %s: %s" % (
                 grupo[0]["titulo"], grupo[0]["autor"],
                 ", ".join("%s (fila %d)" % (g["estilo"], g["nro"]) for g in grupo)))
 
@@ -849,7 +869,8 @@ def main():
             informe["generico"])
     cambios = collections.Counter(informe["estilo"])
     seccion("ESTILOS TRADUCIDOS", ["%-24r -> %s  (x%d)" % (a, b, n) for (a, b), n in sorted(cambios.items())])
-    seccion("MISMO TEMA EN DOS ESTILOS — se publican los dos (revisar)", informe["dos_estilos"])
+    seccion("MISMO TEMA EN DOS ESTILOS — se publica uno solo (revisar el Excel)",
+            informe["dos_estilos"])
     seccion("ERRORES", informe["error"])
 
     if informe["error"] and not args.forzar:
