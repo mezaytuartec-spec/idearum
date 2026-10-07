@@ -46,7 +46,8 @@ Y abrir http://localhost:8765/
 ```
 idearum/
 ├── index.html          home
-├── catalogo.html       listado de pistas + buscador + filtros
+├── catalogo.html       listado de pistas + buscador + filtros + packs
+├── como-funciona.html  los tres pasos y las preguntas de siempre
 ├── vercel.json         headers de cache (es el que manda HOY, en Vercel)
 ├── .htaccess           lo mismo pero para Apache/Hostinger: Vercel lo ignora
 ├── favicon.ico         el ícono que usa Google; no moverlo ni renombrarlo
@@ -205,9 +206,19 @@ estimados. Están marcados con `⚠️` dentro del HTML.
 
 | Producto | Precio | Dónde está |
 |---|---|---|
-| Pista del catálogo | US$ 40 una · US$ 100 tres | `index.html` (corredor) y `catalogo.html` |
-| Cover a pedido | desde US$ 150 | `index.html` y `catalogo.html` |
-| Tema propio | desde US$ 200 | `index.html` y `catalogo.html` |
+| Pista del catálogo | 1 → US$ 40 · 3 → US$ 99 · 5 → US$ 149 · 10 → US$ 249 | el bloque `packs` de `catalogo.html`, el corredor de `index.html` y la ficha de cada pista (la arma `tools/csv_a_js.py`) |
+| Cover a pedido | desde US$ 150 | `index.html`, `catalogo.html` y `como-funciona.html` |
+| Tema propio | desde US$ 200 | `index.html` y `como-funciona.html` |
+
+**Garantía de tonalidad**: si una pista del catálogo no le sirve al cliente por
+el tono, se le devuelve la plata o la cambia por otra. Está escrita en el
+bloque de packs, en la ficha de cada pista y en las preguntas de
+`como-funciona.html`.
+
+**Una pista del catálogo no se puede transportar**: cada una existe en el tono
+en que se grabó. Cantarla en otro es volver a grabarla, o sea un cover a
+medida. Eso está dicho con todas las letras en la ficha de cada pista, para
+que nadie compre creyendo otra cosa.
 
 ---
 

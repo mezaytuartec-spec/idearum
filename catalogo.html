@@ -37,7 +37,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
 
-<link rel="stylesheet" href="css/styles.css?v=20261006-1">
+<link rel="stylesheet" href="css/styles.css?v=20261006-2">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -77,6 +77,7 @@
 
     <nav class="nav__links" aria-label="Principal">
       <a href="catalogo.html">Catálogo</a>
+      <a href="como-funciona.html">Cómo funciona</a>
       <a href="index.html#a-medida">Cover a pedido</a>
       <a href="https://wa.me/5492656442608" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
     </nav>
@@ -90,6 +91,7 @@
 <div class="menu" id="menu">
   <a href="index.html">Inicio</a>
   <a href="catalogo.html">Catálogo</a>
+  <a href="como-funciona.html">Cómo funciona</a>
   <a href="index.html#a-medida">Cover a pedido</a>
   <a href="index.html#a-medida">Tema propio</a>
   <a href="https://wa.me/5492656442608" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
@@ -124,8 +126,7 @@
         </div>
       </div>
 
-      <!-- ⚠️ PRECIOS DEL CATÁLOGO — si cambian, tocá también el corredor de index.html. -->
-      <p class="cat-precio"><strong>Una canción US$&nbsp;40</strong><span class="cat-precio__sep">·</span><strong>Tres canciones US$&nbsp;100</strong></p>
+      <p class="cat-precio"><strong>US$&nbsp;40</strong> la pista<span class="cat-precio__sep">·</span><a href="#packs-tit">10 por US$&nbsp;249</a></p>
 
       <!-- Versión corta del antes y después. Cada pastilla es un botón de
            play; suena una por vez. No se descarga ningún audio hasta que
@@ -195,6 +196,50 @@
       <div class="cargar-mas" id="cargar-mas" hidden>
         <button class="btn btn--secundario" type="button">Cargar más</button>
       </div>
+
+      <!-- ⚠️ PRECIOS DEL CATÁLOGO. Están acá, en el corredor de index.html y en
+           la ficha de cada pista (la arma tools/csv_a_js.py). Si cambian, hay
+           que tocarlos en los tres lados. -->
+      <section class="packs" aria-labelledby="packs-tit">
+        <h2 class="h-seccion" id="packs-tit">Cuantas más, más barata</h2>
+        <p class="packs__bajada">Las elegís del catálogo, en el momento o a lo largo del tiempo.</p>
+
+        <div class="packs__grid">
+          <div class="pack">
+            <span class="pack__n">1 pista</span>
+            <span class="pack__precio">US$&nbsp;40</span>
+            <span class="pack__cu">&nbsp;</span>
+          </div>
+          <div class="pack">
+            <span class="pack__n">3 pistas</span>
+            <span class="pack__precio">US$&nbsp;99</span>
+            <span class="pack__cu">US$&nbsp;33 cada una</span>
+          </div>
+          <div class="pack">
+            <span class="pack__n">5 pistas</span>
+            <span class="pack__precio">US$&nbsp;149</span>
+            <span class="pack__cu">US$&nbsp;30 cada una</span>
+          </div>
+          <div class="pack pack--destacado">
+            <span class="pack__n">10 pistas</span>
+            <span class="pack__precio">US$&nbsp;249</span>
+            <span class="pack__cu">US$&nbsp;25 cada una</span>
+          </div>
+        </div>
+
+        <p class="packs__garantia">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2 4 5v6c0 4.5 3.2 8.7 8 11 4.8-2.3 8-6.5 8-11V5l-8-3zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6z"/></svg>
+          <span><strong>Garantía de tonalidad.</strong> Si comprás una pista y la tonalidad no te
+          sirve, te devolvemos la plata o la cambiás por otra del catálogo.</span>
+        </p>
+
+        <p class="packs__pie">
+          <a class="btn btn--primario btn--grande"
+             href="https://wa.me/5492656442608"
+             data-wsp="Hola Idearum, quiero armar un pack de pistas."
+             target="_blank" rel="noopener">Armar mi pack</a>
+        </p>
+      </section>
 
     </div>
   </section>
@@ -325,9 +370,9 @@
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20261006-1" defer></script>
-<script src="js/app.js?v=20261006-1" defer></script>
-<script src="js/catalogo.js?v=20261006-1" defer></script>
+<script src="data/pistas.js?v=20261006-2" defer></script>
+<script src="js/app.js?v=20261006-2" defer></script>
+<script src="js/catalogo.js?v=20261006-2" defer></script>
 
 <!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
      Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:

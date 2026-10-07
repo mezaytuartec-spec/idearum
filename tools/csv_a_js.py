@@ -463,6 +463,7 @@ PAGINA = """<!DOCTYPE html>
     </a>
     <nav class="nav__links" aria-label="Principal">
       <a href="/catalogo.html">Cat&aacute;logo</a>
+      <a href="/como-funciona.html">C&oacute;mo funciona</a>
       <a href="/index.html#a-medida">Cover a pedido</a>
       <a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
     </nav>
@@ -475,6 +476,7 @@ PAGINA = """<!DOCTYPE html>
 <div class="menu" id="menu">
   <a href="/index.html">Inicio</a>
   <a href="/catalogo.html">Cat&aacute;logo</a>
+  <a href="/como-funciona.html">C&oacute;mo funciona</a>
   <a href="/index.html#a-medida">Cover a pedido</a>
   <a href="/index.html#a-medida">Tema propio</a>
   <a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
@@ -506,14 +508,16 @@ PAGINA = """<!DOCTYPE html>
         <a class="btn btn--primario btn--grande"
            href="https://wa.me/{{WSP}}?text={{MSG}}"
            target="_blank" rel="noopener">Pedir esta pista</a>
-        <p class="nota">Te la mandamos por WhatsApp en WAV y MP3. Tres canciones, US$&nbsp;100.</p>
+        <p class="nota">Te la mandamos por WhatsApp en WAV y MP3. Tres por US$&nbsp;99, diez por US$&nbsp;249.</p>
+        <p class="nota pista-garantia">Si la tonalidad no te sirve, te devolvemos la plata o la cambi&aacute;s por otra del cat&aacute;logo.</p>
       </div>
 
       <div class="pista-otra">
         <h2>&iquest;La necesit&aacute;s en otra tonalidad?</h2>
-        <p>La volvemos a grabar de cero en el tono que te sirva, con m&uacute;sicos e
-           instrumentos reales. Entrega en 7 a 10 d&iacute;as, desde US$&nbsp;150.</p>
-        <a class="chev" href="/index.html#a-medida">Ver c&oacute;mo funciona</a>
+        <p>Esta pista se entrega en el tono que dice arriba. Para cantarla en otro
+           hay que volver a grabarla de cero, con m&uacute;sicos e instrumentos reales:
+           eso es un cover a medida, desde US$&nbsp;150 y con entrega en 7 a 10 d&iacute;as.</p>
+        <a class="chev" href="/index.html#a-medida">Ver c&oacute;mo es un cover a medida</a>
       </div>
     </div>
   </section>
@@ -676,7 +680,8 @@ def escribir_sitemap(urls):
     hoy = datetime.date.today().isoformat()
     partes = ['<?xml version="1.0" encoding="UTF-8"?>',
               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for u, pri in [(DOMINIO + "/", "1.0"), (DOMINIO + "/catalogo.html", "0.9")]:
+    for u, pri in [(DOMINIO + "/", "1.0"), (DOMINIO + "/catalogo.html", "0.9"),
+                   (DOMINIO + "/como-funciona.html", "0.7")]:
         partes.append("  <url><loc>%s</loc><lastmod>%s</lastmod><priority>%s</priority></url>" % (u, hoy, pri))
     for u in urls:
         partes.append("  <url><loc>%s</loc><lastmod>%s</lastmod><priority>0.6</priority></url>" % (u, hoy))
@@ -692,7 +697,7 @@ def main():
     ap.add_argument("--forzar", action="store_true")
     ap.add_argument("--sin-paginas", action="store_true",
                     help="no regenera la carpeta pista/ ni el sitemap")
-    ap.add_argument("--version", default="20261006-1",
+    ap.add_argument("--version", default="20261006-2",
                     help="el ?v= que llevan el CSS y el JS en las paginas generadas")
     args = ap.parse_args()
 

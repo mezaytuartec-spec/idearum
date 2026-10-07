@@ -80,7 +80,8 @@ ul { list-style: none; padding: 0; }
   padding: 0 22px;
 }
 
-.seccion { padding: 110px 0; }
+.seccion       { padding: 110px 0; }
+.seccion--gris { background: var(--gris-fondo); }
 
 /* ---------- 4. Tipografia ------------------------------------------------ */
 
@@ -1190,6 +1191,101 @@ ul { list-style: none; padding: 0; }
   .pista-autor { font-size: 18px; margin-bottom: 24px; }
   .pista-precio .num { font-size: 40px; }
   .pista-mas { padding-bottom: 70px; }
+}
+
+/* ---------- 12c. Packs del catalogo --------------------------------------
+   Van despues de la lista y no arriba: primero que encuentre su cancion,
+   despues le mostramos que llevando mas le sale mas barata.
+   -------------------------------------------------------------------------- */
+
+.packs { padding: 72px 0 0; }
+.packs .h-seccion { font-size: 32px; margin-bottom: 8px; }
+.packs__bajada { color: var(--texto-sec); margin-bottom: 26px; }
+
+.packs__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.pack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 18px;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+}
+.pack--destacado { border-color: var(--texto); }
+.pack__n { font-size: 14px; color: var(--texto-sec); }
+.pack__precio { font-size: 27px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.1; }
+.pack__cu { font-size: 13px; color: var(--texto-sec); }
+
+.packs__garantia {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--texto-sec);
+}
+.packs__garantia svg { flex: none; width: 17px; height: 17px; margin-top: 2px; fill: var(--texto); }
+.packs__garantia strong { color: var(--texto); font-weight: 600; }
+
+.packs__pie { margin-top: 28px; }
+
+/* ---------- 12d. Como funciona -------------------------------------------- */
+
+.cf-cab { padding: 64px 0 0; }
+.cf-pasos { padding: 44px 0 100px; }
+
+.pasos { display: grid; gap: 44px; margin: 0; padding: 0; list-style: none; }
+.paso { display: grid; grid-template-columns: 52px 1fr; gap: 20px; align-items: start; }
+.paso__n {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--texto);
+  color: var(--blanco);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.paso h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px; }
+.paso p { color: var(--texto-sec); margin-bottom: 12px; max-width: 58ch; }
+.paso p strong { color: var(--texto); font-weight: 600; }
+
+.cf-caminos .h-seccion { font-size: 32px; margin-bottom: 10px; }
+.cf-sub { color: var(--texto-sec); max-width: 58ch; margin-bottom: 32px; }
+.cf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cf-tarjeta { background: var(--blanco); border-radius: 18px; padding: 26px 24px 24px; }
+.cf-tarjeta h3 { font-size: 21px; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 12px; }
+.cf-precio { display: flex; align-items: flex-end; gap: 4px; margin-bottom: 14px; font-size: 15px; color: var(--texto-sec); }
+.cf-precio .num { margin-bottom: -2px; font-size: 38px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: var(--texto); }
+.cf-tarjeta p { color: var(--texto-sec); font-size: 15.5px; margin-bottom: 14px; }
+
+.cf-dudas .h-seccion { font-size: 32px; margin-bottom: 26px; }
+.dudas { display: grid; gap: 0; margin: 0; }
+.dudas > div { padding: 22px 0; border-bottom: 1px solid var(--borde); }
+.dudas > div:first-child { border-top: 1px solid var(--borde); }
+.dudas dt { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 7px; }
+.dudas dd { margin: 0; color: var(--texto-sec); max-width: 64ch; }
+
+@media (max-width: 833px) {
+  .packs { padding-top: 54px; }
+  .packs .h-seccion, .cf-caminos .h-seccion, .cf-dudas .h-seccion { font-size: 26px; }
+  .packs__grid { grid-template-columns: 1fr 1fr; }
+  .cf-cab { padding-top: 40px; }
+  .cf-pasos { padding: 32px 0 60px; }
+  .pasos { gap: 34px; }
+  .paso { grid-template-columns: 40px 1fr; gap: 14px; }
+  .paso__n { width: 36px; height: 36px; font-size: 16px; }
+  .paso h2 { font-size: 20px; }
+  .cf-grid { grid-template-columns: 1fr; }
+  .dudas dt { font-size: 17px; }
 }
 
 /* ---------- 13. Reveal ---------------------------------------------------- */
