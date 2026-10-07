@@ -575,7 +575,7 @@ def escribir_paginas(pistas, version):
     urls = []
     for p in pistas:
         ident = "%04d" % p["nro"]
-        archivo = "%s-%s.html" % (slug_url(p["titulo"]), ident)
+        archivo = p["pag"]
         url = "%s/%s/%s" % (DOMINIO, CARPETA_PAGINAS, archivo)
         autor = p["autor"]
         tono = p["tono"]
@@ -597,7 +597,7 @@ def escribir_paginas(pistas, version):
             p["titulo"], (" — " + autor) if autor else "", p["estilo"],
             (", " + tono) if tono else "", ident)
 
-        tiene = os.path.exists(os.path.join(PREVIAS, ident + ".mp3"))
+        tiene = p["demo"]
         if tiene:
             muestra = ('<div class="pista-muestra">\n'
                        '        <p class="etiqueta">Escuch&aacute; 30 segundos</p>\n'
@@ -612,7 +612,6 @@ def escribir_paginas(pistas, version):
         if otras:
             filas = []
             for o in otras:
-                oid = "%04d" % o["nro"]
                 ometa = " &middot; ".join(x for x in [esc(o["autor"]), esc(o["estilo"])] if x)
                 if o["tono"]:
                     ometa += ' &middot; <span class="fila__tono">%s</span>' % esc(o["tono"])
@@ -620,10 +619,10 @@ def escribir_paginas(pistas, version):
                     '<div class="fila">'
                     '<span class="fila__hueco" aria-hidden="true"></span>'
                     '<div class="fila__txt">'
-                    '<h3 class="fila__titulo"><a href="/%s/%s-%s.html">%s</a></h3>'
+                    '<h3 class="fila__titulo"><a href="/%s/%s">%s</a></h3>'
                     '<p class="fila__meta meta">%s</p>'
                     '</div></div>'
-                    % (CARPETA_PAGINAS, slug_url(o["titulo"]), oid, esc(o["titulo"]), ometa))
+                    % (CARPETA_PAGINAS, o["pag"], esc(o["titulo"]), ometa))
             relacionadas = (
                 '<section class="seccion pista-mas">\n    <div class="wrap">\n'
                 '      <h2 class="h-seccion">M&aacute;s de %s</h2>\n'
@@ -850,7 +849,18 @@ def main():
 
     # ------------------------------------------------------------ salida
     orden = {e: i for i, e in enumerate(ESTILOS)}
-    pistas.sort(key=lambda p: (orden[p["estilo"]], alfabetico(p["titulo"]), alfabetico(p["autor"])))
+
+    # Marcar cuales tienen muestra y cual es el archivo de su pagina.
+    for p in pistas:
+        ident = "%04d" % p["nro"]
+        p["demo"] = os.path.exists(os.path.join(PREVIAS, ident + ".mp3"))
+        p["pag"] = "%s-%s.html" % (slug_url(p["titulo"]), ident)
+
+    # Primero las que se pueden escuchar. Una pista muda compite en desventaja:
+    # nadie paga un audio que no escucho, asi que las que suenan van arriba,
+    # tanto en "Todos" como dentro de cada estilo.
+    pistas.sort(key=lambda p: (0 if p["demo"] else 1, orden[p["estilo"]],
+                               alfabetico(p["titulo"]), alfabetico(p["autor"])))
 
     os.makedirs(os.path.dirname(os.path.abspath(args.salida)), exist_ok=True)
     with open(args.salida, "w", encoding="utf-8", newline="\n") as f:
@@ -860,13 +870,17 @@ def main():
             ident = "%04d" % p["nro"]
             # demo: 1 avisa que existe assets/audio/previas/<id>.mp3, para que
             # la web dibuje el boton de escuchar solo donde hay algo que sonar.
-            demo = ",  demo: 1" if os.path.exists(os.path.join(PREVIAS, ident + ".mp3")) else ""
-            print('  {{ id: {0}, titulo: {1}, autor: {2}, estilo: {3}, tono: {4}{5} }}{6}'.format(
+            # pag es el archivo de la pagina propia de la pista: lo escribe el
+            # script para que el titulo de cada fila pueda linkear ahi sin que
+            # el JavaScript tenga que adivinar como se arma el nombre.
+            demo = ",  demo: 1" if p["demo"] else ""
+            print('  {{ id: {0}, titulo: {1}, autor: {2}, estilo: {3}, tono: {4}, pag: {5}{6} }}{7}'.format(
                 json.dumps(ident),
                 json.dumps(p["titulo"], ensure_ascii=False),
                 json.dumps(p["autor"], ensure_ascii=False),
                 json.dumps(p["estilo"], ensure_ascii=False),
                 json.dumps(p["tono"], ensure_ascii=False),
+                json.dumps(p["pag"], ensure_ascii=False),
                 demo,
                 coma), file=f)
         print(PIE, file=f, end="")

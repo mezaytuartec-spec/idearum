@@ -161,10 +161,17 @@
       ? '<button class="fila__play" type="button" data-demo="' + escapar(p.id) +
           '" aria-label="Escuchar un fragmento de ' + titulo + '">' + ICONOS + "</button>"
       : '<span class="fila__hueco" aria-hidden="true"></span>';
+    // El titulo linkea a la pagina propia de la pista, que es la que tiene la
+    // ficha completa y la que encuentra Google. El nombre del archivo lo
+    // escribe tools/csv_a_js.py en el campo pag: asi el JavaScript no tiene
+    // que adivinar como se arma y nunca queda un link roto.
+    var nombre = p.pag
+      ? '<a href="/pista/' + escapar(p.pag) + '">' + titulo + "</a>"
+      : titulo;
     return '<div class="fila">' +
              play +
              '<div class="fila__txt">' +
-               '<h3 class="fila__titulo">' + titulo + "</h3>" +
+               '<h3 class="fila__titulo">' + nombre + "</h3>" +
                '<p class="fila__meta meta">' + meta + "</p>" +
              "</div>" +
              '<a class="btn btn--primario btn--compacto" href="' + href +
