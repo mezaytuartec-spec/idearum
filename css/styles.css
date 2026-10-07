@@ -1288,6 +1288,24 @@ ul { list-style: none; padding: 0; }
   .dudas dt { font-size: 17px; }
 }
 
+/* ---------- 12e. Precio en pesos ------------------------------------------
+   Solo lo ve quien entra desde Argentina; lo llena js/app.js (initPesos).
+   Va siempre debajo del precio en dolares y mas chico: el dolar es el precio
+   de verdad, el peso es una ayuda.
+   -------------------------------------------------------------------------- */
+
+.en-pesos {
+  display: block;
+  margin-top: 5px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--texto-sec);
+}
+/* Sobre las secciones negras y la tarjeta oscura de tema propio. */
+.precios .en-pesos,
+.ejemplo--propio .en-pesos { color: rgba(255, 255, 255, .55); }
+
 /* ---------- 13. Reveal ---------------------------------------------------- */
 
 .reveal {

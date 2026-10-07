@@ -210,6 +210,30 @@ estimados. Están marcados con `⚠️` dentro del HTML.
 | Cover a pedido | desde US$ 150 | `index.html`, `catalogo.html` y `como-funciona.html` |
 | Tema propio | desde US$ 200 | `index.html` y `como-funciona.html` |
 
+### El precio en pesos
+
+A quien entra desde Argentina se le muestra, debajo del precio en dólares,
+cuánto le sale en pesos. Al resto del mundo no se le muestra nada: **el precio
+que manda siempre es el que está en dólares**, el peso es una ayuda.
+
+Se controla con una sola línea en `js/app.js`:
+
+```js
+var DOLAR = 0;   // cuántos pesos vale un dólar
+```
+
+- **Mientras valga `0` no se muestra ningún precio en pesos.** Está así a
+  propósito: es preferible no mostrarlo a mostrar un número viejo.
+- Para activarlo, poné ahí cuántos pesos vale un dólar y subí el cambio. Los
+  precios en pesos se calculan solos y se redondean al mil más cercano.
+- Cuando el dólar se mueva, cambiás ese número y nada más.
+
+Para saber si el visitante está en Argentina se mira la zona horaria de su
+equipo antes que el idioma, porque muchos teléfonos argentinos están en "es" o
+"es-419" a secas. Y se reconocen las dos formas de escribirla: la moderna
+(`America/Argentina/Buenos_Aires`) y la vieja, que sigue viva en un montón de
+equipos (`America/Buenos_Aires`, `America/Cordoba`, `America/Mendoza`).
+
 **Garantía de tonalidad**: si una pista del catálogo no le sirve al cliente por
 el tono, se le devuelve la plata o la cambia por otra. Está escrita en el
 bloque de packs, en la ficha de cada pista y en las preguntas de

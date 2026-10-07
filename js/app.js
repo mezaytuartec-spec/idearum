@@ -71,6 +71,20 @@
   // que da a entender que la lista sigue.
   var PREVIA = 8;
 
+  // --------------------------------------------------------------------------
+  // PRECIO EN PESOS
+  //
+  // A quien entra desde Argentina se le muestra, debajo del precio en dolares,
+  // cuanto le sale en pesos. Al resto del mundo no se le muestra nada: el
+  // precio de verdad, el que manda, siempre es el que esta en dolares.
+  //
+  // ⚠️ ESTE ES EL NUMERO QUE HAY QUE ACTUALIZAR: cuantos pesos vale un dolar.
+  // Es lo unico que hay que tocar cuando se mueve el dolar.
+  //
+  // Mientras valga 0, NO se muestra ningun precio en pesos. Esta asi a
+  // proposito: es preferible no mostrarlo a mostrar un numero viejo.
+  var DOLAR = 0;
+
   /* ---------- Utilidades ------------------------------------------------- */
 
   function safe(fn, nombre) {
@@ -691,6 +705,56 @@
     for (var j = 0; j < cajas.length; j++) obs.observe(cajas[j]);
   }
 
+  /* ---------- Precio en pesos ----------------------------------------------
+     Cualquier <span data-usd="40"> se llena con el precio en pesos, redondeado
+     al mil mas cercano para que no quede un numero raro, y solo si el que mira
+     esta en Argentina. Se mira la zona horaria del equipo antes que el idioma:
+     muchos telefonos argentinos estan en "es" o "es-419" a secas, pero la zona
+     horaria casi siempre dice Argentina.
+     ------------------------------------------------------------------------ */
+
+  // Las zonas horarias argentinas tienen dos formas: la larga y moderna
+  // (America/Argentina/Buenos_Aires) y la vieja, que sigue viva en un monton
+  // de equipos (America/Buenos_Aires, America/Cordoba, America/Mendoza).
+  // Hay que reconocer las dos: mirar solo si dice "Argentina" deja afuera a
+  // media Argentina.
+  var CIUDADES_AR = ["argentina", "buenos_aires", "cordoba", "mendoza",
+                     "rosario", "catamarca", "jujuy", "salta", "tucuman",
+                     "san_juan", "san_luis", "la_rioja", "rio_gallegos",
+                     "ushuaia"];
+
+  function esArgentina() {
+    try {
+      var zona = (Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
+      if (zona.indexOf("america/") === 0) {
+        for (var i = 0; i < CIUDADES_AR.length; i++) {
+          if (zona.indexOf(CIUDADES_AR[i]) !== -1) return true;
+        }
+      }
+    } catch (e) {
+      // Navegadores viejos sin Intl: se cae al idioma, abajo.
+    }
+    var idiomas = [].concat(navigator.language || [],
+                            navigator.languages || []).join(" ").toLowerCase();
+    return idiomas.indexOf("es-ar") !== -1;
+  }
+
+  function enPesos(usd) {
+    var n = Math.round(usd * DOLAR / 1000) * 1000;
+    return "$ " + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  function initPesos() {
+    if (!DOLAR || !esArgentina()) return;
+    var nodos = document.querySelectorAll("[data-usd]");
+    for (var i = 0; i < nodos.length; i++) {
+      var usd = parseFloat(nodos[i].getAttribute("data-usd"));
+      if (!usd) continue;
+      nodos[i].textContent = enPesos(usd) + " aprox.";
+      nodos[i].hidden = false;
+    }
+  }
+
   /* ---------- Ano del footer ---------------------------------------------- */
 
   function initAnio() {
@@ -724,6 +788,7 @@
     safe(initRepros, "initRepros");
     safe(initFilas, "initFilas");
     safe(initAhorro, "initAhorro");
+    safe(initPesos, "initPesos");
     safe(initAnio, "initAnio");
     safe(initReveals, "initReveals");
   }

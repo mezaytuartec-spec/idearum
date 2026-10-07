@@ -504,7 +504,7 @@ PAGINA = """<!DOCTYPE html>
       {{MUESTRA}}
 
       <div class="pista-compra">
-        <p class="pista-precio"><span>US$</span><span class="num">40</span></p>
+        <p class="pista-precio"><span>US$</span><span class="num">40</span><span class="en-pesos" data-usd="40" hidden></span></p>
         <a class="btn btn--primario btn--grande"
            href="https://wa.me/{{WSP}}?text={{MSG}}"
            target="_blank" rel="noopener">Pedir esta pista</a>
