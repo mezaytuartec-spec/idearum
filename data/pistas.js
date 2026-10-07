@@ -38,6 +38,7 @@ window.PISTAS = [
   { id: "0345", titulo: "Every Breath You Take", autor: "The Police", estilo: "Balada", tono: "", pag: "every-breath-you-take-0345.html",  demo: 1 },
   { id: "0115", titulo: "Evidencias", autor: "Oropesa", estilo: "Balada", tono: "Si mayor", pag: "evidencias-0115.html",  demo: 1 },
   { id: "0169", titulo: "Garganta Con Arena", autor: "Cacho Castaña", estilo: "Balada", tono: "", pag: "garganta-con-arena-0169.html",  demo: 1 },
+  { id: "0090", titulo: "Honrar la vida", autor: "Sandra Mihanovich", estilo: "Balada", tono: "", pag: "honrar-la-vida-0090.html",  demo: 1 },
   { id: "0172", titulo: "Hoy tengo Ganas de Ti", autor: "Alejandro Fernandez", estilo: "Balada", tono: "Re menor", pag: "hoy-tengo-ganas-de-ti-0172.html",  demo: 1 },
   { id: "0096", titulo: "La extraña dama", autor: "Valeria Lynch", estilo: "Balada", tono: "Si mayor", pag: "la-extrana-dama-0096.html",  demo: 1 },
   { id: "0099", titulo: "La ultima lagrima", autor: "Memphis la Blusera", estilo: "Balada", tono: "Sol mayor", pag: "la-ultima-lagrima-0099.html",  demo: 1 },
@@ -225,6 +226,7 @@ window.PISTAS = [
   { id: "0180", titulo: "Reloj", autor: "Luis MIguel", estilo: "Bolero", tono: "Mi mayor", pag: "reloj-0180.html",  demo: 1 },
   { id: "0295", titulo: "Usted", autor: "Luis MIguel", estilo: "Bolero", tono: "Sib mayor", pag: "usted-0295.html",  demo: 1 },
   { id: "0343", titulo: "A bailar", autor: "Anibal Troilo", estilo: "Tango", tono: "Sol mayor", pag: "a-bailar-0343.html",  demo: 1 },
+  { id: "0329", titulo: "Adonde Vas, Quedate en Buenos Aires", autor: "Cacho Castaña", estilo: "Tango", tono: "Re mayor", pag: "adonde-vas-quedate-en-buenos-aires-0329.html",  demo: 1 },
   { id: "0328", titulo: "El Viejo Rincon", autor: "Carlos Gardel", estilo: "Tango", tono: "Sol mayor", pag: "el-viejo-rincon-0328.html",  demo: 1 },
   { id: "0231", titulo: "Quiero verte una Vez Mas", autor: "Jorge Falcón", estilo: "Tango", tono: "", pag: "quiero-verte-una-vez-mas-0231.html",  demo: 1 },
   { id: "0080", titulo: "Ameno Metal 4", autor: "Era", estilo: "Otros", tono: "Fa mayor", pag: "ameno-metal-4-0080.html",  demo: 1 },
@@ -243,7 +245,6 @@ window.PISTAS = [
   { id: "0065", titulo: "Entregate", autor: "Carlos Marin", estilo: "Balada", tono: "", pag: "entregate-0065.html" },
   { id: "0155", titulo: "He sabido que te he amado", autor: "Javier Solis", estilo: "Balada", tono: "Mi menor", pag: "he-sabido-que-te-he-amado-0155.html" },
   { id: "0097", titulo: "Honrar la vida", autor: "Patricia Sosa", estilo: "Balada", tono: "", pag: "honrar-la-vida-0097.html" },
-  { id: "0090", titulo: "Honrar la vida", autor: "Sandra Mihanovich", estilo: "Balada", tono: "", pag: "honrar-la-vida-0090.html" },
   { id: "0101", titulo: "La bifurcada", autor: "Memphis la Blusera", estilo: "Balada", tono: "", pag: "la-bifurcada-0101.html" },
   { id: "0100", titulo: "La flor mas bella", autor: "Memphis la Blusera", estilo: "Balada", tono: "", pag: "la-flor-mas-bella-0100.html" },
   { id: "0333", titulo: "Los Sonidos del Silencio (Acústico)", autor: "Sergio Denis", estilo: "Balada", tono: "Re# menor", pag: "los-sonidos-del-silencio-acustico-0333.html" },
@@ -345,7 +346,6 @@ window.PISTAS = [
   { id: "0056", titulo: "Sobreviviendo (con Coros)", autor: "Victor Heredia", estilo: "Folklore", tono: "La menor", pag: "sobreviviendo-con-coros-0056.html" },
   { id: "0262", titulo: "Te Odio", autor: "Pol Mum", estilo: "Folklore", tono: "", pag: "te-odio-0262.html" },
   { id: "0177", titulo: "Sin que lo Sepas Tu", autor: "Vicente Fernandez", estilo: "Bolero", tono: "Do menor", pag: "sin-que-lo-sepas-tu-0177.html" },
-  { id: "0329", titulo: "Adonde Vas, Quedate en Buenos Aires", autor: "Cacho Castaña", estilo: "Tango", tono: "Re mayor", pag: "adonde-vas-quedate-en-buenos-aires-0329.html" },
   { id: "0070", titulo: "Y Todavia te Quiero", autor: "Hector Varela", estilo: "Tango", tono: "", pag: "y-todavia-te-quiero-0070.html" },
   { id: "0222", titulo: "Y Todavia Te Quiero", autor: "Jorge Falcón", estilo: "Tango", tono: "La menor", pag: "y-todavia-te-quiero-0222.html" }
 ];

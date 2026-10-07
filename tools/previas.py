@@ -149,6 +149,26 @@ def cruzar(pistas, archivos):
     asignadas = []      # (archivo, pista, como)
     dudosos, repetidos, pendientes = [], [], []
 
+    def desempatar(base, libres):
+        """Cuando varias pistas compiten por el mismo archivo, gana la que tenga
+        el autor o la tonalidad escritos en el nombre del archivo. Si ninguna
+        destaca, devuelve None y el archivo queda sin asignar."""
+        texto = clave(base)
+        punt = []
+        for p in libres:
+            s = sum(2 for w in clave(p["autor"]).split() if len(w) > 3 and w in texto)
+            if p["tono"] and clave(p["tono"]) in texto:
+                s += 3
+            # Entre dos titulos que contienen al del archivo, gana el mas
+            # parecido en largo: "Quedate en Buenos Aires" es mucho mas
+            # "Adonde Vas, Quedate en Buenos Aires" que "Quedate".
+            cercania = -abs(len(clave(p["titulo"])) - len(texto)) / 1000.0
+            punt.append((s + cercania, p))
+        punt.sort(key=lambda x: -x[0])
+        if len(punt) == 1 or punt[0][0] > punt[1][0]:
+            return punt[0][1]
+        return None
+
     def elegir(base, opciones):
         libres = [p for p in opciones if p["id"] not in tomadas]
         if not libres:
@@ -156,18 +176,9 @@ def cruzar(pistas, archivos):
             return None
         if len(libres) == 1:
             return libres[0]
-        # Dos pistas con el mismo titulo: desempatar con el autor o la tonalidad
-        # si aparecen en el nombre del archivo.
-        texto = clave(base)
-        punt = []
-        for p in libres:
-            s = sum(2 for w in clave(p["autor"]).split() if len(w) > 3 and w in texto)
-            if p["tono"] and clave(p["tono"]) in texto:
-                s += 3
-            punt.append((s, p))
-        punt.sort(key=lambda x: -x[0])
-        if punt[0][0] > 0 and punt[0][0] > punt[1][0]:
-            return punt[0][1]
+        p = desempatar(base, libres)
+        if p:
+            return p
         dudosos.append((base, libres))
         return None
 
@@ -208,7 +219,12 @@ def cruzar(pistas, archivos):
             tomadas[hall[0]["id"]] = base
             asignadas.append((ruta, hall[0], "contiene"))
         elif len(hall) > 1:
-            dudosos.append((base, hall))
+            p = desempatar(base, hall)
+            if p:
+                tomadas[p["id"]] = base
+                asignadas.append((ruta, p, "contiene"))
+            else:
+                dudosos.append((base, hall))
         else:
             quedan.append(ruta)
 
@@ -231,7 +247,12 @@ def cruzar(pistas, archivos):
             tomadas[hall[0]["id"]] = base
             asignadas.append((ruta, hall[0], "una letra"))
         elif len(hall) > 1:
-            dudosos.append((base, hall))
+            p = desempatar(base, hall)
+            if p:
+                tomadas[p["id"]] = base
+                asignadas.append((ruta, p, "una letra"))
+            else:
+                dudosos.append((base, hall))
         else:
             sin_pista.append(base)
 
