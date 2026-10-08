@@ -37,6 +37,7 @@
 (demo) Como te Diré.mp3                         = Como Te Dire | Los Galos
 (Demo) Como te Dire.mp3                         = Como te Dire | Sandro
 (demo) Hipocresia.mp3                           = Hipocresia | Los Pasteles Verdes
+(Demo) A Través del Vaso.mp3                    = A Través del Vaso | Los Kijanos
 
 # --- El archivo se llama distinto que la pista ------------------------------
 (demo) Donde estara mi primavera.mp3            = Donde Esta mi Primavera | Marco Antonio Solis
