@@ -10,3 +10,6 @@ Thumbs.db
 # A la web solo llega data/pistas.js, que genera tools/csv_a_js.py.
 *.xlsx
 *.xls
+
+# Configuracion local del servidor de pruebas, no es parte del sitio.
+.claude/

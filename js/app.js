@@ -82,8 +82,11 @@
   // Es lo unico que hay que tocar cuando se mueve el dolar.
   //
   // Mientras valga 0, NO se muestra ningun precio en pesos. Esta asi a
-  // proposito: es preferible no mostrarlo a mostrar un numero viejo.
-  var DOLAR = 0;
+  // proposito: es preferible no mostrarlo a mostrar un numero viejo: si pasan
+  // meses sin actualizarlo, conviene volver a ponerlo en 0.
+  //
+  // Ultima actualizacion: 8 de octubre de 2026.
+  var DOLAR = 1470;
 
   /* ---------- Utilidades ------------------------------------------------- */
 
