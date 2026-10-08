@@ -45,7 +45,6 @@
 (demo) Los sonidos del Silencio (Unplugged).mp3 = Los Sonidos del Silencio (Acústico) | Sergio Denis
 (demo) Romance de Aquel Hijo (Sib).mp3          = Romance de Aquel Nino | Mario Álvarez Quiroga
 (demo) Tu que has venido a la Orilla.mp3        = Tu que viniste a la Orilla |
-( Demo ) Um dia  de domingo.mp3                 = Un día de domingo | Gal Costa
 
 # --- Un audio para dos filas del Excel -------------------------------------
 # Es la misma grabacion: el Excel la tiene dos veces porque se entrego con y

@@ -266,7 +266,8 @@ def reparar(texto):
 # ahi); el valor es como sale en la web. El Excel no se toca: la correccion se
 # aplica al publicar, y el informe la lista.
 CORRECCIONES = {
-    "um dia de domigno": "Un d\u00eda de domingo",
+    # Es brasilera, de Tim Maia: el original va con "Um", sin acento.
+    "um dia de domigno": "Um dia de domingo",
 }
 
 

@@ -69,7 +69,7 @@ window.PISTAS = [
   { id: "0234", titulo: "Te Hubieras Ido antes", autor: "Ricardo Montaner", estilo: "Balada", tono: "", pag: "te-hubieras-ido-antes-0234.html",  demo: 1 },
   { id: "0162", titulo: "Te Vengo a Preguntar", autor: "El Puma Rodriguez", estilo: "Balada", tono: "Do menor", pag: "te-vengo-a-preguntar-0162.html",  demo: 1 },
   { id: "0235", titulo: "Tu Sangre en mi Cuerpo", autor: "Angela Aguilar y Pepe Aguilar", estilo: "Balada", tono: "", pag: "tu-sangre-en-mi-cuerpo-0235.html",  demo: 1 },
-  { id: "0292", titulo: "Un día de domingo", autor: "Gal Costa", estilo: "Balada", tono: "Re mayor", pag: "un-dia-de-domingo-0292.html",  demo: 1 },
+  { id: "0292", titulo: "Um dia de domingo", autor: "Gal Costa", estilo: "Balada", tono: "Re mayor", pag: "um-dia-de-domingo-0292.html",  demo: 1 },
   { id: "0338", titulo: "Vas a Acordarte de Mi", autor: "Alejandro Jaen", estilo: "Balada", tono: "Do mayor", pag: "vas-a-acordarte-de-mi-0338.html",  demo: 1 },
   { id: "0303", titulo: "Vivo Contenta", autor: "Paquita la del Barrio", estilo: "Balada", tono: "Do# menor", pag: "vivo-contenta-0303.html",  demo: 1 },
   { id: "0157", titulo: "Yo te Amo", autor: "Gildardo Alvarez", estilo: "Balada", tono: "Fa menor", pag: "yo-te-amo-0157.html",  demo: 1 },
