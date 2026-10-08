@@ -11,9 +11,14 @@ por pista, con el ID como nombre: 0142.mp3.
 Esos recortes son los que suenan en la web. El tema entero NO se sube nunca.
 
 COMO CRUZA LOS ARCHIVOS
-Compara el nombre del archivo con el titulo de la pista, salteando las marcas
-de siempre: "(Demo)", "(demo )", "_muestra", "Titulo - Autor". Hace cinco
-pasadas, de mas segura a menos:
+Primero aplica las asignaciones escritas a mano en tools/a_mano.txt, que son
+para los casos que ninguna comparacion puede adivinar: dos pistas con el mismo
+titulo, un archivo que se llama como otra cancion, o un audio que sirve para
+dos filas del Excel.
+
+El resto lo cruza comparando el nombre del archivo con el titulo de la pista,
+salteando las marcas de siempre: "(Demo)", "(demo )", "_muestra",
+"Titulo - Autor". Hace cinco pasadas, de mas segura a menos:
 
   1. el titulo es identico
   2. son las mismas palabras en otro orden ("La Oveja Triste" / "La triste
@@ -28,8 +33,8 @@ Las ultimas dos son las mas flojas: el informe las lista aparte para mirarlas.
 
 Si un archivo puede ser de dos pistas distintas (dos versiones del mismo tema,
 en estilos o tonalidades diferentes) NO elige ninguna: lo deja sin asignar y lo
-lista al final. Para resolverlo, agregale el autor al nombre del archivo
-—"(Demo) Abrazame - Jorge Vazquez.mp3"— y volve a correr esto.
+lista al final. Para resolverlo, escribilo en tools/a_mano.txt —ahi esta
+explicado el formato— y volve a correr esto.
 
 DESPUES DE CORRER ESTO hay que volver a generar el catalogo, para que la web
 sepa cuales pistas tienen muestra:
@@ -54,6 +59,7 @@ KBPS = 128           # calidad de la muestra (el producto final va en WAV y 320)
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PISTAS_JS = os.path.join(RAIZ, "data", "pistas.js")
 DESTINO = os.path.join(RAIZ, "assets", "audio", "previas")
+A_MANO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "a_mano.txt")
 
 FILA = re.compile(
     r'\{\s*id:\s*"(\d+)",\s*titulo:\s*"((?:[^"\\]|\\.)*)",\s*autor:\s*"((?:[^"\\]|\\.)*)",'
@@ -162,10 +168,37 @@ def leer_catalogo():
     return pistas
 
 
+def nombre_clave(n):
+    """Para buscar un archivo por nombre: no distingue mayusculas ni espacios
+    de mas, pero SI los acentos, porque hay archivos que solo se diferencian
+    en eso ("Abrazame.mp3" y "Abrazame.mp3" con tilde son dos temas)."""
+    return " ".join((n or "").split()).lower()
+
+
+def leer_a_mano():
+    """Lee tools/a_mano.txt. Devuelve [(linea, archivo, titulo, autor)].
+    titulo None = la linea esta mal escrita."""
+    if not os.path.exists(A_MANO):
+        return []
+    filas = []
+    with open(A_MANO, encoding="utf-8") as f:
+        for n, linea in enumerate(f, 1):
+            linea = linea.strip()
+            if not linea or linea.startswith("#"):
+                continue
+            if "=" not in linea:
+                filas.append((n, linea, None, None))
+                continue
+            arch, _, pista = linea.partition("=")
+            titulo, _, autor = pista.partition("|")
+            filas.append((n, arch.strip(), titulo.strip(), autor.strip()))
+    return filas
+
+
 # ----------------------------------------------------------------- el cruce
 
-def cruzar(pistas, archivos):
-    """Devuelve (asignadas, dudosos, repetidos, sin_pista)."""
+def cruzar(pistas, archivos, a_mano=()):
+    """Devuelve (asignadas, dudosos, repetidos, sin_pista, errores_a_mano)."""
     por_titulo = collections.defaultdict(list)
     for p in pistas:
         por_titulo[clave(p["titulo"])].append(p)
@@ -206,6 +239,53 @@ def cruzar(pistas, archivos):
             return p
         dudosos.append((base, libres))
         return None
+
+    # 0. lo escrito a mano en a_mano.txt. Va primero y no se discute: si una
+    # linea esta mal, el que esta mal es el archivo de texto, y se avisa.
+    errores = []
+    por_nombre = collections.defaultdict(list)
+    for ruta in archivos:
+        por_nombre[nombre_clave(os.path.basename(ruta))].append(ruta)
+    # Por si el nombre se escribio sin el acento o con otra puntuacion.
+    por_nombre_flojo = collections.defaultdict(list)
+    for ruta in archivos:
+        por_nombre_flojo[clave(os.path.basename(ruta))].append(ruta)
+
+    fijados = set()
+    for n, nombre, titulo, autor in a_mano:
+        if titulo is None:
+            errores.append("linea %d: le falta el signo = ... %s" % (n, nombre))
+            continue
+        rutas = por_nombre.get(nombre_clave(nombre)) or por_nombre_flojo.get(clave(nombre)) or []
+        if not rutas:
+            errores.append("linea %d: en la carpeta no hay ningun archivo %r" % (n, nombre))
+            continue
+        if len(rutas) > 1:
+            errores.append("linea %d: %r puede ser %d archivos distintos; escribilo completo"
+                           % (n, nombre, len(rutas)))
+            continue
+        ruta = rutas[0]
+        ops = [p for p in pistas if clave(p["titulo"]) == clave(titulo)
+               and (not autor or clave(p["autor"]) == clave(autor))]
+        comoquien = "%r de %r" % (titulo, autor) if autor else "%r" % titulo
+        if not ops:
+            errores.append("linea %d: en el catalogo no hay ninguna pista %s" % (n, comoquien))
+            continue
+        if len(ops) > 1:
+            errores.append("linea %d: hay %d pistas %s; agregale el autor"
+                           % (n, len(ops), comoquien))
+            continue
+        p = ops[0]
+        if p["id"] in tomadas:
+            errores.append("linea %d: %s ya tiene la muestra de %s"
+                           % (n, p["titulo"], tomadas[p["id"]]))
+            continue
+        tomadas[p["id"]] = os.path.basename(ruta)
+        asignadas.append((ruta, p, "a mano"))
+        fijados.add(ruta)
+
+    # Los que resolvio a mano no entran en las comparaciones automaticas.
+    archivos = [r for r in archivos if r not in fijados]
 
     # 1. titulo identico
     for ruta in archivos:
@@ -341,7 +421,7 @@ def cruzar(pistas, archivos):
         else:
             sin_pista.append(base)
 
-    return asignadas, dudosos, repetidos, sin_pista
+    return asignadas, dudosos, repetidos, sin_pista, errores
 
 
 # -------------------------------------------------------------------- recorte
@@ -375,20 +455,33 @@ def main():
     if not archivos:
         sys.exit("No encontre audios en %s" % args.carpeta)
 
-    asignadas, dudosos, repetidos, sin_pista = cruzar(pistas, archivos)
+    a_mano = leer_a_mano()
+    asignadas, dudosos, repetidos, sin_pista, errores = cruzar(pistas, archivos, a_mano)
 
     print("=" * 74)
     print("  audios en la carpeta ........ %d" % len(archivos))
     print("  pistas en el catalogo ....... %d" % len(pistas))
-    print("  cruzados .................... %d" % len(asignadas))
-    for como in ("identico", "otro orden", "contiene", "una letra", "casi iguales"):
+    print("  pistas con muestra .......... %d" % len(asignadas))
+    for como in ("a mano", "identico", "otro orden", "contiene", "una letra", "casi iguales"):
         n = sum(1 for a in asignadas if a[2] == como)
         if n:
-            print("       %-20s %4d%s" % (como, n, "" if como == "identico" else "   <- conviene revisar"))
+            print("       %-20s %4d%s"
+                  % (como, n, "" if como in ("identico", "a mano") else "   <- conviene revisar"))
     print("  dudosos (sin asignar) ....... %d" % len(dudosos))
     print("  audio repetido .............. %d" % len(repetidos))
     print("  sin pista en el catalogo .... %d" % len(sin_pista))
     print("=" * 74)
+
+    if errores:
+        print("\nOJO — %d linea(s) de tools/a_mano.txt no se pudieron aplicar:" % len(errores))
+        for e in errores:
+            print("   %s" % e)
+
+    amano = [a for a in asignadas if a[2] == "a mano"]
+    if amano:
+        print("\nASIGNADOS A MANO (%d) — de tools/a_mano.txt:" % len(amano))
+        for ruta, p, _ in amano:
+            print("   %-46s -> %s (%s)" % (os.path.basename(ruta)[:46], p["titulo"], p["autor"] or "sin autor"))
 
     for como, titulo in (("otro orden", "ASIGNADOS POR LAS MISMAS PALABRAS EN OTRO ORDEN"),
                          ("contiene", "ASIGNADOS PORQUE UN TITULO CONTIENE AL OTRO"),

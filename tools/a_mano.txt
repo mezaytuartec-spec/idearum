@@ -1,0 +1,57 @@
+# ============================================================================
+#  Asignaciones a mano de las muestras — tools/previas.py las lee primero.
+# ============================================================================
+#
+#  Aca van los audios que el cruce automatico NO puede resolver solo:
+#
+#    - dos pistas distintas con el mismo titulo ("Abrazame" de Jorge Vazquez y
+#      "Abrazame" de Lulia Dumitrache): el nombre del archivo no alcanza para
+#      saber cual es.
+#    - el archivo se llama como otra cancion ("Tu que has venido a la Orilla"
+#      es la pista "Tu que viniste a la Orilla").
+#    - un mismo audio sirve para dos filas del Excel ("Sobreviviendo" y
+#      "Sobreviviendo (con Coros)" son la misma grabacion).
+#
+#  Una por linea, con este formato:
+#
+#      nombre del archivo.mp3 = Titulo de la pista | Autor
+#
+#  El autor se puede dejar vacio si el titulo ya es unico. Las mayusculas, los
+#  acentos del titulo y los espacios de mas no importan; el nombre del archivo
+#  si: tiene que ser el de la carpeta de demos (los acentos cuentan, porque hay
+#  archivos que solo se diferencian en eso).
+#
+#  Si una linea no se puede aplicar, previas.py avisa en pantalla y no inventa
+#  nada. Para repetir un audio en dos pistas, escribi el archivo dos veces.
+#
+#  Despues de tocar esto hay que volver a correr:
+#      python tools/previas.py "C:\ruta\a\los\demos"
+#      python tools/csv_a_js.py Listado_2026_pistas.xlsx
+# ============================================================================
+
+# --- Mismo titulo, dos pistas distintas -------------------------------------
+( Demo) a mi manera.mp3                         = A mi manera | La Berisso
+(demo) A mi Manera.mp3                          = A mi Manera | Cacho Castaña
+(Demo) Abrázame.mp3                             = Abrazame | Jorge Vazquez
+(Demo) Abrazame.mp3                             = Abrazame | Lulia Dumitrache
+(demo) Como te Diré.mp3                         = Como Te Dire | Los Galos
+(Demo) Como te Dire.mp3                         = Como te Dire | Sandro
+(demo) Hipocresia.mp3                           = Hipocresia | Los Pasteles Verdes
+
+# --- El archivo se llama distinto que la pista ------------------------------
+(demo) Donde estara mi primavera.mp3            = Donde Esta mi Primavera | Marco Antonio Solis
+(Demo) Tu Dulce Arrogante.mp3                   = Dulce Atorrante | Sandro
+(demo) Los sonidos del Silencio (Unplugged).mp3 = Los Sonidos del Silencio (Acústico) | Sergio Denis
+(demo) Romance de Aquel Hijo (Sib).mp3          = Romance de Aquel Nino | Mario Álvarez Quiroga
+(demo) Tu que has venido a la Orilla.mp3        = Tu que viniste a la Orilla |
+( Demo ) Um dia  de domingo.mp3                 = Un día de domingo | Gal Costa
+
+# --- Un audio para dos filas del Excel -------------------------------------
+# Es la misma grabacion: el Excel la tiene dos veces porque se entrego con y
+# sin coros.
+(Demo) Sobreviviendo.mp3                        = Sobreviviendo | Victor Heredia
+(Demo) Sobreviviendo.mp3                        = Sobreviviendo (con Coros) | Victor Heredia
+# Mismo cliente (Gabriela Gueysha/Guyesha) y misma cancion, anotada una vez
+# como de Sandra Mihanovich y otra como de Patricia Sosa. Hay un solo audio.
+(demo ) Honrar la vida_Sandra Mihanovich.mp3    = Honrar la vida | Sandra Mihanovich
+(demo ) Honrar la vida_Sandra Mihanovich.mp3    = Honrar la vida | Patricia Sosa

@@ -261,6 +261,15 @@ def reparar(texto):
     return "".join(out)
 
 
+# Titulos que en el Excel estan mal escritos. La clave es el titulo tal como
+# figura en el Excel, sin acentos ni mayusculas (asi no importa como se escriba
+# ahi); el valor es como sale en la web. El Excel no se toca: la correccion se
+# aplica al publicar, y el informe la lista.
+CORRECCIONES = {
+    "um dia de domigno": "Un d\u00eda de domingo",
+}
+
+
 def acomodar_titulo(t):
     """'la flor mas bella' -> 'La flor mas bella'; 'LA FLOR' -> 'La flor'."""
     letras = [c for c in t if c.isalpha()]
@@ -769,6 +778,11 @@ def main():
         if titulo != titulo_c or autor != autor_c:
             informe["reparado"].append("fila %d: %s - %s  ->  %s - %s" % (nro, titulo_c, autor_c, titulo, autor))
 
+        bien = CORRECCIONES.get(alfabetico(titulo))
+        if bien and bien != titulo:
+            informe["corregido"].append("fila %d: %s  ->  %s" % (nro, titulo, bien))
+            titulo = bien
+
         t2 = acomodar_titulo(titulo)
         if t2 != titulo:
             informe["titulo"].append("fila %d: %r -> %r" % (nro, titulo, t2))
@@ -862,6 +876,7 @@ def main():
     seccion("NO SE PUBLICAN — temas propios de clientes", informe["propio"])
     seccion("DUPLICADOS — quedo solo el primero", informe["duplicado"])
     seccion("TEXTO REPARADO — letras danadas por codificacion", informe["reparado"])
+    seccion("TITULOS CORREGIDOS A MANO (tabla CORRECCIONES)", informe["corregido"])
     seccion("TITULOS ACOMODADOS", informe["titulo"])
     seccion("AUTORES ACOMODADOS", informe["autor"])
     seccion("AUTORES UNIFICADOS", informe["unificado"])
