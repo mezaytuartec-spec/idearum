@@ -674,6 +674,15 @@ def escribir_paginas(pistas, version):
         else:
             relacionadas = ""
 
+        # Ficha para Google. Lo que dice aca tiene que ser cierto: son datos
+        # que Google puede mostrar en los resultados como si los afirmara el
+        # negocio. Por eso NO lleva "aggregateRating" ni "review": Search
+        # Console los pide, pero inventar estrellas o comentarios que nadie
+        # escribio seria mentir. Cuando haya opiniones de verdad, van.
+        #
+        # La imagen es obligatoria para que Google arme la ficha. No hay una
+        # foto por pista, asi que va la del estudio, que es la misma marca.
+        # Se mandan las dos medidas que existen: Google prefiere tener varias.
         jsonld = json.dumps({
             "@context": "https://schema.org",
             "@type": "Product",
@@ -681,6 +690,8 @@ def escribir_paginas(pistas, version):
             "description": desc,
             "category": p["estilo"],
             "sku": ident,
+            "image": [DOMINIO + "/assets/img/og.jpg",
+                      DOMINIO + "/assets/img/hero-1800.jpg"],
             "brand": {"@type": "Brand", "name": "Idearum"},
             "offers": {
                 "@type": "Offer",
