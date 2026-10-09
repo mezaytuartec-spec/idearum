@@ -2,11 +2,15 @@
 """
 Idearum — arma las muestras de 30 segundos del catalogo.
 
-    python tools/previas.py "C:\\ruta\\a\\la\\carpeta\\de\\demos"
+    python tools/previas.py "C:\\ruta\\a\\los\\demos" "C:\\otra\\carpeta"
 
-Toma los MP3 completos de una carpeta, los cruza con el catalogo publicado
-(data/pistas.js) y deja en assets/audio/previas/ un recorte de 30 segundos
-por pista, con el ID como nombre: 0142.mp3.
+Toma los MP3 completos de una o varias carpetas, los cruza con el catalogo
+publicado (data/pistas.js) y deja en assets/audio/previas/ un recorte de 30
+segundos por pista, con el ID como nombre: 0142.mp3.
+
+Si el mismo audio aparece dos veces —una copia "(1)" de la descarga, o el mismo
+tema en dos carpetas— se usa una sola vez. Se compara el contenido, no el
+nombre: dos archivos distintos con el mismo nombre no se confunden.
 
 Esos recortes son los que suenan en la web. El tema entero NO se sube nunca.
 
@@ -46,6 +50,7 @@ Necesita ffmpeg. Si no esta en el PATH, se lo pasas con --ffmpeg "C:\\...\\ffmpe
 import argparse
 import collections
 import glob
+import hashlib
 import os
 import re
 import subprocess
@@ -157,6 +162,55 @@ def buscar_ffmpeg(pedido):
     return None
 
 
+def huella(ruta):
+    """Identifica un audio por su contenido. El tamano alcanza para separar
+    casi todos; solo se lee entero el que comparte tamano con otro."""
+    return (os.path.getsize(ruta),)
+
+
+COPIA = re.compile(r"\(\d+\)(?=\.[^.]+$)")
+
+
+def nombre_dice_mas(ruta):
+    """Para elegir entre dos copias del mismo audio. Gana el nombre que mas
+    informacion trae: el que no es una copia "(1)" de la descarga y, a igual
+    condicion, el mas largo, que suele ser el que trae el autor o el tono
+    —y eso es justo lo que despues permite saber de que pista es."""
+    base = os.path.basename(ruta)
+    return (1 if COPIA.search(base) else 0, -len(base))
+
+
+def sin_repetidos(archivos):
+    """Devuelve (los que se usan, [(repetido, del que es copia)]).
+
+    Un mismo audio puede llegar dos veces: la copia "(1)" que deja el navegador
+    al bajar dos veces lo mismo, o el mismo tema en dos carpetas. Se usa una
+    sola vez, y de los nombres se queda el que mas dice."""
+    por_tamano = collections.defaultdict(list)
+    for ruta in archivos:
+        por_tamano[os.path.getsize(ruta)].append(ruta)
+
+    # Solo se lee entero el que comparte tamano con otro.
+    por_huella = collections.OrderedDict()
+    for ruta in archivos:
+        if len(por_tamano[os.path.getsize(ruta)]) == 1:
+            h = ruta
+        else:
+            with open(ruta, "rb") as f:
+                h = hashlib.md5(f.read()).hexdigest()
+        por_huella.setdefault(h, []).append(ruta)
+
+    elegidas, repes = set(), []
+    for grupo in por_huella.values():
+        queda = min(grupo, key=nombre_dice_mas)
+        elegidas.add(queda)
+        for r in grupo:
+            if r != queda:
+                repes.append((r, queda))
+    # Se respeta el orden original: el cruce depende de el.
+    return [r for r in archivos if r in elegidas], repes
+
+
 def leer_catalogo():
     if not os.path.exists(PISTAS_JS):
         sys.exit("No encuentro %s. Genera primero el catalogo con tools/csv_a_js.py" % PISTAS_JS)
@@ -197,7 +251,7 @@ def leer_a_mano():
 
 # ----------------------------------------------------------------- el cruce
 
-def cruzar(pistas, archivos, a_mano=()):
+def cruzar(pistas, archivos, a_mano=(), alias=None):
     """Devuelve (asignadas, dudosos, repetidos, sin_pista, errores_a_mano)."""
     por_titulo = collections.defaultdict(list)
     for p in pistas:
@@ -243,25 +297,32 @@ def cruzar(pistas, archivos, a_mano=()):
     # 0. lo escrito a mano en a_mano.txt. Va primero y no se discute: si una
     # linea esta mal, el que esta mal es el archivo de texto, y se avisa.
     errores = []
-    por_nombre = collections.defaultdict(list)
+    # Los repetidos tambien se pueden nombrar en a_mano.txt: apuntan al que
+    # quedo, que es el mismo audio.
+    por_nombre = collections.defaultdict(set)
+    por_nombre_flojo = collections.defaultdict(set)
+
+    def anotar(nombre, ruta):
+        por_nombre[nombre_clave(nombre)].add(ruta)
+        por_nombre_flojo[clave(nombre)].add(ruta)
+
     for ruta in archivos:
-        por_nombre[nombre_clave(os.path.basename(ruta))].append(ruta)
-    # Por si el nombre se escribio sin el acento o con otra puntuacion.
-    por_nombre_flojo = collections.defaultdict(list)
-    for ruta in archivos:
-        por_nombre_flojo[clave(os.path.basename(ruta))].append(ruta)
+        anotar(os.path.basename(ruta), ruta)
+    for repetido, queda in (alias or {}).items():
+        anotar(os.path.basename(repetido), queda)
 
     fijados = set()
     for n, nombre, titulo, autor in a_mano:
         if titulo is None:
             errores.append("linea %d: le falta el signo = ... %s" % (n, nombre))
             continue
-        rutas = por_nombre.get(nombre_clave(nombre)) or por_nombre_flojo.get(clave(nombre)) or []
+        rutas = sorted(por_nombre.get(nombre_clave(nombre))
+                       or por_nombre_flojo.get(clave(nombre)) or [])
         if not rutas:
             errores.append("linea %d: en la carpeta no hay ningun archivo %r" % (n, nombre))
             continue
         if len(rutas) > 1:
-            errores.append("linea %d: %r puede ser %d archivos distintos; escribilo completo"
+            errores.append("linea %d: %r puede ser %d audios distintos; aclara la carpeta"
                            % (n, nombre, len(rutas)))
             continue
         ruta = rutas[0]
@@ -440,26 +501,37 @@ def recortar(ff, origen, destino):
 
 def main():
     ap = argparse.ArgumentParser(description="Arma las muestras de 30 s del catalogo.")
-    ap.add_argument("carpeta", help="carpeta con los MP3 completos")
+    ap.add_argument("carpetas", nargs="+", help="carpeta(s) con los MP3 completos")
     ap.add_argument("--ffmpeg", default=None, help="ruta a ffmpeg.exe si no esta en el PATH")
     ap.add_argument("--rehacer", action="store_true", help="rehace las muestras que ya existen")
     ap.add_argument("--probar", action="store_true", help="solo muestra el cruce, no genera nada")
+    ap.add_argument("--limpiar", action="store_true",
+                    help="borra las muestras de pistas que ya no tienen audio asignado")
     args = ap.parse_args()
 
-    if not os.path.isdir(args.carpeta):
-        sys.exit("No existe la carpeta %s" % args.carpeta)
+    for c in args.carpetas:
+        if not os.path.isdir(c):
+            sys.exit("No existe la carpeta %s" % c)
 
     pistas = leer_catalogo()
-    archivos = sorted(f for f in glob.glob(os.path.join(args.carpeta, "*"))
-                      if os.path.splitext(f)[1].lower() in (".mp3", ".mpeg", ".m4a", ".wav"))
+    archivos = []
+    for c in args.carpetas:
+        archivos += sorted(f for f in glob.glob(os.path.join(c, "*"))
+                           if os.path.splitext(f)[1].lower() in (".mp3", ".mpeg", ".m4a", ".wav"))
     if not archivos:
-        sys.exit("No encontre audios en %s" % args.carpeta)
+        sys.exit("No encontre audios en %s" % ", ".join(args.carpetas))
+
+    total_archivos = len(archivos)
+    archivos, copias = sin_repetidos(archivos)
+    alias = dict(copias)
 
     a_mano = leer_a_mano()
-    asignadas, dudosos, repetidos, sin_pista, errores = cruzar(pistas, archivos, a_mano)
+    asignadas, dudosos, repetidos, sin_pista, errores = cruzar(pistas, archivos, a_mano, alias)
 
     print("=" * 74)
-    print("  audios en la carpeta ........ %d" % len(archivos))
+    print("  audios en las carpetas ...... %d%s"
+          % (total_archivos,
+             "  (%d son copias del mismo audio)" % len(copias) if copias else ""))
     print("  pistas en el catalogo ....... %d" % len(pistas))
     print("  pistas con muestra .......... %d" % len(asignadas))
     for como in ("a mano", "identico", "otro orden", "contiene", "una letra", "casi iguales"):
@@ -506,6 +578,11 @@ def main():
         for base, t in repetidos:
             print("   %-46s ya hay muestra de %s" % (base[:46], t))
 
+    if copias:
+        print("\nEL MISMO AUDIO DOS VECES (%d) — se usa uno solo:" % len(copias))
+        for repetido, queda in copias:
+            print("   %-46s = %s" % (os.path.basename(repetido)[:46], os.path.basename(queda)))
+
     if sin_pista:
         print("\nSIN PISTA EN EL CATALOGO (%d) — temas propios o que no estan en el Excel:" % len(sin_pista))
         for base in sin_pista:
@@ -536,6 +613,27 @@ def main():
             hechas += 1
         if i % 25 == 0 or i == total:
             print("   recortando... %d/%d" % (i, total))
+
+    # Muestras de pistas que ya no tienen audio asignado: quedan de un cruce
+    # anterior. Hay que sacarlas, porque el generador del catalogo decide si
+    # una pista "se puede escuchar" mirando si el archivo existe, y entonces
+    # una muestra vieja hace que la web prometa algo que no corresponde.
+    # No se borran solas: si esto se corrio con una carpeta de menos, TODAS
+    # las demas parecerian sobrar. Se avisa, y se borran con --limpiar.
+    asignados = set(p["id"] for _, p, _ in asignadas)
+    sobran = sorted(f for f in os.listdir(DESTINO)
+                    if f.endswith(".mp3") and f[:-4] not in asignados)
+    if sobran:
+        if args.limpiar:
+            for f in sobran:
+                os.remove(os.path.join(DESTINO, f))
+            print("\n  BORRADAS %d muestras que ya no corresponden a ninguna pista: %s"
+                  % (len(sobran), ", ".join(sobran)))
+        else:
+            print("\n  OJO: sobran %d muestras, de pistas que ahora no tienen audio"
+                  " asignado:\n   %s" % (len(sobran), ", ".join(sobran)))
+            print("  Si corriste esto con TODAS las carpetas de demos, borralas"
+                  " con --limpiar.")
 
     peso = sum(os.path.getsize(os.path.join(DESTINO, f))
                for f in os.listdir(DESTINO) if f.endswith(".mp3"))

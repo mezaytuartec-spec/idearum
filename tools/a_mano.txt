@@ -37,9 +37,12 @@
 (demo) Como te Diré.mp3                         = Como Te Dire | Los Galos
 (Demo) Como te Dire.mp3                         = Como te Dire | Sandro
 (demo) Hipocresia.mp3                           = Hipocresia | Los Pasteles Verdes
-(Demo) A Través del Vaso.mp3                    = A Través del Vaso | Los Kijanos
 
 # --- El archivo se llama distinto que la pista ------------------------------
+(demo) Crespines.mp3                            = A Don Ata | Soledad
+(Demo) Always Remember Us This Way.mp3          = Always remerber | Lady Gaga
+(Demo) Intro + Vengo a Ocupar Mi lugar.mp3      = Vengo a ocupar mi lugar + Mi amigo el Puma | Sandro
+son mis celos_muestra.mp3                       = Son los Celos | Zalo Reyes
 (demo) Donde estara mi primavera.mp3            = Donde Esta mi Primavera | Marco Antonio Solis
 (Demo) Tu Dulce Arrogante.mp3                   = Dulce Atorrante | Sandro
 (demo) Los sonidos del Silencio (Unplugged).mp3 = Los Sonidos del Silencio (Acústico) | Sergio Denis
@@ -51,6 +54,10 @@
 # sin coros.
 (Demo) Sobreviviendo.mp3                        = Sobreviviendo | Victor Heredia
 (Demo) Sobreviviendo.mp3                        = Sobreviviendo (con Coros) | Victor Heredia
+# Igual que arriba: el Excel lo tiene dos veces, con coros y sin coros, y del
+# mismo cliente. Hay un solo audio.
+(demo) ricardo ruben.mp3                        = Ricardo Ruben | Los Twist
+(demo) ricardo ruben.mp3                        = Ricardo Ruben con coros | Los Twist
 # Mismo cliente (Gabriela Gueysha/Guyesha) y misma cancion, anotada una vez
 # como de Sandra Mihanovich y otra como de Patricia Sosa. Hay un solo audio.
 (demo ) Honrar la vida_Sandra Mihanovich.mp3    = Honrar la vida | Sandra Mihanovich
