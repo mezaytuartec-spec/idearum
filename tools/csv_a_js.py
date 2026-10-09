@@ -409,6 +409,14 @@ DOMINIO = "https://pistasparacantantes.com"
 WSP_WEB = "5492656442608"      # el mismo que esta en js/app.js
 CARPETA_PAGINAS = "pista"
 
+# El play y la pausa del boton de escuchar. ⚠️ Son los mismos dos SVG que estan
+# en la constante ICONOS de js/app.js, que arma las filas del catalogo: si se
+# cambia el dibujo, hay que cambiarlo en los dos lados.
+ICONOS = ('<svg class="icono-play" viewBox="0 0 12 14" aria-hidden="true">'
+          '<path d="M0 0l12 7-12 7z"/></svg>'
+          '<svg class="icono-pausa" viewBox="0 0 12 14" aria-hidden="true">'
+          '<path d="M0 0h4v14H0zM8 0h4v14H8z"/></svg>')
+
 
 def slug_url(texto):
     """'El Día que me Quieras' -> 'el-dia-que-me-quieras'"""
@@ -630,6 +638,8 @@ def escribir_paginas(pistas, version):
                        'Escribinos y te la mandamos para que la escuches antes de comprarla.</p>')
 
         # Otras del mismo estilo, para que Google (y la gente) sigan navegando.
+        # Las pistas vienen ordenadas con las que tienen muestra adelante, asi
+        # que estas seis son, salvo en los estilos mas flacos, escuchables.
         otras = [o for o in por_estilo[p["estilo"]] if o["nro"] != p["nro"]][:6]
         if otras:
             filas = []
@@ -637,14 +647,24 @@ def escribir_paginas(pistas, version):
                 ometa = " &middot; ".join(x for x in [esc(o["autor"]), esc(o["estilo"])] if x)
                 if o["tono"]:
                     ometa += ' &middot; <span class="fila__tono">%s</span>' % esc(o["tono"])
+                # Mismo boton que en el catalogo: js/app.js engancha el click
+                # en cualquier .lista de la pagina, asi que suena sin tener que
+                # escribir nada mas aca.
+                if o["demo"]:
+                    play = ('<button class="fila__play" type="button" data-demo="%04d" '
+                            'aria-label="Escuchar un fragmento de %s">%s</button>'
+                            % (o["nro"], esc(o["titulo"]), ICONOS))
+                else:
+                    play = '<span class="fila__hueco" aria-hidden="true"></span>'
                 filas.append(
-                    '<div class="fila">'
-                    '<span class="fila__hueco" aria-hidden="true"></span>'
+                    '<div class="fila">%s'
                     '<div class="fila__txt">'
                     '<h3 class="fila__titulo"><a href="/%s/%s">%s</a></h3>'
                     '<p class="fila__meta meta">%s</p>'
-                    '</div></div>'
-                    % (CARPETA_PAGINAS, o["pag"], esc(o["titulo"]), ometa))
+                    '</div>'
+                    '<span class="fila__progreso" aria-hidden="true"></span>'
+                    '</div>'
+                    % (play, CARPETA_PAGINAS, o["pag"], esc(o["titulo"]), ometa))
             relacionadas = (
                 '<section class="seccion pista-mas">\n    <div class="wrap">\n'
                 '      <h2 class="h-seccion">M&aacute;s de %s</h2>\n'
