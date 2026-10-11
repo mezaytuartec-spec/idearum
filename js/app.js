@@ -780,10 +780,18 @@
   var PAYPAL_ME = "";          // ej "idearum" -> https://paypal.me/idearum/40USD
 
   var PAGOS = {
-    40:  { mp: "", paypal: "" },
-    99:  { mp: "", paypal: "" },
-    149: { mp: "", paypal: "" },
-    249: { mp: "", paypal: "" }
+    40:  { mp: "https://mpago.la/2P9EHNy", paypal: "" },   // 1 Pista   $  59.000
+    99:  { mp: "https://mpago.la/1kS3XxQ", paypal: "" },   // 3 Pistas  $ 146.000
+    149: { mp: "https://mpago.la/293bd8b", paypal: "" },   // 5 Pistas  $ 219.000
+    249: { mp: "", paypal: "" },                           // 10 Pistas $ 366.000 — FALTA el link
+
+    // Estos dos NO se muestran en la web a proposito: no hay ningun
+    // data-pagar que los use. La pagina dice "desde US$ 150", porque un cover
+    // o un tema propio se presupuestan, y primero hay que acordar la cancion
+    // y la tonalidad. Quedan anotados aca para mandarlos por WhatsApp una vez
+    // cerrado el trabajo.
+    150: { mp: "https://mpago.la/1QTq7MG", paypal: "" },   // Cover a pedido $ 221.000
+    200: { mp: "https://mpago.la/2AKaxpr", paypal: "" }    // Tema propio    $ 294.000
   };
 
   function linkPago(usd, cual) {
