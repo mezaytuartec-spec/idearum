@@ -531,6 +531,10 @@ PAGINA = """<!DOCTYPE html>
         <a class="btn btn--primario btn--grande"
            href="https://wa.me/{{WSP}}?text={{MSG}}"
            target="_blank" rel="noopener">Pedir esta pista</a>
+        <p class="pagar-caja" data-pagar="40" hidden>
+          <span class="pagar__nota">Despu&eacute;s del pago, mandanos el comprobante por
+             WhatsApp con el c&oacute;digo <strong>{{ID}}</strong> y te la enviamos.</span>
+        </p>
         <p class="nota">Te la mandamos por WhatsApp en WAV y MP3. Tres por US$&nbsp;99, diez por US$&nbsp;249.</p>
         <p class="nota pista-garantia">Si la tonalidad no te sirve, te devolvemos la plata o la cambi&aacute;s por otra del cat&aacute;logo.</p>
       </div>

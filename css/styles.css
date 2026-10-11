@@ -1489,3 +1489,38 @@ ul { list-style: none; padding: 0; }
 @media (max-width: 380px) {
   .hero .h-hero { font-size: 36px; }
 }
+
+/* ---------- 12f. Botones de pago -----------------------------------------
+   El boton lo inserta js/app.js segun de donde entre el visitante: Mercado
+   Pago para Argentina, PayPal para el resto. Si no hay link cargado, la caja
+   entera queda oculta y la pagina se ve igual que antes. */
+.pagar-caja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+}
+/* .btn viene con white-space: nowrap, y "Pagar con Mercado Pago" no entra en
+   una tarjeta de pack cuando la grilla pasa a dos columnas: desbordaba la
+   pagina a lo ancho. Aca se deja cortar en dos lineas. */
+.pagar {
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+  white-space: normal;
+  text-wrap: balance;
+  font-size: 15px;
+  padding: 10px 14px;
+}
+.pagar__nota {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--gris);
+  text-align: center;
+  text-wrap: pretty;
+}
+/* En la ficha de pista el bloque ya viene centrado y con mas aire. */
+.pista-compra .pagar-caja { margin-top: 14px; max-width: 320px; }
+.pista-compra .pagar-caja,
+.pack .pagar-caja { margin-left: auto; margin-right: auto; }

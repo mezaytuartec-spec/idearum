@@ -758,6 +758,69 @@
     }
   }
 
+  /* ---------- Botones de pago ---------------------------------------------
+     A quien entra desde Argentina se le ofrece Mercado Pago; al resto,
+     PayPal. No se le muestran los dos a nadie: elegir entre medios de pago
+     no ayuda a comprar, y un argentino pagando en dolares pierde plata.
+
+     ⚠️ ACA VAN LOS LINKS DE COBRO. Mientras esten vacios no aparece ningun
+     boton, igual que con DOLAR: es preferible que no este a que lleve a un
+     link que no funciona.
+
+     La llave es el precio en dolares, el mismo numero del data-usd del HTML.
+
+     Mercado Pago: un link por monto, de Tu negocio -> Cobrar -> Link de pago.
+     PayPal: si la cuenta tiene PayPal.Me alcanza con llenar PAYPAL_ME una
+     sola vez y dejar los paypal vacios; el monto se agrega solo.
+
+     Cover a pedido y Tema propio NO tienen boton a proposito: son trabajos a
+     medida y primero hay que acordar el tema y la tonalidad.
+     ------------------------------------------------------------------------ */
+
+  var PAYPAL_ME = "";          // ej "idearum" -> https://paypal.me/idearum/40USD
+
+  var PAGOS = {
+    40:  { mp: "", paypal: "" },
+    99:  { mp: "", paypal: "" },
+    149: { mp: "", paypal: "" },
+    249: { mp: "", paypal: "" }
+  };
+
+  function linkPago(usd, cual) {
+    if (cual === "paypal" && PAYPAL_ME) {
+      return "https://paypal.me/" + encodeURIComponent(PAYPAL_ME) + "/" + usd + "USD";
+    }
+    var fila = PAGOS[usd];
+    return (fila && fila[cual]) || "";
+  }
+
+  function initPagos() {
+    var cajas = document.querySelectorAll("[data-pagar]");
+    if (!cajas.length) return;
+    var cual = esArgentina() ? "mp" : "paypal";
+    var nombre = cual === "mp" ? "Mercado Pago" : "PayPal";
+    var puestos = 0;
+
+    for (var i = 0; i < cajas.length; i++) {
+      var usd = parseInt(cajas[i].getAttribute("data-pagar"), 10);
+      var href = linkPago(usd, cual);
+      if (!href) continue;          // sin link configurado, no se muestra nada
+      cajas[i].insertAdjacentHTML(
+        "afterbegin",
+        '<a class="btn btn--primario btn--compacto pagar" href="' + escapar(href) +
+          '" target="_blank" rel="noopener">Pagar con ' + nombre + "</a>");
+      cajas[i].hidden = false;
+      puestos++;
+    }
+
+    // La aclaracion de "mandanos el comprobante" va una sola vez por pagina,
+    // no repetida en cada tarjeta, y solo si quedo algun boton.
+    if (puestos) {
+      var notas = document.querySelectorAll("[data-pagar-nota]");
+      for (var k = 0; k < notas.length; k++) notas[k].hidden = false;
+    }
+  }
+
   /* ---------- Ano del footer ---------------------------------------------- */
 
   function initAnio() {
@@ -792,6 +855,7 @@
     safe(initFilas, "initFilas");
     safe(initAhorro, "initAhorro");
     safe(initPesos, "initPesos");
+    safe(initPagos, "initPagos");
     safe(initAnio, "initAnio");
     safe(initReveals, "initReveals");
   }
