@@ -783,7 +783,7 @@
     40:  { mp: "https://mpago.la/2P9EHNy", paypal: "" },   // 1 Pista   $  59.000
     99:  { mp: "https://mpago.la/1kS3XxQ", paypal: "" },   // 3 Pistas  $ 146.000
     149: { mp: "https://mpago.la/293bd8b", paypal: "" },   // 5 Pistas  $ 219.000
-    249: { mp: "", paypal: "" },                           // 10 Pistas $ 366.000 — FALTA el link
+    249: { mp: "https://mpago.la/2K35tpm", paypal: "" },   // 10 Pistas $ 366.000
 
     // Estos dos NO se muestran en la web a proposito: no hay ningun
     // data-pagar que los use. La pagina dice "desde US$ 150", porque un cover
