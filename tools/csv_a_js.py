@@ -531,7 +531,7 @@ PAGINA = """<!DOCTYPE html>
         <a class="btn btn--primario btn--grande"
            href="https://wa.me/{{WSP}}?text={{MSG}}"
            target="_blank" rel="noopener">Pedir esta pista</a>
-        <p class="pagar-caja" data-pagar="40" hidden>
+        <p class="pagar-caja" data-pagar="40" data-pagado="{{MSGPAGO}}" hidden>
           <span class="pagar__nota">Despu&eacute;s del pago, mandanos el comprobante por
              WhatsApp con el c&oacute;digo <strong>{{ID}}</strong> y te la enviamos.</span>
         </p>
@@ -631,6 +631,12 @@ def escribir_paginas(pistas, version):
             p["titulo"], (" — " + autor) if autor else "", p["estilo"],
             (", " + tono) if tono else "", ident)
 
+        # El aviso de Mercado Pago no dice que pista se pago. Este es el
+        # mensaje que manda el que compro, con el tema ya escrito, para que no
+        # dependa de que se acuerde.
+        pagado = "Hola Idearum, pagué esta pista: %s%s [ID: %s]" % (
+            p["titulo"], (" — " + autor) if autor else "", ident)
+
         tiene = p["demo"]
         if tiene:
             muestra = ('<div class="pista-muestra">\n'
@@ -718,7 +724,7 @@ def escribir_paginas(pistas, version):
             ("{{ESTILOSLUG}}", slug_url(p["estilo"])), ("{{TONO_DATO}}", tono_dato),
             ("{{ID}}", ident), ("{{MUESTRA}}", muestra),
             ("{{RELACIONADAS}}", relacionadas), ("{{WSP}}", WSP_WEB),
-            ("{{MSG}}", quote(mensaje, safe="")),
+            ("{{MSG}}", quote(mensaje, safe="")), ("{{MSGPAGO}}", esc(pagado)),
         ):
             html = html.replace(marca, valor)
 

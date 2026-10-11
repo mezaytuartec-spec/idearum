@@ -1524,3 +1524,8 @@ ul { list-style: none; padding: 0; }
 .pista-compra .pagar-caja { margin-top: 14px; max-width: 320px; }
 .pista-compra .pagar-caja,
 .pack .pagar-caja { margin-left: auto; margin-right: auto; }
+
+/* El segundo paso: aparece recien cuando tocan "Pagar", porque antes de eso
+   no tiene sentido y solo distrae. */
+.pagar--aviso { margin-top: -2px; }
+.pagar-caja--pagando .pagar__nota { color: var(--texto); }

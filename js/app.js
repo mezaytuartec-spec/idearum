@@ -813,10 +813,33 @@
       var usd = parseInt(cajas[i].getAttribute("data-pagar"), 10);
       var href = linkPago(usd, cual);
       if (!href) continue;          // sin link configurado, no se muestra nada
+
+      // El aviso de cobro dice cuanto y quien pago, pero no QUE pista: eso
+      // solo lo sabe el que compro. Asi que apenas toca el boton de pagar le
+      // aparece el segundo paso, con el mensaje de WhatsApp ya escrito. Sin
+      // esto todo depende de que se acuerde de escribir, y no se acuerda.
+      var aviso = cajas[i].getAttribute("data-pagado");
       cajas[i].insertAdjacentHTML(
         "afterbegin",
         '<a class="btn btn--primario btn--compacto pagar" href="' + escapar(href) +
-          '" target="_blank" rel="noopener">Pagar con ' + nombre + "</a>");
+          '" target="_blank" rel="noopener">Pagar con ' + nombre + "</a>" +
+        (aviso
+          ? '<a class="btn btn--secundario btn--compacto pagar pagar--aviso" href="' +
+              escapar(wa(aviso)) + '" target="_blank" rel="noopener" hidden>' +
+              "Ya pagué, avisar por WhatsApp</a>"
+          : ""));
+
+      if (aviso) {
+        (function (caja) {
+          var btn = caja.querySelector(".pagar");
+          var paso2 = caja.querySelector(".pagar--aviso");
+          btn.addEventListener("click", function () {
+            paso2.hidden = false;
+            caja.classList.add("pagar-caja--pagando");
+          });
+        })(cajas[i]);
+      }
+
       cajas[i].hidden = false;
       puestos++;
     }
