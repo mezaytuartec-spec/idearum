@@ -104,6 +104,42 @@
     return "https://wa.me/" + WSP + "?text=" + encodeURIComponent(mensaje || "");
   }
 
+  /* ---------- Medicion ----------------------------------------------------
+     La medicion de Vercel cuenta visitas por pagina, y eso ya dice que fichas
+     de pista mira la gente. Lo que no cuenta es lo que pasa DENTRO del
+     catalogo, que es donde se escucha casi todo: ahi las 327 pistas viven en
+     una sola pagina.
+
+     Estos tres eventos tapan ese agujero y contestan la pregunta que importa:
+     que grabar despues.
+
+       escucha   le dieron play a una muestra
+       consulta  tocaron Consultar o Pedir esta pista
+       pago      tocaron un boton de pagar
+
+     No se manda nada de la persona: solo que pista era. Si el plan de Vercel
+     no incluye eventos propios, la llamada no hace nada y la web sigue igual.
+     ------------------------------------------------------------------------ */
+
+  function medir(nombre, datos) {
+    try {
+      // La cola oficial de Vercel: si el script todavia no cargo, el evento
+      // espera ahi en vez de perderse.
+      window.va = window.va || function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+      window.va("event", { name: nombre, data: datos || {} });
+    } catch (e) {
+      /* medir nunca puede romper la pagina */
+    }
+  }
+
+  // Los titulos largos se recortan: el evento viaja en la URL.
+  function corto(texto) {
+    texto = String(texto || "").replace(/\s+/g, " ").trim();
+    return texto.length > 60 ? texto.slice(0, 60) : texto;
+  }
+
   // Rango Unicode de las marcas de acento (U+0300 a U+036F). Se construye con
   // fromCharCode para que el archivo no dependa de como se guarde la codificacion.
   var ACENTOS = new RegExp(
@@ -208,6 +244,22 @@
       links[i].target = "_blank";
       links[i].rel = "noopener";
     }
+  }
+
+  // Un solo oyente para todos los links de WhatsApp de la pagina: los de las
+  // filas, el de la ficha y los del menu y el pie. Lo que interesa es de que
+  // pista salio la consulta.
+  function initMedirConsultas() {
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest ? e.target.closest('a[href*="wa.me/"]') : null;
+      if (!a) return;
+      var fila = a.closest(".fila");
+      var ficha = document.querySelector(".pista-titulo");
+      var de = fila
+        ? (fila.querySelector(".fila__titulo") || {}).textContent
+        : (ficha ? ficha.textContent : "");
+      medir("consulta", { pista: corto(de) || "general" });
+    });
   }
 
   /* ---------- Nav movil --------------------------------------------------- */
@@ -552,6 +604,12 @@
         a.play().then(null, function () { apagar("Disponible pronto"); });
         caja.classList.add("is-sonando");
         btn.setAttribute("aria-label", "Pausar " + etiqueta);
+
+        // Solo las muestras del catalogo. Los reproductores de "antes y
+        // despues" de la portada usan otros audios y no son una pista a la
+        // venta: mezclarlos ensuciaria el ranking de lo mas escuchado.
+        var m = /\/previas\/(\d+)\.mp3/.exec(src || "");
+        if (m) medir("escucha", { pista: corto(etiqueta), id: m[1] });
       } else {
         a.pause();
       }
@@ -677,6 +735,9 @@
       SONANDO = a;
       filaSonando = fila;
       fila.classList.add("is-sonando");
+
+      var tit = fila.querySelector(".fila__titulo");
+      medir("escucha", { pista: corto(tit ? tit.textContent : ""), id: id });
       a.play().then(null, function () {
         fila.classList.add("fila--sin-audio");
         soltarFila();
@@ -836,6 +897,8 @@
           btn.addEventListener("click", function () {
             paso2.hidden = false;
             caja.classList.add("pagar-caja--pagando");
+            medir("pago", { monto: "US$ " + caja.getAttribute("data-pagar"),
+                            medio: nombre });
           });
         })(cajas[i]);
       }
@@ -887,6 +950,7 @@
     safe(initAhorro, "initAhorro");
     safe(initPesos, "initPesos");
     safe(initPagos, "initPagos");
+    safe(initMedirConsultas, "initMedirConsultas");
     safe(initAnio, "initAnio");
     safe(initReveals, "initReveals");
   }
