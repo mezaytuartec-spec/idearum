@@ -475,14 +475,14 @@ PAGINA = """<!DOCTYPE html>
 
 <header class="nav">
   <div class="nav__in">
-    <a class="nav__logo" href="/index.html">
+    <a class="nav__logo" href="/">
       <img src="/assets/img/logo.png?v=20260914-1" alt="" width="20" height="20">
       <span>Idearum</span>
     </a>
     <nav class="nav__links" aria-label="Principal">
       <a href="/catalogo.html">Cat&aacute;logo</a>
       <a href="/como-funciona.html">C&oacute;mo funciona</a>
-      <a href="/index.html#a-medida">Cover a pedido</a>
+      <a href="/#a-medida">Cover a pedido</a>
       <a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
     </nav>
     <button class="nav__burger" type="button" aria-label="Abrir men&uacute;" aria-expanded="false" aria-controls="menu">
@@ -492,11 +492,11 @@ PAGINA = """<!DOCTYPE html>
 </header>
 
 <div class="menu" id="menu">
-  <a href="/index.html">Inicio</a>
+  <a href="/">Inicio</a>
   <a href="/catalogo.html">Cat&aacute;logo</a>
   <a href="/como-funciona.html">C&oacute;mo funciona</a>
-  <a href="/index.html#a-medida">Cover a pedido</a>
-  <a href="/index.html#a-medida">Tema propio</a>
+  <a href="/#a-medida">Cover a pedido</a>
+  <a href="/#a-medida">Tema propio</a>
   <a href="https://wa.me/{{WSP}}" data-wsp="Hola Idearum, quiero hacer una consulta." target="_blank" rel="noopener">Contacto</a>
 </div>
 
@@ -545,7 +545,7 @@ PAGINA = """<!DOCTYPE html>
         <p>Esta pista se entrega en el tono que dice arriba. Para cantarla en otro
            hay que volver a grabarla de cero, con m&uacute;sicos e instrumentos reales:
            eso es un cover a medida, desde US$&nbsp;150 y con entrega en 7 a 10 d&iacute;as.</p>
-        <a class="chev" href="/index.html#a-medida">Ver c&oacute;mo es un cover a medida</a>
+        <a class="chev" href="/#a-medida">Ver c&oacute;mo es un cover a medida</a>
       </div>
     </div>
   </section>
@@ -566,8 +566,8 @@ PAGINA = """<!DOCTYPE html>
       <div>
         <h4>A medida</h4>
         <ul>
-          <li><a href="/index.html#a-medida">Cover a pedido</a></li>
-          <li><a href="/index.html#a-medida">Tema propio</a></li>
+          <li><a href="/#a-medida">Cover a pedido</a></li>
+          <li><a href="/#a-medida">Tema propio</a></li>
         </ul>
       </div>
       <div>
