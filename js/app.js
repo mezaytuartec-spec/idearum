@@ -838,7 +838,7 @@
      medida y primero hay que acordar el tema y la tonalidad.
      ------------------------------------------------------------------------ */
 
-  var PAYPAL_ME = "";          // ej "idearum" -> https://paypal.me/idearum/40USD
+  var PAYPAL_ME = "idearum";   // -> https://paypal.me/idearum/40USD
 
   var PAGOS = {
     40:  { mp: "https://mpago.la/2P9EHNy", paypal: "" },   // 1 Pista   $  59.000
