@@ -34,6 +34,12 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* El atributo hidden tiene que ganar siempre. Sin esto, cualquier regla que
+   fije display —y hay varias: .btn es inline-flex, .pagar-caja es flex— deja
+   visible un elemento que el HTML marco como oculto. Paso: el boton de
+   "Ya pague" aparecia antes de que nadie tocara Pagar. */
+[hidden] { display: none !important; }
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
@@ -1529,3 +1535,13 @@ ul { list-style: none; padding: 0; }
    no tiene sentido y solo distrae. */
 .pagar--aviso { margin-top: -2px; }
 .pagar-caja--pagando .pagar__nota { color: var(--texto); }
+
+/* Logo del medio de pago. Monocromo y heredando el color del boton: no
+   compite con el texto y funciona igual si algun dia el boton cambia de
+   color. No se achica cuando el texto corta en dos lineas. */
+.pagar__logo {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
