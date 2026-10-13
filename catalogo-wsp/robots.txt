@@ -1,0 +1,5 @@
+# Este catalogo se manda por WhatsApp, no se busca en Google.
+# Si se indexara, competiria con el sitio principal por las mismas
+# busquedas: es el mismo catalogo.
+User-agent: *
+Disallow: /

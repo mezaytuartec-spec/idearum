@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<!-- Esta web NO va a Google a proposito: es el mismo catalogo que el
+     sitio principal y, si los dos se indexaran, competirian entre si por
+     las mismas busquedas. Se manda por WhatsApp, no se busca. -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cat&aacute;logo de pistas &mdash; Idearum</title>
+<meta name="description" content="Catálogo de pistas de Idearum para cantantes: balada, rock, tropical, cuarteto, folklore, mariachi y más. Escuchá la muestra y consultanos por WhatsApp.">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Vista previa al compartir el link (WhatsApp, Facebook, X). Las direcciones
+     TIENEN que ser absolutas, con https:// y el dominio: con una ruta relativa
+     WhatsApp muestra el link pelado, sin imagen ni texto. Si algun dia cambia
+     el dominio, se cambia aca y en el rel="canonical", en las DOS paginas. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Idearum">
+<meta property="og:title" content="Cat&aacute;logo de pistas &mdash; Idearum">
+<meta property="og:description" content="Catálogo de pistas de Idearum para cantantes: balada, rock, tropical, cuarteto, folklore, mariachi y más. Escuchá la muestra y consultanos por WhatsApp.">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="El estudio de Idearum: teclado, guitarras, batería, amplificadores y micrófono.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="assets/img/og.jpg">
+
+<!-- Iconos. En la barra del navegador van los PNG de 96 px: Google pide que el
+     favicon sea cuadrado y de 48 px o un multiplo, y los de 32 quedaban por
+     debajo del minimo. El favicon.ico de la raiz es el respaldo que usa el
+     buscador; ese conviene dejarlo quieto (sin ?v= y sin moverlo de lugar).
+     El amarillo va ANTES que el negro a proposito: el robot de Google ignora
+     el atributo media y, si se quedara con el ultimo, mostraria el amarillo,
+     que sobre el fondo blanco del buscador casi no se ve. -->
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96-dark.png?v=20260920-1" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
+
+<link rel="stylesheet" href="css/styles.css?v=20261006-2">
+
+<script>
+  document.documentElement.classList.remove("no-js");
+  setTimeout(function () {
+    if (!window.IDEARUM) document.documentElement.classList.add("no-js");
+  }, 5000);
+</script>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="nav__in">
+    <span class="nav__logo">
+      <img src="assets/img/logo.png?v=20260914-1" alt="" width="20" height="20">
+      <span>Idearum</span>
+    </span>
+  </div>
+</header>
+
+<!-- ==========================================================================
+     ESTA PAGINA NO SE EDITA A MANO.
+
+     La arma tools/web_wsp.py a partir del catalogo del sitio principal,
+     sacandole los precios y todo link que salga de aca. Si la tocas, el
+     proximo que corra el script te pisa los cambios.
+
+     Para cambiar algo, cambialo en catalogo.html del sitio principal y
+     volve a correr:   python tools/web_wsp.py
+     ========================================================================== -->
+
+
+
+
+<main>
+
+  <!-- ---------- Cabecera + buscador -------------------------------------- -->
+  <section class="cat-cabecera">
+    <div class="wrap">
+      <h1 class="h-seccion">Catálogo de pistas</h1>
+      <p class="cat-bajada">Buscá tu canción. Si está, te la mandamos hoy. Si no está, la grabamos de cero en la tonalidad que necesites.</p>
+
+      <!-- El buscador va antes que todo a propósito: casi nadie recorre una
+           lista de cientos de temas, la gente viene con una canción en la
+           cabeza. Y cuando no la encuentra, ahí abajo está la oferta de
+           grabarla a medida, que es la consulta que más vale. -->
+      <div class="cat-buscar">
+        <div class="buscador" id="buscador">
+          <svg class="buscador__lupa" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/>
+          </svg>
+          <label class="solo-lectores" for="q">Buscar pistas por título, autor o tonalidad</label>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="Buscar por canción o autor">
+          <button class="buscador__limpiar" id="limpiar" type="button" aria-label="Limpiar búsqueda">&times;</button>
+        </div>
+
+        <div class="cat-tono">
+          <label class="solo-lectores" for="tono">Filtrar por tonalidad</label>
+          <select id="tono"><option value="">Cualquier tonalidad</option></select>
+        </div>
+      </div>
+
+      
+      <!-- Versión corta del antes y después. Cada pastilla es un botón de
+           play; suena una por vez. No se descarga ningún audio hasta que
+           alguien aprieta play, así el catálogo carga igual de rápido. -->
+      <div class="muestras" role="group" aria-labelledby="muestras-titulo">
+        <p class="muestras__titulo" id="muestras-titulo">Escuchá el antes y el después</p>
+        <div class="muestras__grid">
+          <div class="muestras__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después" data-detalle="Pista grabada"></div>
+          </div>
+          <div class="muestras__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes" data-detalle="Maqueta"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-2-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
+          </div>
+          <div class="muestras__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes" data-detalle="Idea"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-3-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+  <!-- ---------- Filtros (sticky bajo la nav) ------------------------------ -->
+  <div class="filtros">
+    <div class="filtros__in" id="filtros" role="group" aria-label="Filtrar por estilo">
+      <button class="pill is-activa" type="button" data-estilo="todos" aria-pressed="true">Todos</button>
+      <button class="pill" type="button" data-estilo="balada" aria-pressed="false">Balada</button>
+      <button class="pill" type="button" data-estilo="rock-pop" aria-pressed="false">Rock / Pop</button>
+      <button class="pill" type="button" data-estilo="tropical" aria-pressed="false">Tropical</button>
+      <button class="pill" type="button" data-estilo="cuarteto" aria-pressed="false">Cuarteto</button>
+      <button class="pill" type="button" data-estilo="latino" aria-pressed="false">Latino</button>
+      <button class="pill" type="button" data-estilo="romanticos" aria-pressed="false">Románticos</button>
+      <button class="pill" type="button" data-estilo="cancion-del-recuerdo" aria-pressed="false">Canción del recuerdo</button>
+      <button class="pill" type="button" data-estilo="musica-cristiana" aria-pressed="false">Música cristiana</button>
+      <button class="pill" type="button" data-estilo="mariachi" aria-pressed="false">Mariachi</button>
+      <button class="pill" type="button" data-estilo="folklore" aria-pressed="false">Folklore</button>
+      <button class="pill" type="button" data-estilo="bolero" aria-pressed="false">Bolero</button>
+      <button class="pill" type="button" data-estilo="tango" aria-pressed="false">Tango</button>
+      <button class="pill" type="button" data-estilo="otros" aria-pressed="false">Otros</button>
+    </div>
+  </div>
+
+  <!-- ---------- Resultados ------------------------------------------------ -->
+  <section class="resultados">
+    <div class="wrap">
+
+      <div class="lista" id="lista"></div>
+
+      <!-- Que una búsqueda no encuentre nada no es un callejón sin salida:
+           es el momento de mayor intención de compra de toda la web. Casi
+           ningún título se pide dos veces, así que la mayoría de las búsquedas
+           terminan acá, y acá es donde está el trabajo a medida. -->
+      <div class="vacio" id="vacio" hidden>
+        <h3>Esa no la tenemos grabada. Te la grabamos.</h3>
+        <p>La producimos de cero, con músicos e instrumentos reales y en la tonalidad
+           que necesites. Entrega en 7 a 10 días, en WAV y MP3.</p>
+                <a class="btn btn--primario btn--grande"
+           href="https://wa.me/5492656442608"
+           data-wsp="Hola Idearum, busco una pista que no encontré en el catálogo: "
+           target="_blank" rel="noopener">Pedila por WhatsApp</a>
+        <p class="nota">Decinos qué canción es y te pasamos el presupuesto.</p>
+      </div>
+
+      <div class="cargar-mas" id="cargar-mas" hidden>
+        <button class="btn btn--secundario" type="button">Cargar más</button>
+      </div>
+
+      
+    </div>
+  </section>
+
+  
+
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__pie">
+      <p class="footer__marca"><img src="assets/img/logo.png?v=20260914-1" alt="" width="16" height="16"><span>Copyright &copy; <span data-anio>2026</span> Idearum. Todos los derechos reservados.</span></p>
+      <p>Consultas y pedidos por WhatsApp, todos los d&iacute;as.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="data/pistas.js?v=20261006-2" defer></script>
+<script src="js/app.js?v=20261006-2" defer></script>
+<script src="js/catalogo.js?v=20261006-2" defer></script>
+
+<!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
+     Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:
+     proyecto → pestaña Analytics → Enable. Hasta que se active, este archivo
+     no existe en el servidor y el navegador lo ignora sin romper nada. -->
+<script defer src="/_vercel/insights/script.js"></script>
+
+</body>
+</html>
