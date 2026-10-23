@@ -286,51 +286,135 @@ ul { list-style: none; padding: 0; }
 
 /* ---------- 7. Hero ------------------------------------------------------ */
 
-.hero { position: relative; }
+/* La foto va de fondo y el texto ENCIMA, en blanco, en todas las pantallas.
+   La altura la manda el CONTENIDO (con un minimo), no la foto: asi el texto
+   no se puede desbordar nunca, ni con la letra mas grande de otro sistema.
+   La foto se estira por detras con object-fit: cover.
 
-/* La foto ocupa todo el ancho. Los dos tercios de arriba son fondo limpio:
-   ahi va el texto. En movil el texto pasa a ir ARRIBA de la foto, porque
-   recortada en vertical no queda aire suficiente para sostenerlo.
+   Medida de hero-1800.jpg, por si algun dia la cambian: la mitad de arriba
+   tiene luminancia 21-33 sobre 255 (casi negro) y la de abajo 97-128, con
+   picos de 179 abajo a la derecha. De ahi sale el reparto del velo: casi no
+   toca arriba, donde va el titulo, y carga abajo, donde esta la mano.
 
    Los archivos NO se nombran aca: van en el <picture> de index.html, asi el
-   navegador los encuentra leyendo el HTML y no despues de leer este archivo.
-   Aca solo se dice que forma tiene la foto en cada pantalla. */
+   navegador los encuentra leyendo el HTML y no despues de leer este archivo. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  /* Casi toda la pantalla, como la referencia, pero con tope: en un monitor
+     muy alto un hero de 1200px obligaria a scrollear para ver que hay debajo.
+     El min() no deja que pase de 840px. */
+  min-height: min(88vh, 840px);
+  background: #101014;      /* lo que se ve en el instante previo a la foto */
+  color: var(--blanco);
+}
+
 .hero__foto {
   display: block;
-  position: relative;
-  background: #e9eef4;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 .hero__foto img {
   width: 100%;
-  aspect-ratio: 1800 / 1021;   /* la del archivo, recortado para que el bombo
-                                  con el logo caiga en el eje exacto */
-  min-height: 560px;
-  max-height: 1050px;
-  object-fit: cover;           /* lo mismo que hacia background-size: cover */
-  object-position: 50% 100%;   /* anclada abajo: lo que se recorta es cielo */
+  height: 100%;
+  object-fit: cover;
+  /* Corrido hacia abajo: con cover, el ancho de la foto siempre se usa entero,
+     asi que lo unico que se puede elegir es QUE franja se ve. Mas abajo se ve
+     mas mastil y menos penumbra vacia, y asi se entiende que hay un
+     instrumento y una mano, no solo un desenfoque. */
+  object-position: 50% 62%;
 }
 
-/* Por defecto (y en cualquier pantalla angosta) el texto va arriba de la foto:
-   asi nunca se monta sobre los instrumentos. Solo a partir de 1200px, donde
-   el tercio limpio de la foto da de sobra, el texto pasa a ir encima. */
-.hero__txt { padding: 64px 0 48px; text-align: center; }
-
-.hero .etiqueta { margin-bottom: 14px; }
-.hero .h-hero   { margin-bottom: 14px; }
-.hero .sub-hero { max-width: 780px; margin: 0 auto 24px; color: #5f6069; }
-
-@media (min-width: 1200px) {
-  .hero__txt {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: clamp(34px, 4.4%, 84px) 0 0;
-  }
-  .hero .h-hero   { font-size: 64px; }
-  .hero .sub-hero { font-size: 22px; }
+.hero__velo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* El tramo del medio va flojo a proposito: ahi esta el mastil, y si se lo
+     tapa la foto se lee como una mancha desenfocada. El titulo no lo necesita
+     (tiene su propia sombra) y el panel es opaco. Solo el ultimo tramo carga,
+     porque ahi van los botones. */
+  background: linear-gradient(to bottom,
+              rgba(0, 0, 0, .40)  0%,
+              rgba(0, 0, 0, .20) 28%,
+              rgba(0, 0, 0, .28) 62%,
+              rgba(0, 0, 0, .62) 100%);
 }
+
+.hero__txt {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 58px 0 54px;
+  text-align: center;
+}
+
+.hero .etiqueta { margin-bottom: 14px; color: rgba(255, 255, 255, .70); }
+.hero .h-hero {
+  margin-bottom: 14px;
+  color: var(--blanco);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .5);
+}
+.hero .sub-hero { max-width: 780px; margin: 0 auto 30px; color: rgba(255, 255, 255, .82); }
+
+/* Sobre la foto oscura hay que invertir los dos botones: el primario es casi
+   negro y el chevron es texto oscuro, los dos se perderian contra el fondo.
+   El icono de WhatsApp pasa al negro (assets/img/wsp-negro.png) porque el
+   boton queda blanco; el blanco se sigue usando en el resto de la web. */
+.hero .btn--primario { background: var(--blanco); color: var(--texto); }
+.hero .btn--primario:hover { background: var(--blanco); transform: scale(1.02); }
+.hero .chev { color: var(--blanco); }
+
+/* ---------- El antes y despues dentro del hero ----------------------------
+   Es la prueba, y va en la primera pantalla: el que llega frio no tiene que
+   bajar cinco secciones para enterarse por que la pista vale US$ 40 y no
+   US$ 3. Son los mismos dos audios del ejemplo 1 de la seccion "ejemplos".
+
+   El panel va opaco a proposito. Queda apoyado sobre la mitad clara de la
+   foto, asi que si fuera transparente no se leeria: es una caja, no un texto
+   suelto. Si algun navegador no soporta backdrop-filter, el fondo solido de
+   abajo ya alcanza por si mismo.
+   -------------------------------------------------------------------------- */
+.hero__prueba {
+  max-width: 620px;
+  margin: 0 auto 32px;
+  padding: 16px 18px 19px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 20px;
+  background: rgba(14, 14, 18, .72);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  backdrop-filter: saturate(140%) blur(16px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+}
+.hero__prueba-tit {
+  margin-bottom: 11px;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, .68);
+}
+.hero__par {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Los dos reproductores en version oscura: el mismo criterio que la tarjeta
+   de tema propio de la seccion de ejemplos. Un poco mas altos que los del
+   catalogo, porque aca son el centro de la pantalla y no un detalle. */
+.hero__prueba .repro--mini { min-height: 50px; }
+.hero__prueba .repro__pastilla { height: 50px; background: rgba(255, 255, 255, .10); }
+.hero__prueba .repro__pastilla:hover { background: rgba(255, 255, 255, .17); }
+.hero__prueba .repro__pastilla:hover .repro__btn { background: var(--blanco); }
+.hero__prueba .repro__nombre { color: var(--blanco); }
+.hero__prueba .repro__detalle { color: rgba(255, 255, 255, .60); }
+.hero__prueba .repro__btn { background: var(--blanco); color: var(--texto); }
+.hero__prueba .repro__btn:hover { background: var(--blanco); }
+.hero__prueba .repro--mini .repro__llena { background: rgba(255, 255, 255, .16); }
+.hero__prueba .repro--vacio .repro__pastilla { background: rgba(255, 255, 255, .06); }
+.hero__prueba .repro--vacio .repro__pastilla:hover { background: rgba(255, 255, 255, .06); }
+.hero__prueba .repro--vacio .repro__btn { background: rgba(255, 255, 255, .22); color: rgba(255, 255, 255, .5); }
 
 /* ---------- 8. Corredor de portadas --------------------------------------
    Dos rieles de tarjetas que vienen desde el fondo hacia el que mira. La
@@ -926,14 +1010,60 @@ ul { list-style: none; padding: 0; }
 
 /* Antes y despues en version corta, debajo del buscador. Tres parejas: arriba
    el antes, abajo el despues. */
-.muestras { margin-top: 22px; }
-.muestras__titulo { margin-bottom: 10px; font-size: 14px; color: var(--texto-sec); }
+/* La franja del antes y despues. Va oscura y con titulo grande porque es el
+   unico argumento que explica la diferencia de precio con un karaoke, pero
+   queda DEBAJO del buscador: el que entra al catalogo viene a buscar un tema y
+   taparle la busqueda seria ponerle friccion justo al que mas quiere comprar.
+   Mismo codigo visual que la tarjeta de tema propio y que el panel del hero. */
+.muestras {
+  margin-top: 26px;
+  padding: 22px 22px 24px;
+  border-radius: 20px;
+  background: linear-gradient(#1c1c20, #0d0d0f);
+  color: var(--blanco);
+}
+.muestras__titulo {
+  margin-bottom: 4px;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--blanco);
+}
+.muestras__bajada {
+  margin-bottom: 18px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, .58);
+}
 .muestras__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 .muestras__par { display: flex; flex-direction: column; gap: 8px; }
+
+/* La version de las fichas de pista: un solo par, lado a lado. Usa su propia
+   caja (__duo) y no __grid, asi no hereda el carrusel horizontal que __grid
+   arma en pantalla angosta, que para dos pastillas no tiene sentido. */
+.muestras--ficha { margin: 26px 0 0; }
+.muestras__duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Las pastillas, en version oscura. */
+.muestras .repro__pastilla { background: rgba(255, 255, 255, .10); }
+.muestras .repro__pastilla:hover { background: rgba(255, 255, 255, .17); }
+.muestras .repro__pastilla:hover .repro__btn { background: var(--blanco); }
+.muestras .repro__nombre { color: var(--blanco); }
+.muestras .repro__detalle { color: rgba(255, 255, 255, .60); }
+.muestras .repro__btn { background: var(--blanco); color: var(--texto); }
+.muestras .repro__btn:hover { background: var(--blanco); }
+.muestras .repro--mini .repro__llena { background: rgba(255, 255, 255, .16); }
+.muestras .repro--vacio .repro__pastilla { background: rgba(255, 255, 255, .06); }
+.muestras .repro--vacio .repro__pastilla:hover { background: rgba(255, 255, 255, .06); }
+.muestras .repro--vacio .repro__btn { background: rgba(255, 255, 255, .22); color: rgba(255, 255, 255, .5); }
 
 /* Sin JS los botones no existen: mejor no mostrar el titulo solo. */
 .no-js .muestras { display: none; }
@@ -1347,17 +1477,14 @@ ul { list-style: none; padding: 0; }
   .nav__links { display: none; }
   .nav__burger { display: block; }
 
-  /* En movil la foto se recorta mas cuadrada, para que el kit de bateria y
-     las guitarras se sigan viendo grandes. */
-  .hero__txt { padding: 48px 0 36px; }
-  .hero__foto img {
-    aspect-ratio: 5 / 4;
-    min-height: 0;
-    max-height: none;
-  }
+  /* La foto ya no define el alto: lo define el contenido contra el min-height
+     del hero. Aca solo se achica ese minimo y se ajusta el aire. */
+  .hero { min-height: 560px; }
+  .hero__txt { padding: 44px 0 40px; }
   .hero .acciones { flex-direction: column; gap: 18px; }
   .hero .sub-hero { margin-bottom: 26px; }
   .hero .chev { padding: 8px 0; }
+  .hero__prueba { margin-bottom: 28px; }
   .btn--compacto { padding: 10px 18px; }
 
   .negra { border-radius: 24px 24px 0 0; }
@@ -1427,16 +1554,21 @@ ul { list-style: none; padding: 0; }
      las pildoras de filtro: ocupan dos renglones y no seis, y la lista de
      pistas no queda empujada hacia abajo. La que asoma al costado avisa que
      hay mas. */
-  .muestras { margin-top: 18px; }
+  /* En pantalla angosta la franja se achica y el carrusel sangra hasta el
+     borde del panel: el margen negativo compensa el padding de .muestras, asi
+     la pastilla que asoma al costado avisa que hay mas. */
+  .muestras { margin-top: 20px; padding: 18px 18px 20px; }
+  .muestras__titulo { font-size: 19px; }
+  .muestras__bajada { margin-bottom: 15px; font-size: 13px; }
   .muestras__grid {
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: minmax(216px, 1fr);   /* en tablet entran las tres */
     gap: 12px;
-    margin: 0 -22px;
-    padding: 0 22px;
+    margin: 0 -18px;          /* tiene que ser igual al padding de .muestras */
+    padding: 0 18px;
     overflow-x: auto;
-    scroll-padding: 0 22px;
+    scroll-padding: 0 18px;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
@@ -1449,36 +1581,34 @@ ul { list-style: none; padding: 0; }
    -------------------------------------------------------------------------- */
 
 @media (max-width: 600px) {
-  /* Hero: el texto va ENCIMA de la foto, como en escritorio. hero-movil.jpg
-     es la foto a escala normal (bateria, guitarras y amplis completos) con el
-     fondo celeste y blanco del estudio EXTENDIDO hacia arriba, fundido sin
-     corte: el texto queda sobre el cielo de la propia imagen. Se anclan abajo
-     los instrumentos; si la pantalla es mas ancha, lo que se recorta es cielo.
-     El bloque de texto se centra en la zona del cielo y los botones van en
-     una sola linea. */
-  .hero__txt {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 64%;             /* la zona de cielo, arriba de los platillos */
-    display: flex;
-    align-items: center;
-    padding: 0 0 22px;       /* centro optico: apenas por encima del medio */
-  }
-  .hero__txt .wrap { width: 100%; }
-  .hero__foto img {
-    aspect-ratio: auto;
-    height: max(600px, 138vw);
-    max-height: none;
-  }
+  /* Hero en celular. hero-movil.jpg es el recorte vertical de la misma foto.
+     El alto sale del contenido contra el minimo, igual que en escritorio, asi
+     que nunca puede quedar texto fuera de la foto.
+
+     Las dos pastillas del antes y despues pasan a ir UNA DEBAJO DE LA OTRA: en
+     dos columnas, a 390px de ancho, "Pista grabada" no entra y se corta con
+     puntos suspensivos. Apiladas se leen enteras y ademas quedan mas grandes
+     para el dedo. */
+  .hero { min-height: min(86vh, 660px); }
+  .hero__txt { padding: 34px 0 34px; }
   .hero .etiqueta { margin-bottom: 10px; }
   .hero .h-hero { margin-bottom: 10px; }
-  .hero .sub-hero { font-size: 17px; margin-bottom: 20px; }
+  .hero .sub-hero { font-size: 17px; margin-bottom: 22px; }
   .hero .acciones { flex-direction: row; gap: 12px 22px; }
   .hero .chev { font-size: 18px; }
   .hero .btn { padding: 11px 18px; font-size: 16px; }
+
+  .hero__prueba {
+    max-width: none;
+    margin-bottom: 24px;
+    padding: 13px 13px 15px;
+    border-radius: 18px;
+  }
+  .hero__par { grid-template-columns: 1fr; gap: 8px; }
+
+  /* Lo mismo en la ficha de pista: en dos columnas a 390px "Pista grabada" no
+     entra y se corta. */
+  .muestras__duo { grid-template-columns: 1fr; gap: 8px; }
 
   /* Corredor: un poco mas alto para que entren las tapas grandes (la
      geometria "de cerca" la arma el JS con VIA_MOVIL). */

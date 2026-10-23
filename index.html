@@ -23,12 +23,12 @@
 <meta property="og:title" content="Idearum — Pistas profesionales para cantantes">
 <meta property="og:description" content="Grabadas de cero y con otra impronta. Catálogo listo, covers a pedido y producción de temas propios.">
 <meta property="og:url" content="https://pistasparacantantes.com/">
-<meta property="og:image" content="https://pistasparacantantes.com/assets/img/og.jpg">
+<meta property="og:image" content="https://pistasparacantantes.com/assets/img/og.jpg?v=20261017-1">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="El estudio de Idearum: teclado, guitarras, batería, amplificadores y micrófono.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pistasparacantantes.com/assets/img/og.jpg">
+<meta name="twitter:image" content="https://pistasparacantantes.com/assets/img/og.jpg?v=20261017-1">
 
 <!-- Iconos. En la barra del navegador van los PNG de 96 px: Google pide que el
      favicon sea cuadrado y de 48 px o un multiplo, y los de 32 quedaban por
@@ -42,7 +42,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
 
-<link rel="stylesheet" href="css/styles.css?v=20261006-2">
+<link rel="stylesheet" href="css/styles.css?v=20261017-1">
 
 <script>
   /* Quita la red de seguridad "sin JS". Si app.js no llega a cargarse en 5
@@ -83,11 +83,13 @@
         <h3> de cada tarjeta, más abajo. Los mismos audios suenan también en
         los seis botones de arriba del catálogo.
      7. FOTO DEL HERO. Tres archivos en assets/img/: hero-1800.jpg
-        (escritorio), hero-900.jpg (tablet) y hero-movil.jpg (celular: la foto
-        con el fondo del estudio extendido hacia arriba, para el texto). Se
-        nombran en el <picture> de más abajo, en este mismo archivo. Si la
-        cambiás, respetá que el tercio de arriba quede limpio (ahí va el texto)
-        y subí el ?v= de esas tres líneas.
+        (escritorio), hero-900.jpg (tablet) y hero-movil.jpg (celular, recorte
+        vertical). Se nombran en el <picture> de más abajo, en este mismo
+        archivo. El texto va ENCIMA de la foto, en blanco, así que si la
+        cambiás tiene que ser una foto OSCURA en la mitad de arriba; si ponés
+        una clara, el título no se va a leer. Subí el ?v= de esas tres líneas.
+        La de ahora es de Unsplash (libre) y está medida: el tercio de arriba
+        tiene luminancia 21-33 sobre 255, o sea casi negro.
      ========================================================================== -->
 
 <header class="nav">
@@ -127,34 +129,112 @@
        El logo ya viene impreso en el bombo, por eso acá no se repite.
        ---------------------------------------------------------------------- -->
   <section class="hero">
+
+    <!-- Las tres fotos del hero se nombran acá y en ningún otro lado. El
+         navegador elige la que corresponde a la pantalla y empieza a bajarla
+         apenas lee esta línea, antes que el CSS. Va PRIMERA en el HTML para
+         que empiece a bajar cuanto antes; el CSS la manda al fondo. Si cambiás
+         la foto, subí el ?v= de estas tres líneas. -->
+    <picture class="hero__foto">
+      <source media="(max-width: 600px)" srcset="assets/img/hero-movil.jpg?v=20261017-1">
+      <source media="(max-width: 833px)" srcset="assets/img/hero-900.jpg?v=20261017-1">
+      <img src="assets/img/hero-1800.jpg?v=20261017-1" fetchpriority="high" decoding="async"
+           alt="Las manos de un músico sobre el mástil, en penumbra">
+    </picture>
+
+    <!-- Velo oscuro. No es decoración: la foto es casi negra arriba pero clara
+         abajo, y sin esto el antes y después no se leería. -->
+    <div class="hero__velo" aria-hidden="true"></div>
+
     <div class="hero__txt">
       <div class="wrap">
         <p class="etiqueta reveal">Producción musical</p>
         <h1 class="h-hero reveal">Pistas profesionales para <span class="marca">cantantes</span>.</h1>
         <p class="sub-hero reveal">Grabadas de cero y con otra impronta.</p>
+
+        <!-- La prueba, arriba de todo. Son los mismos dos audios del ejemplo 1
+             de la sección "ejemplos" (karaoke contra pista grabada): la única
+             comparación que enfrenta a la competencia real del catálogo.
+             Van en la forma corta (repro--mini), que NO descarga nada hasta
+             que alguien aprieta play, así el hero sigue cargando liviano. -->
+        <div class="hero__prueba reveal" role="group" aria-labelledby="hero-prueba-tit">
+          <p class="hero__prueba-tit" id="hero-prueba-tit">Escuchá la diferencia</p>
+          <div class="hero__par">
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
+            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después" data-detalle="Pista grabada"></div>
+          </div>
+        </div>
+
         <div class="acciones acciones--centro reveal">
           <a class="chev chev--grande" href="catalogo.html">Ver el catálogo</a>
           <a class="btn btn--primario"
              href="https://wa.me/5492656442608"
              data-wsp="Hola Idearum, quiero pedir un tema."
              target="_blank" rel="noopener">
-            <img class="wa" src="assets/img/wsp-blanco.png?v=20260914-1" alt="" width="17" height="17">
+            <img class="wa" src="assets/img/wsp-negro.png?v=20261017-1" alt="" width="17" height="17">
             <span>Pedí tu tema</span>
           </a>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- Las tres fotos del hero se nombran acá y en ningún otro lado. El
-         navegador elige la que corresponde a la pantalla y empieza a bajarla
-         apenas lee esta línea, antes que el CSS. Si cambiás la foto, subí el
-         ?v= de estas tres líneas. -->
-    <picture class="hero__foto">
-      <source media="(max-width: 600px)" srcset="assets/img/hero-movil.jpg?v=20260914-1">
-      <source media="(max-width: 833px)" srcset="assets/img/hero-900.jpg?v=20260914-1">
-      <img src="assets/img/hero-1800.jpg?v=20260914-1" fetchpriority="high" decoding="async"
-           alt="Teclado, guitarras, batería, amplificadores y micrófono de Idearum montados en el estudio">
-    </picture>
+  <!-- ---------- Antes y después ----------------------------------------------
+       Los tres ejemplos son reales: un cover a pedido y dos temas propios.
+       Los MP3 están en assets/audio/ con estos nombres exactos:
+
+           ejemplo-1-antes.mp3   ejemplo-1-despues.mp3   (cover a pedido)
+           ejemplo-2-antes.mp3   ejemplo-2-despues.mp3   (tema propio)
+           ejemplo-3-antes.mp3   ejemplo-3-despues.mp3   (tema propio)
+
+       Para cambiar uno, pisá el archivo con el tuyo, mismo nombre, y subí el
+       ?v= de los <script> del final. Si un archivo llegara a faltar, ese
+       reproductor queda apagado y dice "Disponible pronto": no rompe nada.
+       Los títulos de las tarjetas describen el ejemplo; si querés poner el
+       nombre real de la canción, cambialos acá abajo.
+       ------------------------------------------------------------------------ -->
+  <section class="seccion" id="ejemplos">
+    <div class="wrap">
+      <div class="ejemplos__cab reveal">
+        <h2 class="h-seccion">Escuchá el antes y el después.</h2>
+        <p>Lo que nos llega y la pista terminada. Los mismos temas, sin retoques.</p>
+      </div>
+
+      <div class="ejemplos__grid">
+        <article class="ejemplo reveal">
+          <span class="ejemplo__tipo">Cover a pedido</span>
+          <h3 class="ejemplo__titulo">De un karaoke a una pista grabada</h3>
+          <p class="ejemplo__meta meta">El mismo tema, grabado de cero.</p>
+
+          <div class="ejemplo__pistas">
+            <div class="repro" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes"></div>
+            <div class="repro" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después"></div>
+          </div>
+        </article>
+        <article class="ejemplo ejemplo--propio reveal">
+          <span class="ejemplo__tipo">Tema propio</span>
+          <h3 class="ejemplo__titulo">De la maqueta a la producción</h3>
+          <p class="ejemplo__meta meta">Antes, la idea. Después, la pista terminada.</p>
+
+          <div class="ejemplo__pistas">
+            <div class="repro" data-audio="assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes"></div>
+            <div class="repro" data-audio="assets/audio/ejemplo-2-despues.mp3" data-nombre="Después"></div>
+          </div>
+        </article>
+        <article class="ejemplo ejemplo--propio reveal">
+          <span class="ejemplo__tipo">Tema propio</span>
+          <h3 class="ejemplo__titulo">Otra idea, producida entera</h3>
+          <p class="ejemplo__meta meta">Antes, la idea. Después, la pista terminada.</p>
+
+          <div class="ejemplo__pistas">
+            <div class="repro" data-audio="assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes"></div>
+            <div class="repro" data-audio="assets/audio/ejemplo-3-despues.mp3" data-nombre="Después"></div>
+          </div>
+        </article>
+      </div>
+
+      <p class="ejemplos__nota nota reveal">Grabado en estudio con músicos e instrumentos reales.</p>
+    </div>
   </section>
 
   <!-- ---------- Corredor de portadas -------------------------------------
@@ -292,64 +372,6 @@
   </section>
 
 
-  <!-- ---------- Antes y después ----------------------------------------------
-       Los tres ejemplos son reales: un cover a pedido y dos temas propios.
-       Los MP3 están en assets/audio/ con estos nombres exactos:
-
-           ejemplo-1-antes.mp3   ejemplo-1-despues.mp3   (cover a pedido)
-           ejemplo-2-antes.mp3   ejemplo-2-despues.mp3   (tema propio)
-           ejemplo-3-antes.mp3   ejemplo-3-despues.mp3   (tema propio)
-
-       Para cambiar uno, pisá el archivo con el tuyo, mismo nombre, y subí el
-       ?v= de los <script> del final. Si un archivo llegara a faltar, ese
-       reproductor queda apagado y dice "Disponible pronto": no rompe nada.
-       Los títulos de las tarjetas describen el ejemplo; si querés poner el
-       nombre real de la canción, cambialos acá abajo.
-       ------------------------------------------------------------------------ -->
-  <section class="seccion" id="ejemplos">
-    <div class="wrap">
-      <div class="ejemplos__cab reveal">
-        <h2 class="h-seccion">Escuchá el antes y el después.</h2>
-        <p>Lo que nos llega y la pista terminada. Los mismos temas, sin retoques.</p>
-      </div>
-
-      <div class="ejemplos__grid">
-        <article class="ejemplo reveal">
-          <span class="ejemplo__tipo">Cover a pedido</span>
-          <h3 class="ejemplo__titulo">De un karaoke a una pista grabada</h3>
-          <p class="ejemplo__meta meta">El mismo tema, grabado de cero.</p>
-
-          <div class="ejemplo__pistas">
-            <div class="repro" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes"></div>
-            <div class="repro" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después"></div>
-          </div>
-        </article>
-        <article class="ejemplo ejemplo--propio reveal">
-          <span class="ejemplo__tipo">Tema propio</span>
-          <h3 class="ejemplo__titulo">De la maqueta a la producción</h3>
-          <p class="ejemplo__meta meta">Antes, la idea. Después, la pista terminada.</p>
-
-          <div class="ejemplo__pistas">
-            <div class="repro" data-audio="assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes"></div>
-            <div class="repro" data-audio="assets/audio/ejemplo-2-despues.mp3" data-nombre="Después"></div>
-          </div>
-        </article>
-        <article class="ejemplo ejemplo--propio reveal">
-          <span class="ejemplo__tipo">Tema propio</span>
-          <h3 class="ejemplo__titulo">Otra idea, producida entera</h3>
-          <p class="ejemplo__meta meta">Antes, la idea. Después, la pista terminada.</p>
-
-          <div class="ejemplo__pistas">
-            <div class="repro" data-audio="assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes"></div>
-            <div class="repro" data-audio="assets/audio/ejemplo-3-despues.mp3" data-nombre="Después"></div>
-          </div>
-        </article>
-      </div>
-
-      <p class="ejemplos__nota nota reveal">Grabado en estudio con músicos e instrumentos reales.</p>
-    </div>
-  </section>
-
   <!-- ---------- Credibilidad --------------------------------------------- -->
   <section class="credibilidad negra">
     <div class="wrap tres">
@@ -405,8 +427,8 @@
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20261006-2" defer></script>
-<script src="js/app.js?v=20261006-2" defer></script>
+<script src="data/pistas.js?v=20261017-1" defer></script>
+<script src="js/app.js?v=20261017-1" defer></script>
 
 <!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
      Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:

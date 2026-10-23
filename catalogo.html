@@ -18,12 +18,12 @@
 <meta property="og:title" content="Idearum — Pistas profesionales para cantantes">
 <meta property="og:description" content="Grabadas de cero y con otra impronta. Catálogo listo, covers a pedido y producción de temas propios.">
 <meta property="og:url" content="https://pistasparacantantes.com/catalogo.html">
-<meta property="og:image" content="https://pistasparacantantes.com/assets/img/og.jpg">
+<meta property="og:image" content="https://pistasparacantantes.com/assets/img/og.jpg?v=20261017-1">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="El estudio de Idearum: teclado, guitarras, batería, amplificadores y micrófono.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pistasparacantantes.com/assets/img/og.jpg">
+<meta name="twitter:image" content="https://pistasparacantantes.com/assets/img/og.jpg?v=20261017-1">
 
 <!-- Iconos. En la barra del navegador van los PNG de 96 px: Google pide que el
      favicon sea cuadrado y de 48 px o un multiplo, y los de 32 quedaban por
@@ -37,7 +37,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
 
-<link rel="stylesheet" href="css/styles.css?v=20261006-2">
+<link rel="stylesheet" href="css/styles.css?v=20261017-1">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -128,11 +128,20 @@
 
       <p class="cat-precio"><strong>US$&nbsp;40</strong> la pista<span class="cat-precio__sep">·</span><a href="#packs-tit">10 por US$&nbsp;249</a></p>
 
-      <!-- Versión corta del antes y después. Cada pastilla es un botón de
-           play; suena una por vez. No se descarga ningún audio hasta que
-           alguien aprieta play, así el catálogo carga igual de rápido. -->
+      <!-- Antes y después. Va DEBAJO del buscador a propósito: el que entra al
+           catálogo viene con una canción en la cabeza y lo primero que tiene
+           que encontrar es dónde buscarla. Pero va en una franja oscura y con
+           título grande, porque es lo único que explica la diferencia de
+           precio contra un karaoke armado con sonidos de computadora.
+           Cada pastilla es un botón de play; suena una por vez. No se descarga
+           ningún audio hasta que alguien aprieta play, así el catálogo carga
+           igual de rápido.
+           OJO: no escribas importes acá, ni siquiera en un comentario. Este
+           archivo también alimenta el catálogo sin precios y el control de
+           tools/web_wsp.py corta la generación si encuentra uno. -->
       <div class="muestras" role="group" aria-labelledby="muestras-titulo">
         <p class="muestras__titulo" id="muestras-titulo">Escuchá el antes y el después</p>
+        <p class="muestras__bajada">Lo que nos llega y la pista terminada. Los mismos temas, sin retoques.</p>
         <div class="muestras__grid">
           <div class="muestras__par">
             <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
@@ -383,9 +392,9 @@
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20261006-2" defer></script>
-<script src="js/app.js?v=20261006-2" defer></script>
-<script src="js/catalogo.js?v=20261006-2" defer></script>
+<script src="data/pistas.js?v=20261017-1" defer></script>
+<script src="js/app.js?v=20261017-1" defer></script>
+<script src="js/catalogo.js?v=20261017-1" defer></script>
 
 <!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
      Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:

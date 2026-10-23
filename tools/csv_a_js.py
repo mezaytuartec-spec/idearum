@@ -448,11 +448,11 @@ PAGINA = """<!DOCTYPE html>
 <meta property="og:title" content="Idearum &mdash; Pistas profesionales para cantantes">
 <meta property="og:description" content="{{DESC}}">
 <meta property="og:url" content="{{URL}}">
-<meta property="og:image" content="{{DOM}}/assets/img/og.jpg">
+<meta property="og:image" content="{{DOM}}/assets/img/og.jpg?v=20261017-1">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{{DOM}}/assets/img/og.jpg">
+<meta name="twitter:image" content="{{DOM}}/assets/img/og.jpg?v=20261017-1">
 
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96-dark.png?v={{V}}" media="(prefers-color-scheme: dark)">
@@ -525,6 +525,25 @@ PAGINA = """<!DOCTYPE html>
          sonidos de computadora.</p>
 
       {{MUESTRA}}
+
+      <!-- La comparaci&oacute;n, en todas las fichas. Va DESPU&Eacute;S de la muestra del
+           tema y ANTES del bloque de compra: primero escucha la pista que vino
+           a buscar, despu&eacute;s el argumento de por qu&eacute; vale lo que vale, y
+           reci&eacute;n ah&iacute; el bot&oacute;n. Es un solo par y no tres: en una ficha de
+           producto, tres ser&iacute;a relleno. Son los mismos dos MP3 de la home, y
+           al ser de la forma corta no bajan un byte hasta que alguien aprieta
+           play.
+           OJO: no escribas el precio ac&aacute;, ni siquiera en un comentario. Esta
+           plantilla tambi&eacute;n alimenta el cat&aacute;logo sin precios, y el control de
+           tools/web_wsp.py corta la generaci&oacute;n si encuentra un importe. -->
+      <div class="muestras muestras--ficha" role="group" aria-labelledby="prueba-titulo">
+        <p class="muestras__titulo" id="prueba-titulo">Esta es la diferencia</p>
+        <p class="muestras__bajada">Un karaoke armado con sonidos de computadora, y una pista nuestra grabada con m&uacute;sicos de verdad. Mismo tema.</p>
+        <div class="muestras__duo">
+          <div class="repro repro--mini" data-audio="/assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
+          <div class="repro repro--mini" data-audio="/assets/audio/ejemplo-1-despues.mp3" data-nombre="Despu&eacute;s" data-detalle="Pista grabada"></div>
+        </div>
+      </div>
 
       <div class="pista-compra">
         <p class="pista-precio"><span>US$</span><span class="num">40</span><span class="en-pesos" data-usd="40" hidden></span></p>
@@ -701,7 +720,7 @@ def escribir_paginas(pistas, version):
             "description": desc,
             "category": p["estilo"],
             "sku": ident,
-            "image": [DOMINIO + "/assets/img/og.jpg",
+            "image": [DOMINIO + "/assets/img/og.jpg?v=20261017-1",
                       DOMINIO + "/assets/img/hero-1800.jpg"],
             "brand": {"@type": "Brand", "name": "Idearum"},
             "offers": {
@@ -757,7 +776,7 @@ def main():
     ap.add_argument("--forzar", action="store_true")
     ap.add_argument("--sin-paginas", action="store_true",
                     help="no regenera la carpeta pista/ ni el sitemap")
-    ap.add_argument("--version", default="20261006-2",
+    ap.add_argument("--version", default="20261017-1",
                     help="el ?v= que llevan el CSS y el JS en las paginas generadas")
     args = ap.parse_args()
 

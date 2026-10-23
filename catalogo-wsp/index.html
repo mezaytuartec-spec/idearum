@@ -40,7 +40,7 @@
 <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon-96.png?v=20260920-1">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png?v=20260914-1">
 
-<link rel="stylesheet" href="css/styles.css?v=20261006-2">
+<link rel="stylesheet" href="css/styles.css?v=20261017-1">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -105,23 +105,32 @@
       </div>
 
       
-      <!-- Versión corta del antes y después. Cada pastilla es un botón de
-           play; suena una por vez. No se descarga ningún audio hasta que
-           alguien aprieta play, así el catálogo carga igual de rápido. -->
+      <!-- Antes y después. Va DEBAJO del buscador a propósito: el que entra al
+           catálogo viene con una canción en la cabeza y lo primero que tiene
+           que encontrar es dónde buscarla. Pero va en una franja oscura y con
+           título grande, porque es lo único que explica la diferencia de
+           precio contra un karaoke armado con sonidos de computadora.
+           Cada pastilla es un botón de play; suena una por vez. No se descarga
+           ningún audio hasta que alguien aprieta play, así el catálogo carga
+           igual de rápido.
+           OJO: no escribas importes acá, ni siquiera en un comentario. Este
+           archivo también alimenta el catálogo sin precios y el control de
+           tools/web_wsp.py corta la generación si encuentra uno. -->
       <div class="muestras" role="group" aria-labelledby="muestras-titulo">
         <p class="muestras__titulo" id="muestras-titulo">Escuchá el antes y el después</p>
+        <p class="muestras__bajada">Lo que nos llega y la pista terminada. Los mismos temas, sin retoques.</p>
         <div class="muestras__grid">
           <div class="muestras__par">
-            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
-            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-1-despues.mp3" data-nombre="Después" data-detalle="Pista grabada"></div>
+            <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
+            <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-1-despues.mp3" data-nombre="Después" data-detalle="Pista grabada"></div>
           </div>
           <div class="muestras__par">
-            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes" data-detalle="Maqueta"></div>
-            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-2-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
+            <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-2-antes.mp3" data-nombre="Antes" data-detalle="Maqueta"></div>
+            <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-2-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
           </div>
           <div class="muestras__par">
-            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes" data-detalle="Idea"></div>
-            <div class="repro repro--mini" data-audio="assets/audio/ejemplo-3-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
+            <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-3-antes.mp3" data-nombre="Antes" data-detalle="Idea"></div>
+            <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-3-despues.mp3" data-nombre="Después" data-detalle="Pista terminada"></div>
           </div>
         </div>
       </div>
@@ -191,9 +200,9 @@
   </div>
 </footer>
 
-<script src="data/pistas.js?v=20261006-2" defer></script>
-<script src="js/app.js?v=20261006-2" defer></script>
-<script src="js/catalogo.js?v=20261006-2" defer></script>
+<script src="data/pistas.js?v=20261017-1" defer></script>
+<script src="js/app.js?v=20261017-1" defer></script>
+<script src="js/catalogo.js?v=20261017-1" defer></script>
 
 <!-- Medición de visitas de Vercel. No usa cookies ni guarda datos personales.
      Para que empiece a contar hay que activarla UNA vez en el panel de Vercel:

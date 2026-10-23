@@ -24,11 +24,11 @@
 <meta name="twitter:image" content="assets/img/og.jpg">
 
 <link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96-dark.png?v=20261006-2" media="(prefers-color-scheme: dark)">
-<link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96.png?v=20261006-2">
+<link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96-dark.png?v=20261017-1" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicon-96.png?v=20261017-1">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png?v=20260914-1">
 
-<link rel="stylesheet" href="/css/styles.css?v=20261006-2">
+<link rel="stylesheet" href="/css/styles.css?v=20261017-1">
 
 <script>
   document.documentElement.classList.remove("no-js");
@@ -81,6 +81,25 @@
         <div class="repro" data-audio="https://pistasparacantantes.com/assets/audio/previas/0060.mp3" data-nombre="Sin tu latido"></div>
       </div>
 
+      <!-- La comparaci&oacute;n, en todas las fichas. Va DESPU&Eacute;S de la muestra del
+           tema y ANTES del bloque de compra: primero escucha la pista que vino
+           a buscar, despu&eacute;s el argumento de por qu&eacute; vale lo que vale, y
+           reci&eacute;n ah&iacute; el bot&oacute;n. Es un solo par y no tres: en una ficha de
+           producto, tres ser&iacute;a relleno. Son los mismos dos MP3 de la home, y
+           al ser de la forma corta no bajan un byte hasta que alguien aprieta
+           play.
+           OJO: no escribas el precio ac&aacute;, ni siquiera en un comentario. Esta
+           plantilla tambi&eacute;n alimenta el cat&aacute;logo sin precios, y el control de
+           tools/web_wsp.py corta la generaci&oacute;n si encuentra un importe. -->
+      <div class="muestras muestras--ficha" role="group" aria-labelledby="prueba-titulo">
+        <p class="muestras__titulo" id="prueba-titulo">Esta es la diferencia</p>
+        <p class="muestras__bajada">Un karaoke armado con sonidos de computadora, y una pista nuestra grabada con m&uacute;sicos de verdad. Mismo tema.</p>
+        <div class="muestras__duo">
+          <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-1-antes.mp3" data-nombre="Antes" data-detalle="Karaoke"></div>
+          <div class="repro repro--mini" data-audio="https://pistasparacantantes.com/assets/audio/ejemplo-1-despues.mp3" data-nombre="Despu&eacute;s" data-detalle="Pista grabada"></div>
+        </div>
+      </div>
+
       <div class="pista-compra">
                 <a class="btn btn--primario btn--grande"
            href="https://wa.me/5492656442608?text=Hola%20Idearum%2C%20quiero%20esta%20pista%3A%20Sin%20tu%20latido%20%E2%80%94%20Luis%20Aute%20%28Balada%29%20%5BID%3A%200060%5D"
@@ -111,7 +130,7 @@
   </div>
 </footer>
 
-<script src="/js/app.js?v=20261006-2" defer></script>
+<script src="/js/app.js?v=20261017-1" defer></script>
 
 </body>
 </html>

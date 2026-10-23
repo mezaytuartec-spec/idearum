@@ -168,6 +168,25 @@ def sin_salidas(html, prof=0):
     return html
 
 
+def audio_prestado(html):
+    """Manda TODOS los data-audio al sitio original.
+
+    Esta carpeta no copia los 141 MB de audio: los pide prestados. Antes aca
+    solo se reescribian las muestras de 30 s (assets/audio/previas/), asi que
+    los seis MP3 del antes y despues quedaban con ruta local, no existian, y
+    los reproductores salian apagados diciendo "Disponible pronto". Ahora se
+    reescribe cualquier ruta que entre a assets/audio/, venga con barra
+    adelante (fichas) o sin ella (la portada).
+
+    El control de PROHIBIDO_HTML deja pasar pistasparacantantes.com/assets/
+    audio/ justamente para esto: es el unico link al sitio original permitido,
+    porque trae un archivo y no lleva a ninguna pagina con precios.
+    """
+    for viejo in ('data-audio="/assets/audio/', 'data-audio="assets/audio/'):
+        html = html.replace(viejo, 'data-audio="%s/assets/audio/' % COM)
+    return html
+
+
 # ------------------------------------------------------------------ catalogo
 
 def hacer_catalogo():
@@ -199,6 +218,7 @@ def hacer_catalogo():
     html = html.replace("  </section>\n", "  </section>\n\n</main>\n", 1) \
         if "</main>" not in html else html
 
+    html = audio_prestado(html)
     html = sin_salidas(html)
     return html
 
@@ -235,10 +255,7 @@ def hacer_ficha(html, nombre):
     html = html.replace('href="/catalogo.html#', 'href="/#')
     html = html.replace('href="/catalogo.html"', 'href="/"')
 
-    # El audio se pide prestado al sitio original.
-    html = html.replace('data-audio="/assets/audio/previas/',
-                        'data-audio="%s/assets/audio/previas/' % COM)
-
+    html = audio_prestado(html)
     html = sin_salidas(html, prof=1)
     return html
 

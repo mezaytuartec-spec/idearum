@@ -484,10 +484,14 @@
      apagada y dice "Disponible pronto" en lugar de romperse.
      Suena uno por vez: al arrancar uno se pausan los demas.
 
-     Los seis MP3 pesan juntos casi 3 MB. El reproductor se dibuja de entrada,
-     pero el audio NO se toca hasta que la seccion se acerca a la pantalla
-     (o hasta que alguien aprieta play): quien entra a la home y no baja hasta
-     ahi no se baja un solo byte de musica.
+     Los seis MP3 pesan juntos casi 3 MB, asi que de entrada solo se pide la
+     DURACION (preload = "metadata"), no el audio: son seis pedidos chicos y
+     el archivo entero recien baja cuando alguien aprieta play.
+
+     Ojo: la seccion #ejemplos ahora esta segunda, pegada abajo del hero, asi
+     que ese pedido de duraciones pasa casi al entrar y ya no al bajar. Los dos
+     reproductores del hero son de la forma corta y no piden NADA hasta el play,
+     que es lo que mantiene liviana la primera pantalla.
 
      Hay dos formas del mismo reproductor:
        - la completa (home): boton, nombre, reloj y barra para adelantar;
